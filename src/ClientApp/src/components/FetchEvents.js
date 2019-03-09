@@ -7,14 +7,16 @@ export class FetchEvents extends Component {
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Date</th>
                         <th>Location</th>
                         <th>Owner</th>
                     </tr>
                 </thead>
                 <tbody>
                     {_events.map(event =>
-                        <tr key={event.name}>
+                        <tr key={event.id}>
                             <td>{event.name}</td>
+                            <td>{event.eventdate}</td>
                             <td>{event.eventLocation}</td>
                             <td>{event.ownerName1}</td>
                         </tr>

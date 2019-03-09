@@ -15,41 +15,50 @@ namespace Microsoft.WWV.Controllers
     {
         private readonly IConfiguration _config;
 
+        private readonly string _host;
+        private readonly string _userName;
+        // Todo: should go to KeyVault: https://azure.microsoft.com/en-us/resources/samples/key-vault-dotnet-core-quickstart/
+        private readonly string _password;
+        private readonly string _dbName;
+
         public EventController(IConfiguration config)
         {
             _config = config;
+
+            _host = _config["EventDB:ServerName"];
+            _userName = _config["EventDB:UserName"];
+            _password = _config["EventDB:Password"];
+            _dbName = _config["EventDB:DbName"];
         }
 
         [HttpGet("[action]")]
         public IEnumerable<Event> GetEvents()
         {
-            return TestEventGenerator.GetSampleEvents();
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+            return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<Event> GetAllEvents()
+        public async Task GenerateSampleData()
         {
+            var data = TestEventGenerator.GetSampleEvents();
+
             MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase("voluntdb");
-            return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+            var _db = _client.GetDatabase(this._dbName);
+            await _db.GetCollection<Event>("events").InsertManyAsync(data);
         }
 
         private MongoClientSettings getDbConnectionString()
         {
-            string host = _config["EventDB:ServerName"];
-            string userName = _config["EventDB:UserName"];
-            // Todo: should go to KeyVault: https://azure.microsoft.com/en-us/resources/samples/key-vault-dotnet-core-quickstart/
-            string password = _config["EventDB:Password"];
-            string dbName = _config["EventDB:DbName"];
-            
             MongoClientSettings settings = new MongoClientSettings();
-            settings.Server = new MongoServerAddress(host, 10255);
+            settings.Server = new MongoServerAddress(_host, 10255);
             settings.UseSsl = true;
             settings.SslSettings = new SslSettings();
             settings.SslSettings.EnabledSslProtocols = SslProtocols.Tls12;
 
-            MongoIdentity identity = new MongoInternalIdentity(dbName, userName);
-            MongoIdentityEvidence evidence = new PasswordEvidence(password);
+            MongoIdentity identity = new MongoInternalIdentity(_dbName, _userName);
+            MongoIdentityEvidence evidence = new PasswordEvidence(_password);
 
             settings.Credential = new MongoCredential("SCRAM-SHA-1", identity, evidence);
 
@@ -71,16 +80,18 @@ namespace Microsoft.WWV.Controllers
             var events = new List<Event>();
             _events = events;
             events.Add(
-                new Event(){
+                new Event()
+                {
                     Name = "Cleaning Up mountain trails",
                     Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
                     Company = "Binntal Tourism",
-                    Url= "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
+                    Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
                     OwnerName1 = "Darth Vader",
                     Country = "Switzerland",
-                    EventLocation = "Binntal, Wallis"
+                    EventLocation = "Binntal, Wallis",
+                    Eventdate = new DateTime(2019, 10, 21)
                 }
             );
-        } 
+        }
     }
 }
