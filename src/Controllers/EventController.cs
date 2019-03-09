@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Microsoft.WWV.Controllers
@@ -10,7 +13,13 @@ namespace Microsoft.WWV.Controllers
     [Route("api/[controller]")]
     public class EventController : Controller
     {
-        
+        private readonly IConfiguration _config;
+
+        public EventController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpGet("[action]")]
         public IEnumerable<Event> GetEvents()
         {
@@ -20,10 +29,31 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Event> GetAllEvents()
         {
-            MongoClient _client = new MongoClient("mongodb://wwv-dev:ifFiwhFGGlIExJp7KDbxjjHmTnW2zumcfDsqxbC23PfAZePpgos7AHR93lpihgTt7bMR8XlJp1X4yFtpqc780g==@wwv-dev.documents.azure.com:10255/?ssl=true&replicaSet=globaldb");
-            MongoServer _server = _client.GetServer();
-            MongoDatabase _db = _server.GetDatabase("voluntdb");   
-            return _db.GetCollection<Event>("events").FindAll();
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase("voluntdb");
+            return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+        }
+
+        private MongoClientSettings getDbConnectionString()
+        {
+            string host = _config["EventDB:ServerName"];
+            string userName = _config["EventDB:UserName"];
+            // Todo: should go to KeyVault: https://azure.microsoft.com/en-us/resources/samples/key-vault-dotnet-core-quickstart/
+            string password = _config["EventDB:Password"];
+            string dbName = _config["EventDB:DbName"];
+            
+            MongoClientSettings settings = new MongoClientSettings();
+            settings.Server = new MongoServerAddress(host, 10255);
+            settings.UseSsl = true;
+            settings.SslSettings = new SslSettings();
+            settings.SslSettings.EnabledSslProtocols = SslProtocols.Tls12;
+
+            MongoIdentity identity = new MongoInternalIdentity(dbName, userName);
+            MongoIdentityEvidence evidence = new PasswordEvidence(password);
+
+            settings.Credential = new MongoCredential("SCRAM-SHA-1", identity, evidence);
+
+            return settings;
         }
     }
 
