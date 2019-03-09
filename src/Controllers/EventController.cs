@@ -72,8 +72,13 @@ namespace Microsoft.WWV.Controllers
             _events = events;
             events.Add(
                 new Event(){
-                    Name = "aa",
-                    Description = "bb"
+                    Name = "Cleaning Up mountain trails",
+                    Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
+                    Company = "Binntal Tourism",
+                    Url= "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
+                    OwnerName1 = "Darth Vader",
+                    Country = "Switzerland",
+                    EventLocation = "Binntal, Wallis"
                 }
             );
         } 
