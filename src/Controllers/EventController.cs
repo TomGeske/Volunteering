@@ -40,14 +40,24 @@ namespace Microsoft.WWV.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddEvent([FromBody] Event _data)
+        public async Task<IActionResult> AddEvent([FromBody] Event _data)
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
+            if (string.IsNullOrEmpty(_data.Country))
+            {
+                return BadRequest("Event.Country is mandatory");
+            }
+
+            if (_data.Id == null || _data.Id == Guid.Empty)
+            {
+                _data.Id = Guid.NewGuid();
+            }
 
             _data.CreatedTS = DateTime.Now.ToUniversalTime();
 
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
+            return Ok(_data.Id);
         }
 
         [HttpGet("[action]")]
