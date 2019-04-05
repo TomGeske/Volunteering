@@ -40,7 +40,7 @@ namespace Microsoft.WWV.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddEvent(Event _data)
+        public async Task AddEvent([FromBody] Event _data)
         {
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
