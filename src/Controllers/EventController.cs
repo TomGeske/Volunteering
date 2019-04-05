@@ -49,6 +49,8 @@ namespace Microsoft.WWV.Controllers
             await _db.GetCollection<Event>("events").InsertManyAsync(data);
         }
 
+
+
         private MongoClientSettings getDbConnectionString()
         {
             MongoClientSettings settings = new MongoClientSettings();
@@ -82,14 +84,19 @@ namespace Microsoft.WWV.Controllers
             events.Add(
                 new Event()
                 {
+                    Id = new Guid(),
                     Name = "Cleaning Up mountain trails",
                     Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
-                    Company = "Binntal Tourism",
-                    Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
-                    OwnerName1 = "Darth Vader",
                     Country = "Switzerland",
+                    OwnerName1 = "Darth",
+                    OwnerName2 = "Vader",
+                    OwnerEmail = "thomasge@microsoft.com",
+                    Company = "Binntal Tourism",
+                    EventType = "default",
+                    Eventdate = new DateTime(2019, 10, 21).ToUniversalTime(),
                     EventLocation = "Binntal, Wallis",
-                    Eventdate = new DateTime(2019, 10, 21)
+                    Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
+                    CreatedTS = DateTime.Now.ToUniversalTime()
                 }
             );
         }
