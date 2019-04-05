@@ -1,3 +1,4 @@
+import ReactAI from 'react-appinsights';
 import React, { Component } from 'react';
 
 export class FetchData extends Component {
@@ -53,3 +54,5 @@ export class FetchData extends Component {
     );
   }
 }
+
+export default ReactAI.withTracking(FetchData);

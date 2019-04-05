@@ -10,7 +10,8 @@
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.0.17",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.6.3",
+    "react-appinsights": "2.0.2"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",

@@ -1,4 +1,5 @@
-﻿import React, { Component } from 'react';
+﻿import ReactAI from 'react-appinsights';
+import React, { Component } from 'react';
 
 export class FetchEvents extends Component {
     static renderEventsTable(_events) {
@@ -52,3 +53,5 @@ export class FetchEvents extends Component {
         );
     }
 }
+
+export default ReactAI.withTracking(FetchEvents);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactAI from 'react-appinsights';
 
 export class Home extends Component {
   displayName = Home.name
@@ -23,3 +24,5 @@ export class Home extends Component {
     );
   }
 }
+
+export default ReactAI.withTracking(Home);
