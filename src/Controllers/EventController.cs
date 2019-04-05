@@ -44,6 +44,9 @@ namespace Microsoft.WWV.Controllers
         {
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
+
+            _data.CreatedTS = DateTime.Now.ToUniversalTime();
+
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
         }
 
