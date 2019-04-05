@@ -18,8 +18,7 @@ export class Home extends Component {
         </ul>
 
         <p>Project source code @ <a href='https://github.com/TomGeske/Volunteering' target="_blank">GitHub</a> </p>
-        <p>REST API Get Events <a href='api/Event/GetEvents' target="_blank"> Execute</a> </p>
-        <p>REST API Generate Test Data<a href='api/Event/GenerateSampleData' target="_blank"> Execute</a> </p>
+        <p>REST API<a href='/swagger/' target="_blank"> Swagger</a> </p>
       </div>
     );
   }

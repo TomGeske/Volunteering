@@ -39,6 +39,14 @@ namespace Microsoft.WWV.Controllers
             return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
         }
 
+        [HttpPost("[action]")]
+        public async Task AddEvent(Event _data)
+        {
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+            await _db.GetCollection<Event>("events").InsertOneAsync(_data);
+        }
+
         [HttpGet("[action]")]
         public async Task GenerateSampleData()
         {
@@ -48,8 +56,6 @@ namespace Microsoft.WWV.Controllers
             var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertManyAsync(data);
         }
-
-
 
         private MongoClientSettings getDbConnectionString()
         {
