@@ -31,12 +31,32 @@ namespace Microsoft.WWV.Controllers
             _dbName = _config["EventDB:DbName"];
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
             return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Event> GetEvent(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+
+            var item = _db.GetCollection<Event>("events").Find(c => c.Id == id).FirstOrDefault();
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return item;
         }
 
         [HttpPost("[action]")]
