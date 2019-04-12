@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\Hello.ts" />
     <None Remove="ClientApp\src\App.js~RFaedc05d.TMP" />
     <None Remove="ClientApp\src\App.js~RFaedc05d.TMP" />
   </ItemGroup>

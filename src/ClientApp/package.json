@@ -5,18 +5,21 @@
   "dependencies": {
     "bootstrap": "3.4.1",
     "react": "^16.8.4",
+    "react-appinsights": "2.0.2",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.8.4",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.0.17",
     "rimraf": "^2.6.3",
-    "react-appinsights": "2.0.2"
+    "typescript": "^3.4.3"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "main": "index.js",
+  "license": "MIT"
 }
