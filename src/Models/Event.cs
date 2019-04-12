@@ -1,6 +1,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Microsoft.WWV
 {
@@ -10,6 +11,7 @@ namespace Microsoft.WWV
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        [Required]
         public string Country { get; set; }
         public string OwnerName1 {get;set;}
         public string OwnerName2 {get;set;}
