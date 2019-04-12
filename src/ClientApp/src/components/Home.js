@@ -18,7 +18,7 @@ export class Home extends Component {
           <li><a href='https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction'>Cosmos DB</a> for data storage</li>
         </ul>
 
-        <p>Project source code @ <a href='https://github.com/TomGeske/Volunteering' target="_blank">GitHub</a> </p>
+            <p>Project source code @ <a href='https://github.com/TomGeske/Volunteering' target="_blank" rel="noopener noreferrer">GitHub</a> </p>
         <p>REST API<a href='/swagger/' target="_blank"> Swagger</a> </p>
       </div>
     );

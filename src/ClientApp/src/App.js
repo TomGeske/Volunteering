@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
-import { FetchEvents } from './components/FetchEvents';
+import { Events } from './components/Events';
+import { EventDetails } from './components/EventDetails';
 
 export default class App extends Component {
   displayName = App.name
@@ -13,9 +12,8 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetchdata' component={FetchData} />
-        <Route path='/fetchevents' component={FetchEvents} />
+        <Route name='events' path='/events' component={Events} />
+        <Route name='eventdetails' path='/eventdetails/:eventid' component={EventDetails} />
       </Layout>
     );
   }

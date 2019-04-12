@@ -23,7 +23,7 @@ export class NavMenu extends Component {
                 <Glyphicon glyph='home' /> Home
               </NavItem>
             </LinkContainer>
-            <LinkContainer to={'/fetchevents'}>
+            <LinkContainer to={'/events'}>
               <NavItem>
                 <Glyphicon glyph='th-list' /> Events
               </NavItem>

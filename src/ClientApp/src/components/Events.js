@@ -1,7 +1,8 @@
 ﻿import ReactAI from 'react-appinsights';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-export class FetchEvents extends Component {
+export class Events extends Component {
     static renderEventsTable(_events) {
         return (
             <table className='table'>
@@ -10,7 +11,6 @@ export class FetchEvents extends Component {
                         <th>Name</th>
                         <th>Date</th>
                         <th>Location</th>
-                        <th>Owner</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,20 +19,24 @@ export class FetchEvents extends Component {
                             <td>{event.name}</td>
                             <td>{event.eventdate}</td>
                             <td>{event.eventLocation}</td>
-                            <td>{event.ownerName1}</td>
+                            <td>
+                                <Link to={{
+                                    pathname: '/eventdetails/' + event.id
+                                }}>Details</Link>
+                            </td>
                         </tr>
                     )}
                 </tbody>
             </table>
         );
     }
-    displayName = FetchEvents.name
+    displayName = Events.name
 
     constructor(props) {
         super(props);
         this.state = { events: [], loading: true };
 
-        fetch('api/Event/GetEvents')
+        fetch('api/Event/')
             .then(response => response.json())
             .then(data => {
                 this.setState({ events: data, loading: false });
@@ -42,7 +46,7 @@ export class FetchEvents extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : FetchEvents.renderEventsTable(this.state.events);
+            : Events.renderEventsTable(this.state.events);
 
         return (
             <div>
@@ -54,4 +58,4 @@ export class FetchEvents extends Component {
     }
 }
 
-export default ReactAI.withTracking(FetchEvents);
+export default ReactAI.withTracking(Events);

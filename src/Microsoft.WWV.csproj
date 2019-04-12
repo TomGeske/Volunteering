@@ -28,6 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\App.js~RFaedc05d.TMP" />
+    <None Remove="ClientApp\src\App.js~RFaedc05d.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
