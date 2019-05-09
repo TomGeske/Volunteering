@@ -19,18 +19,15 @@ namespace Microsoft.WWV
         public string Company {get;set;}
         public string EventType {get;set;}
         public DateTime Eventdate {get;set;}
+        public DateTime EventEndDate { get; set; }
         public string EventLocation {get;set;}
         public string Url {get;set;}
-        public DateTime CreatedTS { get; set; }
+        public DateTime CreatedTS {get;set;}
     }
 
     public class Registration
     {
         /*
-        
-
-
-
          */
     }
 }
