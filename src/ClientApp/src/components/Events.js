@@ -1,11 +1,12 @@
 ﻿import ReactAI from 'react-appinsights';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Table from 'react-bootstrap/Table';
 
 export class Events extends Component {
     static renderEventsTable(_events) {
         return (
-            <table className='table'>
+            <Table className='table' striped bordered hover>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -27,7 +28,7 @@ export class Events extends Component {
                         </tr>
                     )}
                 </tbody>
-            </table>
+            </Table>
         );
     }
     displayName = Events.name
