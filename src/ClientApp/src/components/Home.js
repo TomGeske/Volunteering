@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ReactAI from 'react-appinsights';
+import { withAITracking } from '@microsoft/applicationinsights-react-js';
+import { ai } from '../TelemetryService';
 
 export class Home extends Component {
   displayName = Home.name
@@ -25,4 +26,5 @@ export class Home extends Component {
   }
 }
 
-export default ReactAI.withTracking(Home);
+export default withAITracking(ai.reactPlugin, Home);
+

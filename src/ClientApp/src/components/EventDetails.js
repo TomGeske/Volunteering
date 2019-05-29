@@ -1,4 +1,5 @@
-﻿import ReactAI from 'react-appinsights';
+﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
+import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 
 export class EventDetails extends Component {
@@ -72,4 +73,4 @@ export class EventDetails extends Component {
     }
 }
 
-export default ReactAI.withTracking(EventDetails);
+export default withAITracking(ai.reactPlugin, EventDetails);

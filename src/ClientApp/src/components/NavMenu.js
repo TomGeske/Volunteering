@@ -19,11 +19,11 @@ export class NavMenu extends Component {
           <Navbar.Brand href="#home">
           
       <img
-        src={logo}
-        width="130"
-        height="30"
-        className="d-inline-block align-top"
-        alt="Azure logo"
+          src={logo}
+          width="130"
+          height="30"
+          className="d-inline-block align-top"
+          alt="Azure logo"
       />
     </Navbar.Brand>
           <Navbar.Toggle />

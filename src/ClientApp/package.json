@@ -4,16 +4,18 @@
   "private": true,
   "dependencies": {
     "bootstrap": "3.4.1",
-    "react": "^16.8.4",
-    "react-appinsights": "2.0.2",
+    "react": "^16.8.6",
+    "@microsoft/applicationinsights-react-js": "2.0.0",
+    "@microsoft/applicationinsights-web": "2.0.0",
     "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.8.4",
-    "react-router-bootstrap": "^0.24.4",
-    "react-router-dom": "^4.3.1",
+    "react-dom": "^16.8.6",
+    "react-router-bootstrap": "^0.25.0",
+    "react-router-dom": "^5.0.0",
+    "react-table": "^6.10.0",
     "react-scripts": "1.0.17",
     "rimraf": "^2.6.3",
-    "react-adal": "^0.4.22",
-    "typescript": "^3.4.3"
+    "react-adal": "^0.4.23",
+    "typescript": "^3.4.5"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",

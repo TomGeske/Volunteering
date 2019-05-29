@@ -1,12 +1,13 @@
-﻿import ReactAI from 'react-appinsights';
+﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
+import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Table from 'react-bootstrap/Table';
+//import Table from 'react-bootstrap/Table';
 
 export class Events extends Component {
     static renderEventsTable(_events) {
         return (
-            <Table className='table' striped bordered hover>
+            <table className='table' striped bordered hover>
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -15,20 +16,21 @@ export class Events extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {_events.map(event =>
-                        <tr key={event.id}>
-                            <td>{event.name}</td>
-                            <td>{event.eventdate}</td>
-                            <td>{event.eventLocation}</td>
-                            <td>
-                                <Link to={{
-                                    pathname: '/eventdetails/' + event.id
-                                }}>Details</Link>
-                            </td>
-                        </tr>
+                    {_events.map(event => (
+                            <tr key={event.id}>
+                                <td>{event.name}</td>
+                                <td>{event.eventdate}</td>
+                                <td>{event.eventLocation}</td>
+                                <td>
+                                    <Link to={{
+                                        pathname: '/eventdetails/' + event.id
+                                  }}>Details</Link>
+                                </td>
+                            </tr>
+                        )
                     )}
                 </tbody>
-            </Table>
+            </table>
         );
     }
     displayName = Events.name
@@ -59,4 +61,4 @@ export class Events extends Component {
     }
 }
 
-export default ReactAI.withTracking(Events);
+export default withAITracking(ai.reactPlugin, Events, "prrt");
