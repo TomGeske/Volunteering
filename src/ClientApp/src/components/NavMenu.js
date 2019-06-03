@@ -1,8 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Label } from 'reactstrap';
+import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import './NavMenu.css';
-import logo from './Microsoft_Azure_Logo.svg';
 
 export class NavMenu extends Component {
   displayName = NavMenu.name
@@ -29,12 +28,11 @@ export class NavMenu extends Component {
           <Container>
             <NavbarBrand tag={Link} to="/">
               <img
-                src={logo}
-                width="130"
+                src="images/microsoft-gray.png"
+                width="180"
                 className="d-inline-block align-top"
-                alt="Azure logo"
+                alt="Microsoft Logo"
               />
-              <Label className="text-dark">Worldwide Volunteering</Label>
             </NavbarBrand>
             <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           </Container>
