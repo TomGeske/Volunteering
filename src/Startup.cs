@@ -49,6 +49,10 @@ namespace Microsoft.WWV
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -58,10 +62,6 @@ namespace Microsoft.WWV
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Volunteering API V1");
             });
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseMvc(routes =>
             {
