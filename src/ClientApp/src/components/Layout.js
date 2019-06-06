@@ -8,13 +8,19 @@ export class Layout extends Component {
 
   render() {
     return (
-        <div>
-            <NavMenu />
-            <Container>
-                {this.props.children}
-            </Container>
-            <Footer />
+      <div>
+        <NavMenu />
+        <div className="jumbotron">
+          <container>
+            <h1 className="display-4 text-center">Microsoft Volunteering</h1>
+            <h3 className="display-6 text-center">Feel good while doing good</h3>
+          </container>
         </div>
+        <Container>
+          {this.props.children}
+        </Container>
+        <Footer />
+      </div>
     );
   }
 }
