@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Form, Button } from 'reactstrap';
+import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Form } from 'reactstrap';
 import { FormControl } from 'react-bootstrap';
 import { authContext } from '../adalConfig';
 import './NavMenu.css';

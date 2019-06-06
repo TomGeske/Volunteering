@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
 import { Events } from './components/Events';
 import { EventDetails } from './components/EventDetails';
 

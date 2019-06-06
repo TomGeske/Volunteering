@@ -22,15 +22,15 @@ export class Footer extends Component {
                 {/* Content */}
               </div>
               {/* Grid column */}
-              <hr class="clearfix w-100 d-md-none pb-3" />
+              <hr className="clearfix w-100 d-md-none pb-3" />
               {/* Grid column */}
-              <div class="col-md-3 mb-md-0 mb-3">
+              <div className="col-md-3 mb-md-0 mb-3">
               </div>
               {/* Grid column */}
 
               {/* Grid column */}
-              <div class="col-md-3 mb-md-0 mb-3">
-                <span class="text-muted">
+              <div className="col-md-3 mb-md-0 mb-3">
+                <span className="text-muted">
                   Microsoft confidential. For use only by Microsof​t employees and approved vendors working on​​​behalf of​​ Microsoft.<a href="https://microsoft.sharepoint.com/teams/msdpn/sitepages/default.aspx">Data protection notice​​.</a>
                 </span>
               </div>

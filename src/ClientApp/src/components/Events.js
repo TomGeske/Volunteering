@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 export class Events extends Component {
   static renderEventsTable(_events) {
     return (
-      <table className='table' striped bordered hover>
+      <table className='table striped bordered hover'>
         <thead>
           <tr>
             <th>Name</th>
@@ -27,8 +27,7 @@ export class Events extends Component {
                 }}>Details</Link>
               </td>
             </tr>
-          )
-          )}
+          ))}
         </tbody>
       </table>
     );
@@ -54,7 +53,7 @@ export class Events extends Component {
     return (
       <div>
         <h1 className="text-center">Upcoming events</h1>
-        <a class="btn btn-primary btn-lg" target="_blank" href="https://aka.ms/wwv-new-events" role="button">Create event »</a>
+        <a className="btn btn-primary btn-lg" target="_blank" href="https://aka.ms/wwv-new-events" role="button">Create event »</a>
         <br />
         {contents}
       </div>

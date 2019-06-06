@@ -11,10 +11,10 @@ export class Layout extends Component {
       <div>
         <NavMenu />
         <div className="jumbotron">
-          <container>
+          <Container>
             <h1 className="display-4 text-center">Microsoft Volunteering</h1>
             <h3 className="display-6 text-center">Feel good while doing good</h3>
-          </container>
+          </Container>
         </div>
         <Container>
           {this.props.children}
