@@ -25,7 +25,8 @@
 }
 
 .map-small{	
-	width: 70%;
-	float: left;
-	height: 100px;	
+	width: 100%;
+    float: left;
+    padding: 10px;
+	height: 130px;	
 }
