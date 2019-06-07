@@ -2,11 +2,11 @@
 import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { ReactBingmaps } from 'react-bingmaps';
-import { Row, Col, Button} from 'reactstrap';
-import { Container } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
+import config from '../Config'
 
 export class EventDetails extends Component {
-  static renderEventDetails(_event, _bingmapKey, _boundary) {
+  static renderEventDetails(_event, _boundary) {
     return (
       <Container>
         <h1 className="text-center">{_event.name}</h1>
@@ -46,9 +46,9 @@ export class EventDetails extends Component {
             <b>Meeting Point Location:</b> {_event.eventLocation}, {_event.country}
             <ReactBingmaps
               id="_map"
-              bingmapKey={_bingmapKey}
+              bingmapKey={config.BING_API_KEY}
               boundary={_boundary}
-              zoom={6}
+              zoom="8"
               className="map-large"
             >
             </ReactBingmaps>
@@ -67,7 +67,6 @@ export class EventDetails extends Component {
     this.state = {
       event: [],
       loading: true,
-      bingmapkey: "Aqa_swdrZ1-tT4mMMKHhlrYFXfVdYh8u1DxmHcVjBCAEgsUo_SpPR5aKG4roSYrz",
       boundary: {
         "search": "Switzerland",
         "polygonStyle": {
@@ -107,7 +106,7 @@ export class EventDetails extends Component {
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : EventDetails.renderEventDetails(this.state.event, this.state.bingmapkey, this.state.boundary);
+      : EventDetails.renderEventDetails(this.state.event, this.state.boundary);
 
     return (
       <div>
