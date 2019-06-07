@@ -1,76 +1,120 @@
 ﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
 import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
+import { ReactBingmaps } from 'react-bingmaps';
+import { Row, Col, Button} from 'reactstrap';
+import { Container } from 'reactstrap';
 
 export class EventDetails extends Component {
-    static renderEventDetails(_event) {
-        return (
-            <div>
-                <h1>{_event.name}</h1>
-                <dl>
-                    <dt>Description</dt>
-                    <dd>{_event.description}</dd>
-                </dl>
-                <dl>
-                    <dt>Country</dt>
-                    <dd>{_event.country}</dd>
-                </dl>
-                <dl>
-                    <dt>Event Owner</dt>
-                    <dd>{_event.ownerName1} {_event.ownerName2}</dd>
-                </dl>
-                <dl>
-                    <dt>Event Owner E-Mail</dt>
-                    <dd>{_event.ownerEmail}</dd>
-                </dl>
-                <dl>
-                    <dt>Company</dt>
-                    <dd>{_event.company}</dd>
-                </dl>
-                <dl>
-                    <dt>Event date</dt>
-                    <dd>{_event.eventdate}</dd>
-                </dl>
-                <dl>
-                    <dt>Event Location</dt>
-                    <dd>{_event.eventLocation}</dd>
-                </dl>
-                <dl>
-                    <dt>Event Url</dt>
-                    <dd>{_event.url}</dd>
-                </dl>
-                <dl>
-                    <dt>Event Created</dt>
-                    <dd>{_event.createdTS}</dd>
-                </dl>
-            </div>
-        );
-    }
-    displayName = Event.name
+  static renderEventDetails(_event, _bingmapKey, _boundary) {
+    return (
+      <Container>
+        <h1 className="text-center">{_event.name}</h1>
+        <Row>
+          <Col xs={6} md={4}>
+            <p><b>Event Organisation:</b> {_event.company}</p>
+          </Col>
+          <Col xs={6} md={4}>
+            <p><b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()}</p>
+          </Col>
+          <Col xs={6} md={4}>
+            <Button>Register</Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6} md={4}>
+            <p>
+              <b>Microsoft Host</b>:<a href={"mailto:" +  _event.ownerEmail}> {_event.ownerName1} {_event.ownerName2}</a>
+            </p>
+          </Col>
+          <Col xs={6} md={4}>
+            <p><b>Time:</b> {new Date(_event.eventdate).toLocaleTimeString()}</p>
+          </Col>
+          <Col xs={6} md={4}>
+            <p>
+              <b><a href={_event.url}>Website</a></b>
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            {_event.description}
+          </Col>
+        </Row>
+        <Row>
+          <div className="map-large-frame">
+            <b>Meeting Point Location:</b> {_event.eventLocation}, {_event.country}
+            <ReactBingmaps
+              id="_map"
+              bingmapKey={_bingmapKey}
+              boundary={_boundary}
+              zoom={6}
+              className="map-large"
+            >
+            </ReactBingmaps>
+          </div>
+        </Row>
 
-    constructor(props) {
-        super(props);
-        this.state = { event: [], loading: true };
-        this.eventid = props.match.params.eventid;
-        
-        fetch('api/Event/' + this.eventid)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ event: data, loading: false });
-            });
-    }
 
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : EventDetails.renderEventDetails(this.state.event);
 
-        return (
-            <div>
-                {contents}
-            </div>
-        );
-    }
+      </Container>
+    );
+  }
+  displayName = Event.name
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      event: [],
+      loading: true,
+      bingmapkey: "Aqa_swdrZ1-tT4mMMKHhlrYFXfVdYh8u1DxmHcVjBCAEgsUo_SpPR5aKG4roSYrz",
+      boundary: {
+        "search": "Switzerland",
+        "polygonStyle": {
+          fillColor: 'rgba(161,224,255,0.4)',
+          strokeColor: '#a495b2',
+          strokeThickness: 2
+        },
+        "option": {
+          entityType: 'PopulatedPlace'
+        }
+      }
+    };
+
+    this.eventid = props.match.params.eventid;
+
+    fetch('api/Event/' + this.eventid)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          event: data,
+          boundary: {
+            "search": data.eventLocation,
+            "polygonStyle": {
+              fillColor: 'rgba(161,224,255,0.4)',
+              strokeColor: '#a495b2',
+              strokeThickness: 2
+            },
+            "option": {
+              entityType: 'PopulatedPlace'
+            }
+          },
+          loading: false
+        });
+      });
+  }
+
+  render() {
+    let contents = this.state.loading
+      ? <p><em>Loading...</em></p>
+      : EventDetails.renderEventDetails(this.state.event, this.state.bingmapkey, this.state.boundary);
+
+    return (
+      <div>
+        {contents}
+      </div>
+    );
+  }
 }
 
 export default withAITracking(ai.reactPlugin, EventDetails);
