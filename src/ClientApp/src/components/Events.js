@@ -2,7 +2,9 @@
 import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import config from '../Config'
 //import Table from 'react-bootstrap/Table';
+import { ReactBingmaps } from 'react-bingmaps';
 
 export class Events extends Component {
   static renderEventsTable(_events) {
@@ -13,6 +15,7 @@ export class Events extends Component {
             <th>Name</th>
             <th>Date</th>
             <th>Location</th>
+            <th>Register</th>
           </tr>
         </thead>
         <tbody>
@@ -20,7 +23,11 @@ export class Events extends Component {
             <tr key={event.id}>
               <td>{event.name}</td>
               <td>{event.eventdate}</td>
-              <td>{event.eventLocation}</td>
+              <td><b>Meeting Point Location:</b> {event.eventLocation}, {event.country}
+              <div className="map-small">            
+                <ReactBingmaps id={event.id} bingmapKey={config.BING_API_KEY} className="map-small"/>            
+          </div>
+              </td>
               <td>
                 <Link to={{
                   pathname: '/eventdetails/' + event.id
@@ -36,7 +43,11 @@ export class Events extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { events: [], loading: true };
+    this.state = { 
+      events: [], loading: true,
+      bingmapkey: "Aqa_swdrZ1-tT4mMMKHhlrYFXfVdYh8u1DxmHcVjBCAEgsUo_SpPR5aKG4roSYrz",
+      
+    };
 
     fetch('api/Event/')
       .then(response => response.json())
@@ -54,7 +65,7 @@ export class Events extends Component {
       <div>
         <h1 className="text-center">Upcoming events</h1>
         <a className="btn btn-primary btn-lg" target="_blank" href="https://aka.ms/wwv-new-events" role="button">Create event »</a>
-        <br />
+        <br />        
         {contents}
       </div>
     );

@@ -23,3 +23,9 @@
     margin: 15px;
     padding-bottom: 20px;
 }
+
+.map-small{	
+	width: 70%;
+	float: left;
+	height: 100px;	
+}
