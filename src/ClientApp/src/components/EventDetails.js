@@ -15,7 +15,7 @@ export class EventDetails extends Component {
             <p><b>Event Organisation:</b> {_event.company}</p>
           </Col>
           <Col xs={6} md={4}>
-            <p><b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()}</p>
+            <p><b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()} - {new Date(_event.eventEndDate).toLocaleDateString()}</p>
           </Col>
           <Col xs={6} md={4}>
             <Button>Register</Button>
@@ -24,11 +24,11 @@ export class EventDetails extends Component {
         <Row>
           <Col xs={6} md={4}>
             <p>
-              <b>Microsoft Host</b>:<a href={"mailto:" +  _event.ownerEmail}> {_event.ownerName1} {_event.ownerName2}</a>
+              <b>Microsoft Host</b>:<a href={"mailto:" + _event.ownerEmail}> {_event.ownerName1} {_event.ownerName2}</a> ({_event.department})
             </p>
           </Col>
           <Col xs={6} md={4}>
-            <p><b>Time:</b> {new Date(_event.eventdate).toLocaleTimeString()}</p>
+            <p><b>Time:</b> {_event.startEventTime}</p>
           </Col>
           <Col xs={6} md={4}>
             <p>
@@ -48,7 +48,7 @@ export class EventDetails extends Component {
               id="_map"
               bingmapKey={config.BING_API_KEY}
               boundary={_boundary}
-              zoom="8"
+              zoom={8}
               className="map-large"
             >
             </ReactBingmaps>
