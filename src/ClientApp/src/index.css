@@ -23,3 +23,15 @@
     margin: 15px;
     padding-bottom: 20px;
 }
+
+.map-small {
+    width: 100%;
+    float: left;
+    padding: 5px;
+    height: 130px;
+}
+
+.button-register {
+    font-size: 10px;
+    background-color: #4CAF50;
+}
