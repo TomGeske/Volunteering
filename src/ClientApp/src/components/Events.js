@@ -3,7 +3,6 @@ import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../Config'
-//import Table from 'react-bootstrap/Table';
 import { ReactBingmaps } from 'react-bingmaps';
 
 export class Events extends Component {
@@ -20,7 +19,7 @@ export class Events extends Component {
               </td>
               <td><b>Meeting Point Location:</b> {event.eventLocation}, {event.country}
                 <div className="map-small">
-                  <ReactBingmaps id={event.id} bingmapKey={config.BING_API_KEY}
+                  <ReactBingmaps id={event.id} bingmapKey={config.BING_API_KEY} mapOptions={{ 'showLocateMeButton': false, 'showMapTypeSelector': false}}
                     className="map-small" />
                 </div>
               </td>
@@ -40,9 +39,7 @@ export class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [], loading: true,
-      bingmapkey: "Aqa_swdrZ1-tT4mMMKHhlrYFXfVdYh8u1DxmHcVjBCAEgsUo_SpPR5aKG4roSYrz",
-
+      events: [], loading: true
     };
 
     fetch('api/Event/')
