@@ -3,37 +3,39 @@ import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../Config'
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import { ReactBingmaps } from 'react-bingmaps';
 
 export class Events extends Component {
-  static renderEventsTable(_events) {
+  static renderEventsTable(_events, _boundary) {
     return (
       <Container>
 
         {_events.map(_event => (
 
-          <Row>
-            <Col xs={6} md={4} width="140px">
+          <Row key={_event.id} className="justify-content-md-center">
+            <Col sm>
               <h3>{_event.name}</h3>
-              <b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()} - {new Date(_event.eventEndDate).toLocaleDateString()}
-              <p>Event organizer: {_event.ownerName1} {_event.ownerName2}</p>
-              <p>Event type: {_event.eventType}</p>
+              <p><b>Event organizer:</b> {_event.ownerName1} {_event.ownerName2}</p>
+              <p><b>Event type:</b> {_event.eventType}</p>
             </Col>
-            <Col xs={6} md={4}>
-              <a className="btn btn-primary mb1 bg-green" target="_blank" href="https://aka.ms/wwv-new-events" role="button">Register</a>
-              <br />
-              <Link to={{
+            <Col sm>
+              <Link className="btn btn-primary mb1 bg-green" to={{
                 pathname: '/eventdetails/' + _event.id
               }}>Details</Link>
+              <br />
+              <b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()} - {new Date(_event.eventEndDate).toLocaleDateString()}
             </Col>
-            <Col xs={6} md={4}>
+            <Col>
               <div className="map-small">
-                <ReactBingmaps id={_event.id} bingmapKey={config.BING_API_KEY} mapOptions={{ 'showLocateMeButton': false, 'showMapTypeSelector': false }}
+                <ReactBingmaps
+                  id={_event.id}
+                  bingmapKey={config.BING_API_KEY}
+                  boundary={_boundary}
+                  mapOptions={{ 'showLocateMeButton': false, 'showMapTypeSelector': false }}
                   className="map-small" />
               </div>
             </Col>
-
           </Row>
         ))}
       </Container>
@@ -44,20 +46,46 @@ export class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [], loading: true
+      events: [],
+      boundary: {
+        "search": "Switzerland",
+        "polygonStyle": {
+          fillColor: 'rgba(161,224,255,0.4)',
+          strokeColor: '#a495b2',
+          strokeThickness: 2
+        },
+        "option": {
+          entityType: 'PopulatedPlace'
+        }
+      },
+      loading: true
     };
 
     fetch('api/Event/')
       .then(response => response.json())
       .then(data => {
-        this.setState({ events: data, loading: false });
+        this.setState({
+          events: data,
+          boundary: {
+            "search": "Switzerland",
+            "polygonStyle": {
+              fillColor: 'rgba(161,224,255,0.4)',
+              strokeColor: '#a495b2',
+              strokeThickness: 2
+            },
+            "option": {
+              entityType: 'PopulatedPlace'
+            }
+          },
+          loading: false
+        });
       });
   }
 
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : Events.renderEventsTable(this.state.events);
+      : Events.renderEventsTable(this.state.events, this.state.boundary);
 
     return (
       <div>
