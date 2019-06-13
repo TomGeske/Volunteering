@@ -18,7 +18,7 @@ export class EventDetails extends Component {
             <p><b>Date:</b> {new Date(_event.eventdate).toLocaleDateString()} - {new Date(_event.eventEndDate).toLocaleDateString()}</p>
           </Col>
           <Col xs={6} md={4}>
-            <Button>Register</Button>
+            <Button disabled>Register</Button>
           </Col>
         </Row>
         <Row>
@@ -48,7 +48,7 @@ export class EventDetails extends Component {
               id="_map"
               bingmapKey={config.BING_API_KEY}
               boundary={_boundary}
-              zoom={8}
+              zoom={4}
               className="map-large"
             >
             </ReactBingmaps>
