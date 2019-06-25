@@ -7,10 +7,12 @@ variables:
 # do this before all your .NET Core tasks
 steps:
 - task: DotNetCoreInstaller@0
+  displayName: Install DotNetCore Tools
   inputs:
     version: '2.2.300' # replace this value with the version that you need for your project
 
 - task: DotNetCoreCLI@2
+  displayName: Restore
   inputs:
     command: 'restore'
 
@@ -22,9 +24,16 @@ steps:
     arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
 - task: DotNetCoreCLI@2
+  displayName: Publish
   inputs:
     command: publish
     projects: '**/*.csproj'
     publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
+    
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
