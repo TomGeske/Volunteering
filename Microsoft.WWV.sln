@@ -5,6 +5,12 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.WWV", "src\Microsoft.WWV.csproj", "{4B8E25F1-AE80-403C-ACFF-05496C33507F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{673D80B9-D8D4-4C02-9315-0EE46423BF47}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yaml = azure-pipelines.yaml
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
