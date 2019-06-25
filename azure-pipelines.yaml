@@ -1,6 +1,9 @@
 pool:
   vmImage: 'windows-2019'
 
+variables:
+  BuildConfiguration: Release
+
 # do this before all your .NET Core tasks
 steps:
 - task: DotNetCoreInstaller@0
@@ -16,11 +19,12 @@ steps:
   inputs:
     command: build
     projects: '**/*.csproj'
-    arguments: '--configuration Release' # Update this to match your need
+    arguments: '--configuration $(BuildConfiguration)' # Update this to match your need
 
 - task: DotNetCoreCLI@2
   inputs:
     command: publish
-    publishWebProjects: True
+    projects: '**/*.csproj'
+    publishWebProjects: false
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
