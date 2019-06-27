@@ -1,6 +1,14 @@
 ﻿import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Form } from 'reactstrap';
+import {
+  Collapse,
+  Navbar,
+  NavbarBrand,
+  NavbarToggler,
+  NavItem,
+  NavLink,
+  Form,
+} from 'reactstrap';
 import { FormControl } from 'react-bootstrap';
 import { authContext } from '../adalConfig';
 import './NavMenu.css';
@@ -13,13 +21,13 @@ export class NavMenu extends Component {
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
     };
   }
 
   toggleNavbar() {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   }
 
@@ -43,7 +51,10 @@ export class NavMenu extends Component {
                 <NavLink tag={Link} className="text-dark" to="/events">Events</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">Signed in {authContext.getCachedUser().userName}</NavLink>
+                <NavLink tag={Link} className="text-dark" to="/">
+                  Signed in&nbsp;
+                  {authContext.getCachedUser().userName}
+                </NavLink>
               </NavItem>
               <NavItem>
                 <Form inline>

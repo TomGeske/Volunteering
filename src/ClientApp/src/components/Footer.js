@@ -18,37 +18,42 @@ export class Footer extends Component {
               <div className="col-md-6 mt-md-0 mt-3">
                 {/* Content */}
                 <h5 className="text-uppercase">Do you have feedback? </h5>
-                <p>Please let us know <a href="https://github.com/TomGeske/Volunteering/issues">here</a></p>
+                <p>
+                  Please let us know
+                  <a href="https://github.com/TomGeske/Volunteering/issues">here</a>
+                </p>
                 {/* Content */}
               </div>
               {/* Grid column */}
               <hr className="clearfix w-100 d-md-none pb-3" />
               {/* Grid column */}
-              <div className="col-md-3 mb-md-0 mb-3">
-              </div>
+              <div className="col-md-3 mb-md-0 mb-3" />
               {/* Grid column */}
 
               {/* Grid column */}
               <div className="col-md-3 mb-md-0 mb-3">
                 <span className="text-muted">
-                  Microsoft confidential. For use only by Microsof​t employees and approved vendors working on​​​behalf of​​ Microsoft.<a href="https://microsoft.sharepoint.com/teams/msdpn/sitepages/default.aspx">Data protection notice​​.</a>
+                  Microsoft confidential. For use only by Microsof​t
+                  employees and approved vendors working on​​​behalf of​​ Microsoft.&nbsp;
+                  <a href="https://microsoft.sharepoint.com/teams/msdpn/sitepages/default.aspx">Data protection notice​​.</a>
                 </span>
               </div>
-                  {/* Grid column */}
+              {/* Grid column */}
             </div>
-                {/* Grid row */}
-              </div>
-              {/* Footer Links */}
-              {/* Copyright */}
-              <div className="footer-copyright text-center py-3">
-                &copy; Microsoft {new Date().getFullYear()}
-              </div>
-              {/* Copyright */}
-        </footer>
-            {/* Footer */}
+            {/* Grid row */}
           </div>
-          );
-        }
-      }
-      
-      export default withAITracking(ai.reactPlugin, Footer);
+          {/* Footer Links */}
+          {/* Copyright */}
+          <div className="footer-copyright text-center py-3">
+            &copy; Microsoft
+            {new Date().getFullYear()}
+          </div>
+          {/* Copyright */}
+        </footer>
+        {/* Footer */}
+      </div>
+    );
+  }
+}
+
+export default withAITracking(ai.reactPlugin, Footer);
