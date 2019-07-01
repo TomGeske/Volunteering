@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var react_1 = require("react");
+var React = require("react");
 var reactstrap_1 = require("reactstrap");
 var EventSignUp = /** @class */ (function (_super) {
     __extends(EventSignUp, _super);
@@ -22,26 +22,37 @@ var EventSignUp = /** @class */ (function (_super) {
         _this.state = { show: false };
         _this.handleShow = _this.handleShow.bind(_this);
         _this.handleClose = _this.handleClose.bind(_this);
+        _this.handleRegister = _this.handleRegister.bind(_this);
         return _this;
     }
+    EventSignUp.prototype.handleRegister = function () {
+        this.handleClose();
+        // call Registration and pass user & event
+    };
     EventSignUp.prototype.handleClose = function () {
-        this.state.show = false;
+        this.setState({ show: false });
     };
     EventSignUp.prototype.handleShow = function () {
-        this.state.show = true;
+        this.setState({ show: true });
     };
     EventSignUp.prototype.render = function () {
-        return (react_1.default.createElement(react_1.default.Fragment, null,
-            react_1.default.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleShow }, "Launch demo modal"),
-            react_1.default.createElement(reactstrap_1.Modal, { show: this.state.show, onHide: this.handleClose },
-                react_1.default.createElement(reactstrap_1.Modal.Header, { closeButton: true },
-                    react_1.default.createElement(reactstrap_1.Modal.Title, null, "Modal heading")),
-                react_1.default.createElement(reactstrap_1.Modal.Body, null, "Woohoo, you're reading this text in a modal!"),
-                react_1.default.createElement(reactstrap_1.Modal.Footer, null,
-                    react_1.default.createElement(reactstrap_1.Button, { variant: "secondary", onClick: this.handleClose }, "Close"),
-                    react_1.default.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleClose }, "Save Changes")))));
+        return (React.createElement(React.Fragment, null,
+            React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleShow }, "Register"),
+            React.createElement(reactstrap_1.Modal, { isOpen: this.state.show, defaultChecked: true },
+                React.createElement(reactstrap_1.ModalHeader, null, "Event Registration"),
+                React.createElement(reactstrap_1.ModalBody, null,
+                    "Please, confirm that",
+                    React.createElement("br", null),
+                    "1. You have approval from your line manager ",
+                    React.createElement("br", null),
+                    "2. You entered your vacation in ",
+                    React.createElement("a", { href: "https://msvacation" }),
+                    React.createElement("br", null)),
+                React.createElement(reactstrap_1.ModalFooter, null,
+                    React.createElement(reactstrap_1.Button, { variant: "secondary", onClick: this.handleClose }, "Cancel"),
+                    React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleRegister }, "Register")))));
     };
     return EventSignUp;
-}(react_1.default.Component));
+}(React.Component));
 exports.default = EventSignUp;
 //# sourceMappingURL=EventSignUp.js.map

@@ -1,15 +1,26 @@
-﻿import React, { Component } from 'react';
+﻿import * as React from 'react';
 import {
   Button,
   Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 
-interface State {
+interface IState {
   show: boolean;
 }
 
-export default class EventSignUp extends React.Component<{}, State> {
-  state: State =
+interface IProps {
+  event: IEvent;
+}
+
+interface IEvent {
+  name: string;
+}
+
+export default class EventSignUp extends React.Component<IProps, IState> {
+  State: IState =
     { show: false };
 
   constructor(props, context) {
@@ -17,36 +28,48 @@ export default class EventSignUp extends React.Component<{}, State> {
 
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
+  }
+
+  private handleRegister() {
+    this.handleClose();
+    // call Registration and pass user & event
   }
 
   private handleClose() {
-    this.state.show = false;
+    this.setState({ show: false })
   }
 
   private handleShow() {
-    this.state.show = true;
+    this.setState({ show: true })
   }
 
   public render() {
     return (
       <>
         <Button variant="primary" onClick={this.handleShow}>
-          Launch demo modal
+          Register
         </Button>
 
-        <Modal show={this.state.show} onHide={this.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-          <Modal.Footer>
+        <Modal isOpen={this.State.show} defaultChecked>
+          <ModalHeader>
+            Event Registration
+          </ModalHeader>
+          <ModalBody>
+            Please, confirm that<br />
+            <ol>
+              <li>You have approval from your line manager</li>
+              <li>You entered your your days in //msvacation in <a href="https://msvacation">https://msvacation</a></li>
+            </ol>
+          </ModalBody>
+          <ModalFooter>
             <Button variant="secondary" onClick={this.handleClose}>
-              Close
+              Cancel
             </Button>
-            <Button variant="primary" onClick={this.handleClose}>
-              Save Changes
+            <Button variant="primary" onClick={this.handleRegister}>
+              Register
             </Button>
-          </Modal.Footer>
+          </ModalFooter>
         </Modal>
       </>
     );

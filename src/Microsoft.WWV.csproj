@@ -29,10 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\components\EventDetails.tsx" />
     <None Remove="ClientApp\src\components\EventSignUp.tsx" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\EventDetails.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\EventSignUp.tsx" />
   </ItemGroup>
 
