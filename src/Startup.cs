@@ -14,9 +14,12 @@ namespace Microsoft.WWV
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        IHostingEnvironment CurrentHostingEnvironment { get; set; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            CurrentHostingEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -30,13 +33,19 @@ namespace Microsoft.WWV
             })
             .AddJwtBearer(jwtoption =>
             {
-                jwtoption.Authority = "https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/";
-                jwtoption.Audience = "140b4e02-5a76-4c4f-aecd-5b7562f93e62";
+                jwtoption.Authority = Configuration["AzureAd:Authority"];
+                jwtoption.Audience = Configuration["AzureAd:Audience"];
                 jwtoption.SaveToken = true;
-                jwtoption.RequireHttpsMetadata = false;
+
+                if (this.CurrentHostingEnvironment.IsDevelopment())
+                {
+                    jwtoption.RequireHttpsMetadata = false;
+                }
+                else
+                {
+                    jwtoption.RequireHttpsMetadata = true;
+                }
             });
-                
-                //.AddAzureADBearer(options => Configuration.Bind("AzureAd", options)); 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

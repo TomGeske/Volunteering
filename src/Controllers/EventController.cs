@@ -89,6 +89,8 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]/{eventId}")]
         public async Task<IActionResult> AddRegistration(Guid eventId)
         {
+            
+
             if (eventId == Guid.Empty)
             {
                 return NotFound();
@@ -115,7 +117,7 @@ namespace Microsoft.WWV.Controllers
 
             item.Registrations.Add(new Registration()
             {
-                UserId = "test",
+                UserId = User.Identity.Name,
                 CreatedTS = DateTime.UtcNow
             });
 
