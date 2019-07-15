@@ -2,9 +2,13 @@
 import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import config from '../Config'
 import { Container, Row, Col } from 'reactstrap';
 import { ReactBingmaps } from 'react-bingmaps';
+import config from '../Config';
+import {
+  authContext,
+  adalConfig,
+} from '../adalConfig';
 
 export class Events extends Component {
   static renderEventsTable(_events, _boundary) {
@@ -16,8 +20,12 @@ export class Events extends Component {
           <Row key={_event.id} className="justify-content-md-center">
             <Col sm>
               <h3>{_event.name}</h3>
-              <p><b>Event organizer:</b> {_event.ownerName1} {_event.ownerName2}</p>
-              <p><b>Event type:</b> {_event.eventType}</p>
+              <p>
+                <b>Event organizer:</b> {_event.ownerName1} {_event.ownerName2}
+              </p>
+              <p>
+                <b>Event type:</b> {_event.eventType}
+              </p>
             </Col>
             <Col sm>
               <Link className="btn btn-primary mb1 bg-green" to={{
@@ -41,6 +49,7 @@ export class Events extends Component {
       </Container>
     )
   }
+
   displayName = Events.name
 
   constructor(props) {
@@ -58,24 +67,31 @@ export class Events extends Component {
           entityType: 'PopulatedPlace'
         }
       },
-      loading: true
+      loading: true,
     };
 
-    fetch('api/Event/')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-          events: data,
-          boundary: {
-            "search": "Switzerland",
-            "polygonStyle": {
-              fillColor: 'rgba(161,224,255,0.4)',
-              strokeColor: '#a495b2',
-              strokeThickness: 2
-            },
-            "option": {
-              entityType: 'PopulatedPlace'
-            }
+    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+
+    fetch('api/Event/',
+      {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        },
+      }
+    ).then(response => response.json())
+     .then(data => {
+       this.setState({
+         events: data,
+         boundary: {
+           "search": "Switzerland",
+           "polygonStyle": {
+             fillColor: 'rgba(161,224,255,0.4)',
+             strokeColor: '#a495b2',
+             strokeThickness: 2
+           },
+           "option": {
+             entityType: 'PopulatedPlace'
+           }
           },
           loading: false
         });

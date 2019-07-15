@@ -20,6 +20,7 @@ var reactstrap_1 = require("reactstrap");
 var TelemetryService_1 = require("../TelemetryService");
 var Config_1 = require("../Config");
 var EventSignUp_1 = require("./EventSignUp");
+var adalConfig_1 = require("../adalConfig");
 var EventDetails = /** @class */ (function (_super) {
     __extends(EventDetails, _super);
     function EventDetails(props) {
@@ -55,7 +56,12 @@ var EventDetails = /** @class */ (function (_super) {
             },
         };
         _this.eventid = props.match.params.eventid;
-        fetch("api/Event/" + _this.eventid)
+        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
+        fetch("api/Event/" + _this.eventid, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        })
             .then(function (response) { return response.json(); })
             .then(function (data) {
             _this.setState({

@@ -6,7 +6,10 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { authContext } from '../adalConfig';
+import {
+  authContext,
+  adalConfig,
+} from '../adalConfig';
 
 interface IState {
   show: boolean;
@@ -37,14 +40,8 @@ export default class EventSignUp extends React.Component<IProps, IState> {
   private handleRegister() {
     this.handleClose();
     // call Registration and pass user & event
-    var token = authContext.getCachedToken('140b4e02-5a76-4c4f-aecd-5b7562f93e62');
-    //  .subscribe(result => console.log(result));
+    var token = authContext.getCachedToken(adalConfig.endpoints.api);
 
-    if (token == null) {
-      console.log('valid token aquired.');
-    }
-
-    console.log(token);
     fetch(`api/Event/AddRegistration/${this.props.event.id}`,
       {
         headers: {
@@ -52,8 +49,6 @@ export default class EventSignUp extends React.Component<IProps, IState> {
         }
       }
     );
-    //fetch(`api/Event/AddRegistration/${this.props.event.id}`)
-    
   }
 
   private handleClose() {

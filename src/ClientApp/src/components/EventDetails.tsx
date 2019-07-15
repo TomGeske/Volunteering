@@ -8,6 +8,10 @@ import {
 import { ai } from '../TelemetryService';
 import config from '../Config';
 import EventSignUp from './EventSignUp';
+import {
+  authContext,
+  adalConfig,
+} from '../adalConfig';
 
 interface IState {
   event: IEvent;
@@ -157,7 +161,14 @@ export class EventDetails extends React.Component<IState, IProps> {
     super(props);
     this.eventid = props.match.params.eventid;
 
-    fetch(`api/Event/${this.eventid}`)
+    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+
+    fetch(`api/Event/${this.eventid}`,
+      {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        }
+      })
       .then(response => response.json())
       .then((data) => {
         this.setState({

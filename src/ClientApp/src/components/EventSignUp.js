@@ -31,18 +31,12 @@ var EventSignUp = /** @class */ (function (_super) {
     EventSignUp.prototype.handleRegister = function () {
         this.handleClose();
         // call Registration and pass user & event
-        var token = adalConfig_1.authContext.getCachedToken('140b4e02-5a76-4c4f-aecd-5b7562f93e62');
-        //  .subscribe(result => console.log(result));
-        if (token == null) {
-            console.log('valid token aquired.');
-        }
-        console.log(token);
+        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
         fetch("api/Event/AddRegistration/" + this.props.event.id, {
             headers: {
                 'Authorization': 'Bearer ' + token,
             }
         });
-        //fetch(`api/Event/AddRegistration/${this.props.event.id}`)
     };
     EventSignUp.prototype.handleClose = function () {
         this.setState({ show: false });

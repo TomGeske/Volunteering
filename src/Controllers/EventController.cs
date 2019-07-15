@@ -34,7 +34,6 @@ namespace Microsoft.WWV.Controllers
             _dbName = _config["EventDB:DbName"];
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
@@ -43,7 +42,6 @@ namespace Microsoft.WWV.Controllers
             return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<Event> GetEvent(Guid id)
         {
