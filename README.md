@@ -1,8 +1,11 @@
 # Volunteering
 Create a platform to connect volunteers
 
-# Installation
+# Tools
+1. Visual Studio Code (https://code.visualstudio.com/download)
+2. Node (https://nodejs.org/en/download/)
 
+# Installation
 1. Clone the repo.
 2. Ensure your client IP is white listed in Cosmos DB Firewall [Doc](https://docs.microsoft.com/en-us/azure/cosmos-db/firewall-support)
 3. Get User & Password for Cosmos DB [Doc](https://docs.microsoft.com/en-us/azure/cosmos-db/secure-access-to-data) 
