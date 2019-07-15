@@ -24,16 +24,19 @@ namespace Microsoft.WWV
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddProtectWebApiWithMicrosoftIdentityPlatformV2(Configuration)
-            //        .AddInMemoryTokenCaches();
-
-
-            //services.AddAuthentication(sharedOptions =>
-            //{
-            //    sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddAzureAdBearer(options => Configuration.Bind("AzureAd", options));
-
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwtoption =>
+            {
+                jwtoption.Authority = "https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/";
+                jwtoption.Audience = "140b4e02-5a76-4c4f-aecd-5b7562f93e62";
+                jwtoption.SaveToken = true;
+                jwtoption.RequireHttpsMetadata = false;
+            });
+                
+                //.AddAzureADBearer(options => Configuration.Bind("AzureAd", options)); 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -76,6 +79,8 @@ namespace Microsoft.WWV
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Volunteering API V1");
             });
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

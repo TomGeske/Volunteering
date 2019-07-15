@@ -7,7 +7,6 @@ export const adalConfig = {
     api: '140b4e02-5a76-4c4f-aecd-5b7562f93e62',
   },
   postLogoutRedirectUri: window.location.origin,
-  redirectUri: 'https://localhost:44387/',
   cacheLocation: 'localStorage',
 };
 
