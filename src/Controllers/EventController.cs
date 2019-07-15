@@ -113,15 +113,21 @@ namespace Microsoft.WWV.Controllers
                 item.Registrations = new List<Registration>();
             }
 
-            item.Registrations.Add(new Registration()
-            {
-                UserId = User.Identity.Name,
-                CreatedTS = DateTime.UtcNow
-            });
 
-            var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
+            var modifications = 0L;
+        
+            if (item.Registrations.FirstOrDefault(r => r.UserId == User.Identity.Name) == null) {
+                item.Registrations.Add(new Registration()
+                {
+                    UserId = User.Identity.Name,
+                    CreatedTS = DateTime.UtcNow
+                });
+                var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
+                modifications = a.ModifiedCount;
+            }
 
-            return Ok(a.ModifiedCount);
+        
+            return Ok(modifications);
 
             // Get Event ID
             // Registration information
