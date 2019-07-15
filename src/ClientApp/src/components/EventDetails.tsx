@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { ReactBingmaps } from 'react-bingmaps';
 import {
+  Container,
   Row,
   Col,
 } from 'reactstrap';
@@ -38,6 +39,12 @@ interface IEvent {
   startEventTime: string;
   url: string;
   description: string;
+  registrations: IRegistrations[];
+}
+
+interface IRegistrations {
+  userId: string;
+  createdTS: Date;
 }
 
 interface IBoundary {
@@ -64,7 +71,8 @@ export class EventDetails extends React.Component<IState, IProps> {
         eventEndDate: new Date(),
         startEventTime: 'tbd',
         url: 'tbd',
-        description: 'tbd'
+        description: 'tbd',
+        registrations: [],
       },
       boundary: {
         search: 'Switzerland',
@@ -152,6 +160,21 @@ export class EventDetails extends React.Component<IState, IProps> {
               className="map-large"
             />
           </div>
+        </Row>
+        <Row>
+          <Container>
+            {_event.registrations.map(_registration => (
+
+              <Row key={_registration.userId} className="justify-content-md-center">
+                <Col xs={6} md={4}>
+                  <p>{_registration.userId}</p>
+                </Col>
+                <Col xs={6} md={4}>
+                  <p>{_registration.createdTS}</p>
+                </Col>
+              </Row>
+            ))}
+          </Container>
         </Row>
       </>
     );
