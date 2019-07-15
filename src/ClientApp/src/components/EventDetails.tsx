@@ -20,6 +20,7 @@ interface IProps {
 }
 
 interface IEvent {
+  id: string;
   name: string;
   company: string;
   ownerName1: string;
@@ -42,10 +43,11 @@ interface IBoundary {
 }
 
 export class EventDetails extends React.Component<IState, IProps> {
-  State: IState =
+  state: IState =
     {
       loading: true,
       event: {
+        id: 'tbd',
         name: 'tbd',
         company: 'tbd',
         ownerName1: 'tbd',
@@ -152,8 +154,6 @@ export class EventDetails extends React.Component<IState, IProps> {
   }
 
   constructor(props) {
-
-
     super(props);
     this.eventid = props.match.params.eventid;
 
@@ -179,9 +179,9 @@ export class EventDetails extends React.Component<IState, IProps> {
   }
 
   render() {
-    let contents = this.State.loading
+    let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : EventDetails.renderEventDetails(this.State.event, this.State.boundary);
+      : EventDetails.renderEventDetails(this.state.event, this.state.boundary);
 
     return (
       <div>

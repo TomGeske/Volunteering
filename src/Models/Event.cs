@@ -1,6 +1,8 @@
+using Microsoft.WWV.Models;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Microsoft.WWV
@@ -25,11 +27,6 @@ namespace Microsoft.WWV
         public string EventLocation { get; set; }
         public string Url { get; set; }
         public DateTime CreatedTS { get; set; }
-    }
-
-    public class Registration
-    {
-        /*
-         */
+        public IList<Registration> Registrations { get; set; }
     }
 }

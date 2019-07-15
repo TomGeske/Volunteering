@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.WWV.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Microsoft.WWV.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class EventController : Controller
     {
@@ -31,6 +34,7 @@ namespace Microsoft.WWV.Controllers
             _dbName = _config["EventDB:DbName"];
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
@@ -39,6 +43,7 @@ namespace Microsoft.WWV.Controllers
             return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<Event> GetEvent(Guid id)
         {
@@ -59,6 +64,7 @@ namespace Microsoft.WWV.Controllers
             return item;
         }
 
+        [AllowAnonymous]
         [HttpPost("[action]")]
         public async Task<IActionResult> AddEvent([FromBody] Event _data)
         {
@@ -78,6 +84,48 @@ namespace Microsoft.WWV.Controllers
             var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
             return Ok(_data.Id);
+        }
+
+        [HttpGet("[action]/{eventId}")]
+        public async Task<IActionResult> AddRegistration(Guid eventId)
+        {
+            if (eventId == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+
+            var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
+
+            var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+
+
+            if (item.Registrations == null)
+            {
+                item.Registrations = new List<Registration>();
+            }
+
+            item.Registrations.Add(new Registration()
+            {
+                UserId = "test",
+                CreatedTS = DateTime.UtcNow
+            });
+
+            var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
+
+            return Ok(a.ModifiedCount);
+
+            // Get Event ID
+            // Registration information
+            // alias, registration ts
         }
 
         [HttpGet("[action]")]

@@ -12,6 +12,12 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { authContext } from './adalConfig';
 
+window.Logging.log = function (message) {
+  console.log(message); // this enables logging to the console
+};
+
+window.Logging.level = 2; // 0 = only error, 1 = up to warnings, 2 = up to info, 3 = up to verbose
+
 const history = createBrowserHistory({ basename: '' });
 const DO_NOT_LOGIN = false;
 

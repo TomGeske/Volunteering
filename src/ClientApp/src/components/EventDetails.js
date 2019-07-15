@@ -27,6 +27,7 @@ var EventDetails = /** @class */ (function (_super) {
         _this.state = {
             loading: true,
             event: {
+                id: 'tbd',
                 name: 'tbd',
                 company: 'tbd',
                 ownerName1: 'tbd',

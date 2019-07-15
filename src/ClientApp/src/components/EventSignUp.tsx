@@ -6,6 +6,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
+import { authContext } from '../adalConfig';
 
 interface IState {
   show: boolean;
@@ -16,12 +17,14 @@ interface IProps {
 }
 
 interface IEvent {
+  id: string;
   name: string;
 }
 
 export default class EventSignUp extends React.Component<IProps, IState> {
-  State: IState =
-    { show: false };
+  state = {
+    show: false,
+  }
 
   constructor(props, context) {
     super(props, context);
@@ -34,6 +37,23 @@ export default class EventSignUp extends React.Component<IProps, IState> {
   private handleRegister() {
     this.handleClose();
     // call Registration and pass user & event
+    var token = authContext.getCachedToken('140b4e02-5a76-4c4f-aecd-5b7562f93e62');
+    //  .subscribe(result => console.log(result));
+
+    if (token == null) {
+      console.log('valid token aquired.');
+    }
+
+    console.log(token);
+    fetch(`api/Event/AddRegistration/${this.props.event.id}`,
+      {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+        }
+      }
+    );
+    //fetch(`api/Event/AddRegistration/${this.props.event.id}`)
+    
   }
 
   private handleClose() {
@@ -51,15 +71,15 @@ export default class EventSignUp extends React.Component<IProps, IState> {
           Register
         </Button>
 
-        <Modal isOpen={this.State.show} defaultChecked>
+        <Modal isOpen={this.state.show} defaultChecked>
           <ModalHeader>
-            Event Registration
+            Event Registration {this.props.event.name}
           </ModalHeader>
           <ModalBody>
-            Please, confirm that<br />
+            Please, confirm:<br />
             <ol>
               <li>You have approval from your line manager</li>
-              <li>You entered your your days in //msvacation in <a href="https://msvacation">https://msvacation</a></li>
+              <li>You entered your volunteering days in <a href="https://msvacation">https://msvacation</a></li>
             </ol>
           </ModalBody>
           <ModalFooter>
@@ -67,7 +87,7 @@ export default class EventSignUp extends React.Component<IProps, IState> {
               Cancel
             </Button>
             <Button variant="primary" onClick={this.handleRegister}>
-              Register
+              I agree
             </Button>
           </ModalFooter>
         </Modal>
