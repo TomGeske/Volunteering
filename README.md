@@ -11,9 +11,9 @@ Create a platform to connect volunteers
 3. Get User & Password for Cosmos DB [Doc](https://docs.microsoft.com/en-us/azure/cosmos-db/secure-access-to-data) 
 4. Restore Developer Secrets on your local machine [Doc](https://docs.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-2.2&tabs=windows) 
     - open command prompt
-    - cd [project directory]
-    - dotnet user-secrets set EventDB:UserName" "Username from 4"
-    - dotnet user-secrets set EventDB:Password" "Password from 4"
-5. npm install
+    - cd [project directory]/src
+    - dotnet user-secrets set "EventDB:UserName" "Username from 4"
+    - dotnet user-secrets set "EventDB:Password" "Password from 4"
+5. cd ClientApp && npm install && cd ..
 6. dotnet run
 7. Enjoy!
