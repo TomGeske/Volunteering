@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.WWV.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Net.Http;
+using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.WWV.Controllers
 {
@@ -24,6 +27,10 @@ namespace Microsoft.WWV.Controllers
         private readonly string _password;
         private readonly string _dbName;
 
+        private readonly string _bingApiKey;
+
+        private static readonly HttpClient _client = new HttpClient();
+
         public EventController(IConfiguration config)
         {
             _config = config;
@@ -32,6 +39,7 @@ namespace Microsoft.WWV.Controllers
             _userName = _config["EventDB:UserName"];
             _password = _config["EventDB:Password"];
             _dbName = _config["EventDB:DbName"];
+            _bingApiKey = _config["BingApiKey"];
         }
 
         [HttpGet]
@@ -75,7 +83,10 @@ namespace Microsoft.WWV.Controllers
             {
                 _data.Id = Guid.NewGuid();
             }
-
+            if (_data.Country != null && _data.EventLocation != null)
+            {
+                _data = await resolveEventLocationAsync(_data);
+            }
             _data.CreatedTS = DateTime.Now.ToUniversalTime();
 
             MongoClient _client = new MongoClient(getDbConnectionString());
@@ -84,7 +95,7 @@ namespace Microsoft.WWV.Controllers
             return Ok(_data.Id);
         }
 
-        
+
         [HttpPut("[action]")]
         public async Task<IActionResult> updateEvent([FromBody] Event _data)
         {
@@ -95,7 +106,11 @@ namespace Microsoft.WWV.Controllers
 
             if (_data.Id == null || _data.Id == Guid.Empty)
             {
-               return BadRequest("Event.Id is mandatory for an update");
+                return BadRequest("Event.Id is mandatory for an update");
+            }
+            if (_data.Country != null && _data.EventLocation != null)
+            {
+                _data = await resolveEventLocationAsync(_data);
             }
 
             _data.UpdatedTS = DateTime.Now.ToUniversalTime();
@@ -105,7 +120,7 @@ namespace Microsoft.WWV.Controllers
             var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
             Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
 
-           var updateEvent = _db.GetCollection<Event>("events").Find(eventFilter).FirstOrDefault();
+            var updateEvent = _db.GetCollection<Event>("events").Find(eventFilter).FirstOrDefault();
 
             if (updateEvent == null)
             {
@@ -120,7 +135,7 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]/{eventId}")]
         public async Task<IActionResult> AddRegistration(Guid eventId)
         {
-            
+
 
             if (eventId == Guid.Empty)
             {
@@ -148,8 +163,9 @@ namespace Microsoft.WWV.Controllers
 
 
             var modifications = 0L;
-        
-            if (item.Registrations.FirstOrDefault(r => r.UserId == User.Identity.Name) == null) {
+
+            if (item.Registrations.FirstOrDefault(r => r.UserId == User.Identity.Name) == null)
+            {
                 item.Registrations.Add(new Registration()
                 {
                     UserId = User.Identity.Name,
@@ -159,7 +175,7 @@ namespace Microsoft.WWV.Controllers
                 modifications = a.ModifiedCount;
             }
 
-        
+
             return Ok(modifications);
 
             // Get Event ID
@@ -192,42 +208,65 @@ namespace Microsoft.WWV.Controllers
 
             return settings;
         }
-    }
 
-    internal static class TestEventGenerator
-    {
-        static IEnumerable<Event> _events;
-
-        internal static IEnumerable<Event> GetSampleEvents()
+        public async Task<Event> resolveEventLocationAsync(Event aEvent)
         {
-            return _events;
+            var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);
+            var jsonString = await _client.GetStringAsync(url);
+            var json = JObject.Parse(jsonString);
+            var latlong = json["resourceSets"].First["resources"].First["point"]["coordinates"];
+
+            aEvent.Coordinates = new Coordinates()
+            {
+                Latitude = latlong.First.Value<double>(),
+                Longitude = latlong.Last.Value<double>()
+            };
+
+            return aEvent;
         }
 
-        static TestEventGenerator()
+
+
+
+
+
+
+
+        internal static class TestEventGenerator
         {
-            var events = new List<Event>();
-            _events = events;
-            events.Add(
-                new Event()
-                {
-                    Id = new Guid(),
-                    Name = "Cleaning Up mountain trails",
-                    Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
-                    Country = "Switzerland",
-                    OwnerName1 = "Thomas",
-                    OwnerName2 = "Geske",
-                    OwnerEmail = "thomasge@microsoft.com",
-                    Company = "Binntal Tourism",
-                    EventType = "Sports/Outdoor Activities/Coaching",
-                    Department = "STU",
-                    Eventdate = new DateTime(2019, 10, 21).ToUniversalTime(),
-                    EventEndDate = new DateTime(2019, 10, 23).ToUniversalTime(),
-                    StartEventTime = "10:00am",
-                    EventLocation = "Binntal, Wallis",
-                    Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
-                    CreatedTS = DateTime.Now.ToUniversalTime()
-                }
-            );
+            static IEnumerable<Event> _events;
+
+            internal static IEnumerable<Event> GetSampleEvents()
+            {
+                return _events;
+            }
+
+            static TestEventGenerator()
+            {
+                var events = new List<Event>();
+                _events = events;
+                events.Add(
+                    new Event()
+                    {
+                        Id = new Guid(),
+                        Name = "Cleaning Up mountain trails",
+                        Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
+                        Country = "Switzerland",
+                        OwnerName1 = "Thomas",
+                        OwnerName2 = "Geske",
+                        OwnerEmail = "thomasge@microsoft.com",
+                        Company = "Binntal Tourism",
+                        EventType = "Sports/Outdoor Activities/Coaching",
+                        Department = "STU",
+                        Eventdate = new DateTime(2019, 10, 21).ToUniversalTime(),
+                        EventEndDate = new DateTime(2019, 10, 23).ToUniversalTime(),
+                        StartEventTime = "10:00am",
+                        EventLocation = "Binntal, Wallis",
+                        Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
+                        CreatedTS = DateTime.Now.ToUniversalTime()
+                    }
+                );
+            }
         }
     }
 }
