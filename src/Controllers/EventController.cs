@@ -84,6 +84,39 @@ namespace Microsoft.WWV.Controllers
             return Ok(_data.Id);
         }
 
+        
+        [HttpPut("[action]")]
+        public async Task<IActionResult> updateEvent([FromBody] Event _data)
+        {
+            if (string.IsNullOrEmpty(_data.Country))
+            {
+                return BadRequest("Event.Country is mandatory");
+            }
+
+            if (_data.Id == null || _data.Id == Guid.Empty)
+            {
+               return BadRequest("Event.Id is mandatory for an update");
+            }
+
+            _data.UpdatedTS = DateTime.Now.ToUniversalTime();
+
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+            var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
+            Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
+
+           var updateEvent = _db.GetCollection<Event>("events").Find(eventFilter).FirstOrDefault();
+
+            if (updateEvent == null)
+            {
+                return NotFound();
+            }
+
+            var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(eventFilter, _data);
+
+            return Ok(a.ModifiedCount);
+        }
+
         [HttpGet("[action]/{eventId}")]
         public async Task<IActionResult> AddRegistration(Guid eventId)
         {
