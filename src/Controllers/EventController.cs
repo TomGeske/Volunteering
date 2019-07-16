@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Authentication;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WWV.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Net.Http;
-using System.Globalization;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Authentication;
+using System.Threading.Tasks;
 
 namespace Microsoft.WWV.Controllers
 {
@@ -48,6 +48,34 @@ namespace Microsoft.WWV.Controllers
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
             return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<Event> GetUserRegisteredEvents()
+        {
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+            var events = _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+            var registeredEvents = new List<Event>();
+
+            foreach (var e in events)
+            {
+                var registedEvent = e.Registrations?.FirstOrDefault(r => r.UserId == User.Identity.Name);
+                if (registedEvent != null)
+                {
+                    registeredEvents.Add(e);
+                }
+            }
+            return registeredEvents;
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<Event> GetUserOwnedEvents()
+        {
+            MongoClient _client = new MongoClient(getDbConnectionString());
+            var _db = _client.GetDatabase(this._dbName);
+            var eventFilter = Builders<Event>.Filter.Eq(e => e.OwnerEmail, User.Identity.Name);
+            return _db.GetCollection<Event>("events").Find(eventFilter).ToList();
         }
 
         [HttpGet("{id}")]
@@ -108,6 +136,7 @@ namespace Microsoft.WWV.Controllers
             {
                 return BadRequest("Event.Id is mandatory for an update");
             }
+
             if (_data.Country != null && _data.EventLocation != null)
             {
                 _data = await resolveEventLocationAsync(_data);
@@ -209,7 +238,7 @@ namespace Microsoft.WWV.Controllers
             return settings;
         }
 
-        public async Task<Event> resolveEventLocationAsync(Event aEvent)
+        private async Task<Event> resolveEventLocationAsync(Event aEvent)
         {
             var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);
             var jsonString = await _client.GetStringAsync(url);
@@ -224,12 +253,6 @@ namespace Microsoft.WWV.Controllers
 
             return aEvent;
         }
-
-
-
-
-
-
 
 
         internal static class TestEventGenerator

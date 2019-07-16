@@ -51,14 +51,14 @@ export class NavMenu extends Component {
                 <NavLink tag={Link} className="text-dark" to="/events">Events</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">
+                <NavLink tag={Link} className="text-dark" to="/myevents">
                   Signed in&nbsp;
                   {authContext.getCachedUser().userName}
                 </NavLink>
               </NavItem>
               <NavItem>
                 <Form inline>
-                  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                  <FormControl type="text" id="search" name="search" aria-label="Search" placeholder="Search" className="mr-sm-2" />
                 </Form>
               </NavItem>
             </ul>

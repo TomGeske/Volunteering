@@ -124,7 +124,7 @@ export class Events extends React.Component<IState, IProps> {
 
     return (
       <div>
-        <h1 className="text-center">Upcoming events</h1>
+        <h2 className="text-center">Upcoming events</h2>
         <a className="btn btn-primary btn-lg" href="./newevent" role="button">Create event »</a>
         <br />
         {contents}
