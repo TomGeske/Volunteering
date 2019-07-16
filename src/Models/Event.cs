@@ -29,5 +29,7 @@ namespace Microsoft.WWV
         public DateTime CreatedTS { get; set; }
         public DateTime UpdatedTS { get; set; }
         public IList<Registration> Registrations { get; set; }
+
+        public Coordinates Coordinates { get; set;}
     }
 }
