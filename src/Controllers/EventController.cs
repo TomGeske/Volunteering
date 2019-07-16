@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Authentication;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Microsoft.WWV.Controllers
@@ -98,7 +99,6 @@ namespace Microsoft.WWV.Controllers
             return item;
         }
 
-        [AllowAnonymous]
         [HttpPost("[action]")]
         public async Task<IActionResult> AddEvent([FromBody] Event _data)
         {
@@ -115,14 +115,18 @@ namespace Microsoft.WWV.Controllers
             {
                 _data = await resolveEventLocationAsync(_data);
             }
+
+            // some meta data
             _data.CreatedTS = DateTime.Now.ToUniversalTime();
+            _data.OwnerEmail = User.Identity.Name;
+            _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
+            _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
             return Ok(_data.Id);
         }
-
 
         [HttpPut("[action]")]
         public async Task<IActionResult> updateEvent([FromBody] Event _data)
@@ -164,8 +168,6 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]/{eventId}")]
         public async Task<IActionResult> AddRegistration(Guid eventId)
         {
-
-
             if (eventId == Guid.Empty)
             {
                 return NotFound();
@@ -173,17 +175,13 @@ namespace Microsoft.WWV.Controllers
 
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);
-
             var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
-
             var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
 
             if (item == null)
             {
                 return NotFound();
             }
-
-
 
             if (item.Registrations == null)
             {
@@ -204,22 +202,7 @@ namespace Microsoft.WWV.Controllers
                 modifications = a.ModifiedCount;
             }
 
-
             return Ok(modifications);
-
-            // Get Event ID
-            // Registration information
-            // alias, registration ts
-        }
-
-        [HttpGet("[action]")]
-        public async Task GenerateSampleData()
-        {
-            var data = TestEventGenerator.GetSampleEvents();
-
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
-            await _db.GetCollection<Event>("events").InsertManyAsync(data);
         }
 
         private MongoClientSettings getDbConnectionString()
@@ -252,44 +235,6 @@ namespace Microsoft.WWV.Controllers
             };
 
             return aEvent;
-        }
-
-
-        internal static class TestEventGenerator
-        {
-            static IEnumerable<Event> _events;
-
-            internal static IEnumerable<Event> GetSampleEvents()
-            {
-                return _events;
-            }
-
-            static TestEventGenerator()
-            {
-                var events = new List<Event>();
-                _events = events;
-                events.Add(
-                    new Event()
-                    {
-                        Id = new Guid(),
-                        Name = "Cleaning Up mountain trails",
-                        Description = "As volunteering project we suggest to clean-up mountain trails for recreation.",
-                        Country = "Switzerland",
-                        OwnerName1 = "Thomas",
-                        OwnerName2 = "Geske",
-                        OwnerEmail = "thomasge@microsoft.com",
-                        Company = "Binntal Tourism",
-                        EventType = "Sports/Outdoor Activities/Coaching",
-                        Department = "STU",
-                        Eventdate = new DateTime(2019, 10, 21).ToUniversalTime(),
-                        EventEndDate = new DateTime(2019, 10, 23).ToUniversalTime(),
-                        StartEventTime = "10:00am",
-                        EventLocation = "Binntal, Wallis",
-                        Url = "https://www.parks.swiss/en/the_swiss_parks/parkportraits/binntal_nature_park.php",
-                        CreatedTS = DateTime.Now.ToUniversalTime()
-                    }
-                );
-            }
         }
     }
 }
