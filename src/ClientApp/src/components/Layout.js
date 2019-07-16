@@ -13,7 +13,7 @@ export class Layout extends Component {
         <div className="jumbotron">
           <Container>
             <h1 className="display-4 text-center">Microsoft Volunteering</h1>
-            <h3 className="display-6 text-center">Feel good while doing good</h3>
+            <p className="small-banner text-center">Feel good while doing good</p>
           </Container>
         </div>
         <Container>

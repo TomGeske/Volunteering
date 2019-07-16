@@ -58,7 +58,7 @@ export class NavMenu extends Component {
               </NavItem>
               <NavItem>
                 <Form inline>
-                  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                  <FormControl type="text" id="search" name="search" aria-label="Search" placeholder="Search" className="mr-sm-2" />
                 </Form>
               </NavItem>
             </ul>
