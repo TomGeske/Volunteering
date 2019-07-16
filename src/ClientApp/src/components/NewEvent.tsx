@@ -20,8 +20,6 @@ interface IState {
   description: FormValue;
   website: FormValue;
   mediaLink: FormValue;
-  firstName: FormValue;
-  lastName: FormValue;
   department: FormValue;
   acknowledge1: FormValue;
   acknowledge2: FormValue;
@@ -53,8 +51,6 @@ export class NewEvent extends React.Component<IState, IProps> {
     description: {},
     website: {},
     mediaLink: {},
-    firstName: {},
-    lastName: {},
     department: {},
     acknowledge1: {},
     acknowledge2: {}
@@ -73,7 +69,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     };
 
     const textFieldsToValidate: (keyof IState)[] = [
-      'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'firstName', 'lastName', 'department'
+      'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'department'
     ];
 
     textFieldsToValidate.forEach((propertyName: keyof IState) => {
@@ -162,8 +158,6 @@ export class NewEvent extends React.Component<IState, IProps> {
         name: this.state.title.value,
         description: this.state.description.value,
         country: "Switzerland",
-        ownerName1: this.state.firstName.value,
-        ownerName2: this.state.lastName.value,
         company: this.state.organization.value,
         eventType: this.state.category.value,
         department: this.state.department.value,
@@ -434,31 +428,11 @@ export class NewEvent extends React.Component<IState, IProps> {
     );
   }
 
-  private renderNamesFormGroup(): JSX.Element {
+  private renderDepartmentFormGroup(): JSX.Element {
     return (
       <FormGroup>
         <Row>
           <Col md={2} className="label-column">
-            <Label for="firstName">First Name:</Label>
-          </Col>
-          <Col md={2}>
-            <Input type="text" name="firstName" id="firstName"
-              value={this.state.firstName.value}
-              onChange={this.handleInputChange}
-              placeholder="First name"
-              invalid={this.state.firstName.isValid === false} />
-          </Col>
-          <Col md={2} className="label-column">
-            <Label for="lastName">Last Name:</Label>
-          </Col>
-          <Col md={2}>
-            <Input type="text" name="lastName" id="lastName"
-              value={this.state.lastName.value}
-              onChange={this.handleInputChange}
-              placeholder="Last name"
-              invalid={this.state.lastName.isValid === false} />
-          </Col>
-          <Col md={1} className="label-column">
             <Label for="department">Department:</Label>
           </Col>
           <Col md={3}>
@@ -526,7 +500,7 @@ export class NewEvent extends React.Component<IState, IProps> {
             {this.renderCategoryFormGroup()}
             {this.renderDescriptionFormGroup()}
             {this.renderLinksFormGroup()}
-            {this.renderNamesFormGroup()}
+            {this.renderDepartmentFormGroup()}
             {this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft')}
             {this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland')}
             <Button onClick={this.tryToSave}>Save</Button>
