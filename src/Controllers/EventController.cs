@@ -146,7 +146,12 @@ namespace Microsoft.WWV.Controllers
                 _data = await resolveEventLocationAsync(_data);
             }
 
+            // some meta data
             _data.UpdatedTS = DateTime.Now.ToUniversalTime();
+                  
+            _data.OwnerEmail = User.Identity.Name;
+            _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
+            _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
             MongoClient _client = new MongoClient(getDbConnectionString());
             var _db = _client.GetDatabase(this._dbName);

@@ -5,8 +5,7 @@ import { ai } from '../TelemetryService';
 import { authContext, adalConfig, } from '../adalConfig';
 
 interface IState {
-  formContainsErrors: boolean;
-  saveSuccessful?: boolean; // true, false, or null (meaning no save was attempted)
+  uiState: 'new' | 'missing_required_field' | 'save_error' | 'date_ordering_error' | 'save_successful';
   title: FormValue;
   startDate: FormValue;
   startTime: FormValue;
@@ -21,8 +20,6 @@ interface IState {
   description: FormValue;
   website: FormValue;
   mediaLink: FormValue;
-  firstName: FormValue;
-  lastName: FormValue;
   department: FormValue;
   acknowledge1: FormValue;
   acknowledge2: FormValue;
@@ -39,7 +36,7 @@ interface IProps {
 
 export class NewEvent extends React.Component<IState, IProps> {
   state: IState = {
-    formContainsErrors: false,
+    uiState: 'new',
     title: {},
     startDate: {},
     startTime: {},
@@ -54,8 +51,6 @@ export class NewEvent extends React.Component<IState, IProps> {
     description: {},
     website: {},
     mediaLink: {},
-    firstName: {},
-    lastName: {},
     department: {},
     acknowledge1: {},
     acknowledge2: {}
@@ -70,11 +65,11 @@ export class NewEvent extends React.Component<IState, IProps> {
 
   private tryToSave(event: React.MouseEvent<any, MouseEvent>): void {
     const newState = {
-      formContainsErrors: false
+      uiState: 'new'
     };
 
     const textFieldsToValidate: (keyof IState)[] = [
-      'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'firstName', 'lastName', 'department'
+      'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'department'
     ];
 
     textFieldsToValidate.forEach((propertyName: keyof IState) => {
@@ -83,7 +78,7 @@ export class NewEvent extends React.Component<IState, IProps> {
       const newProperty: FormValue = newState[propertyName];
 
       if (existingProperty.value == null || existingProperty.value.length === 0) {
-        newState.formContainsErrors = true;
+        newState.uiState = 'missing_required_field';
         newProperty.isValid = false;
       } else {
         newProperty.isValid = true;
@@ -101,7 +96,7 @@ export class NewEvent extends React.Component<IState, IProps> {
       const newProperty: FormValue = newState[propertyName];
 
       if (existingProperty.value !== 'true') {
-        newState.formContainsErrors = true;
+        newState.uiState = 'missing_required_field';
         newProperty.isValid = false;
       } else {
         newProperty.isValid = true;
@@ -109,29 +104,50 @@ export class NewEvent extends React.Component<IState, IProps> {
       }
     });
 
-    if (newState.formContainsErrors) {
+    // check that start time is before end time
+    if (newState.uiState === 'new'
+      && this.state.startDate.value != null && this.state.startDate.value.length !== 0
+      && this.state.startTime.value != null && this.state.startTime.value.length !== 0
+      && this.state.endDate.value != null && this.state.endDate.value.length !== 0
+      && this.state.endTime.value != null && this.state.endTime.value.length !== 0) {
+
+      const startDateTime = this.getStartDateTime();
+      const endDateTime = this.getEndDateTime();
+      if (startDateTime >= endDateTime) {
+        newState.uiState = 'date_ordering_error';
+        if (this.state.startDate.value === this.state.endDate.value) {
+          this.state.endTime.isValid = false;
+        } else {
+          this.state.endDate.isValid = false;
+        }
+      }
+    }
+
+    if (newState.uiState !== 'new') {
       this.setState(newState);
     } else {
       this.setState(newState, this.saveDataOnServer);
     }
   }
 
+  private getStartDateTime(): Date {
+    const startDate = this.state.startDate.value;
+    const startTime = this.state.startTime.value;
+    return new Date(startDate + 'T' + startTime);
+  }
+
+  private getEndDateTime(): Date {
+    const endDate = this.state.endDate.value;
+    const endTime = this.state.endTime.value;
+    return new Date(endDate + 'T' + endTime);
+  }
+
   private saveDataOnServer() {
     const token = authContext.getCachedToken(adalConfig.endpoints.api);
 
-    const startDate  = this.state.startDate.value;
-    const startTime = this.state.startTime.value;
-    const endDate = this.state.endDate.value;
-    const endTime = this.state.endTime.value;
+    const startDateTime = this.getStartDateTime();
+    const endDateTime = this.getEndDateTime();
 
-    const startDateTime: Date = new Date(startDate + 'T' + startTime);
-    const endDateTime: Date = new Date(endDate + 'T' + endTime);
-
-    console.log(startDate)
-    console.log(startTime)
-    console.log(startDateTime)
-    console.log(startDateTime.toISOString())
-    
     fetch(`api/Event/AddEvent`, {
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -142,9 +158,6 @@ export class NewEvent extends React.Component<IState, IProps> {
         name: this.state.title.value,
         description: this.state.description.value,
         country: "Switzerland",
-        ownerName1: this.state.firstName.value,
-        ownerName2: this.state.lastName.value,
-        ownerEmail: "someone@microsoft.com",
         company: this.state.organization.value,
         eventType: this.state.category.value,
         department: this.state.department.value,
@@ -157,10 +170,11 @@ export class NewEvent extends React.Component<IState, IProps> {
       })
     })
       .then(response => {
-        this.setState({
-          formContainsErrors: false,
-          saveSuccessful: response.status === 200 || response.status === 201
-        });
+        if (response.status === 200 || response.status === 201) {
+          this.setState({ uiState: 'save_successful' });
+        } else {
+          this.setState({ uiState: 'save_error' });
+        }
       });
   }
 
@@ -185,7 +199,7 @@ export class NewEvent extends React.Component<IState, IProps> {
 
   private renderCheckBoxFormGroup(propertyName: keyof IState, label: string, text: string): JSX.Element | null {
     const property = this.state[propertyName];
-    if (typeof property !== 'boolean' && property != null) {
+    if (typeof property !== 'boolean' && typeof property !== 'string' && property != null) {
       const value = property.value;
       const isValid = property.isValid;
       return (
@@ -414,31 +428,11 @@ export class NewEvent extends React.Component<IState, IProps> {
     );
   }
 
-  private renderNamesFormGroup(): JSX.Element {
+  private renderDepartmentFormGroup(): JSX.Element {
     return (
       <FormGroup>
         <Row>
           <Col md={2} className="label-column">
-            <Label for="firstName">First Name:</Label>
-          </Col>
-          <Col md={2}>
-            <Input type="text" name="firstName" id="firstName"
-              value={this.state.firstName.value}
-              onChange={this.handleInputChange}
-              placeholder="First name"
-              invalid={this.state.firstName.isValid === false} />
-          </Col>
-          <Col md={2} className="label-column">
-            <Label for="lastName">Last Name:</Label>
-          </Col>
-          <Col md={2}>
-            <Input type="text" name="lastName" id="lastName"
-              value={this.state.lastName.value}
-              onChange={this.handleInputChange}
-              placeholder="Last name"
-              invalid={this.state.lastName.isValid === false} />
-          </Col>
-          <Col md={1} className="label-column">
             <Label for="department">Department:</Label>
           </Col>
           <Col md={3}>
@@ -461,22 +455,28 @@ export class NewEvent extends React.Component<IState, IProps> {
   }
 
   private renderFormErrorMessages() {
-    if (this.state.formContainsErrors === true) {
+    if (this.state.uiState === 'missing_required_field') {
       return (
         <Alert color="danger">
           Some of the required fields are missing
         </Alert>
       );
-    } else if (this.state.saveSuccessful === false) {
+    } else if (this.state.uiState === 'save_error') {
       return (
         <Alert color="danger">
           An error occurred saving the data
         </Alert>
       );
-    } else if (this.state.saveSuccessful === true) {
+    } else if (this.state.uiState === 'save_successful') {
       return (
         <Alert color="success">
           Your event has been saved. <a href="." className="alert-link">Return to the event list</a>
+        </Alert>
+      );
+    } else if (this.state.uiState === 'date_ordering_error') {
+      return (
+        <Alert color="danger">
+          The event start date and time must be before the end date and time
         </Alert>
       );
     } else {
@@ -490,7 +490,7 @@ export class NewEvent extends React.Component<IState, IProps> {
         <h1 className="text-center">Create new event</h1>
         {this.renderFormErrorMessages()}
         <Form>
-          <fieldset disabled={this.state.saveSuccessful === true}>
+          <fieldset disabled={this.state.uiState === 'save_successful'}>
             {this.renderTitleFormGroup()}
             {this.renderStartDateFormGroup()}
             {this.renderEndDateFormGroup()}
@@ -500,7 +500,7 @@ export class NewEvent extends React.Component<IState, IProps> {
             {this.renderCategoryFormGroup()}
             {this.renderDescriptionFormGroup()}
             {this.renderLinksFormGroup()}
-            {this.renderNamesFormGroup()}
+            {this.renderDepartmentFormGroup()}
             {this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft')}
             {this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland')}
             <Button onClick={this.tryToSave}>Save</Button>
