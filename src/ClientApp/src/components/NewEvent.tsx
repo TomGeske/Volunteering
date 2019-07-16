@@ -2,9 +2,11 @@
 import * as React from 'react';
 import { Alert, Col, Row, Button, Form, FormGroup, Label, Input, CustomInput } from 'reactstrap';
 import { ai } from '../TelemetryService';
+import { authContext, adalConfig, } from '../adalConfig';
 
 interface IState {
   formContainsErrors: boolean;
+  saveSuccessful?: boolean; // true, false, or null (meaning no save was attempted)
   title: FormValue;
   startDate: FormValue;
   startTime: FormValue;
@@ -63,6 +65,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     super(props);
     this.tryToSave = this.tryToSave.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.saveDataOnServer = this.saveDataOnServer.bind(this);
   }
 
   private tryToSave(event: React.MouseEvent<any, MouseEvent>): void {
@@ -71,7 +74,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     };
 
     const textFieldsToValidate: (keyof IState)[] = [
-      'title', 'startDate', 'startTime', 'address', 'city', 'organization', 'category', 'website', 'firstName', 'lastName', 'department'
+      'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'firstName', 'lastName', 'department'
     ];
 
     textFieldsToValidate.forEach((propertyName: keyof IState) => {
@@ -91,7 +94,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     const checkboxFieldsToValidate: (keyof IState)[] = [
       'acknowledge1', 'acknowledge2'
     ];
-    
+
     checkboxFieldsToValidate.forEach((propertyName: keyof IState) => {
       const existingProperty: FormValue = this.state[propertyName] as FormValue;
       newState[propertyName] = {};
@@ -106,8 +109,59 @@ export class NewEvent extends React.Component<IState, IProps> {
       }
     });
 
+    if (newState.formContainsErrors) {
+      this.setState(newState);
+    } else {
+      this.setState(newState, this.saveDataOnServer);
+    }
+  }
 
-    this.setState(newState);
+  private saveDataOnServer() {
+    const token = authContext.getCachedToken(adalConfig.endpoints.api);
+
+    const startDate  = this.state.startDate.value;
+    const startTime = this.state.startTime.value;
+    const endDate = this.state.endDate.value;
+    const endTime = this.state.endTime.value;
+
+    const startDateTime: Date = new Date(startDate + 'T' + startTime);
+    const endDateTime: Date = new Date(endDate + 'T' + endTime);
+
+    console.log(startDate)
+    console.log(startTime)
+    console.log(startDateTime)
+    console.log(startDateTime.toISOString())
+    
+    fetch(`api/Event/AddEvent`, {
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'content-type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        name: this.state.title.value,
+        description: this.state.description.value,
+        country: "Switzerland",
+        ownerName1: this.state.firstName.value,
+        ownerName2: this.state.lastName.value,
+        ownerEmail: "someone@microsoft.com",
+        company: this.state.organization.value,
+        eventType: this.state.category.value,
+        department: this.state.department.value,
+        eventdate: startDateTime.toISOString(),
+        eventEndDate: endDateTime.toISOString(),
+        startEventTime: this.state.startTime.value,
+        eventLocation: this.state.address.value + ' ' + this.state.addressNumber.value + ', ' + this.state.city.value + ' Switzerland',
+        url: this.state.website.value,
+        registrations: []
+      })
+    })
+      .then(response => {
+        this.setState({
+          formContainsErrors: false,
+          saveSuccessful: response.status === 200 || response.status === 201
+        });
+      });
   }
 
   private handleInputChange(event) {
@@ -131,7 +185,7 @@ export class NewEvent extends React.Component<IState, IProps> {
 
   private renderCheckBoxFormGroup(propertyName: keyof IState, label: string, text: string): JSX.Element | null {
     const property = this.state[propertyName];
-    if (typeof property !== 'boolean') {
+    if (typeof property !== 'boolean' && property != null) {
       const value = property.value;
       const isValid = property.isValid;
       return (
@@ -204,13 +258,19 @@ export class NewEvent extends React.Component<IState, IProps> {
             <Label for="endDate">Ending Date:</Label>
           </Col>
           <Col md={4}>
-            <Input type="date" name="endDate" id="endDate" value={this.state.endDate.value} onChange={this.handleInputChange} />
+            <Input type="date" name="endDate" id="endDate"
+              value={this.state.endDate.value}
+              onChange={this.handleInputChange}
+              invalid={this.state.endDate.isValid === false} />
           </Col>
           <Col md={2} className="label-column">
             <Label for="endTime">Ending Time:</Label>
           </Col>
           <Col md={4}>
-            <Input type="time" name="endTime" id="endTime" value={this.state.endTime.value} onChange={this.handleInputChange} />
+            <Input type="time" name="endTime" id="endTime"
+              value={this.state.endTime.value}
+              onChange={this.handleInputChange}
+              invalid={this.state.endTime.isValid === false} />
           </Col>
         </Row>
       </FormGroup>
@@ -400,11 +460,23 @@ export class NewEvent extends React.Component<IState, IProps> {
     );
   }
 
-  private renderFormErrorMessage() {
+  private renderFormErrorMessages() {
     if (this.state.formContainsErrors === true) {
       return (
         <Alert color="danger">
           Some of the required fields are missing
+        </Alert>
+      );
+    } else if (this.state.saveSuccessful === false) {
+      return (
+        <Alert color="danger">
+          An error occurred saving the data
+        </Alert>
+      );
+    } else if (this.state.saveSuccessful === true) {
+      return (
+        <Alert color="success">
+          Your event has been saved. <a href="." className="alert-link">Return to the event list</a>
         </Alert>
       );
     } else {
@@ -416,21 +488,23 @@ export class NewEvent extends React.Component<IState, IProps> {
     return (
       <div>
         <h1 className="text-center">Create new event</h1>
-        {this.renderFormErrorMessage()}
+        {this.renderFormErrorMessages()}
         <Form>
-          {this.renderTitleFormGroup()}
-          {this.renderStartDateFormGroup()}
-          {this.renderEndDateFormGroup()}
-          {this.renderAddressFormGroup()}
-          {this.renderCityFormGroup()}
-          {this.renderOrganizationFormGroup()}
-          {this.renderCategoryFormGroup()}
-          {this.renderDescriptionFormGroup()}
-          {this.renderLinksFormGroup()}
-          {this.renderNamesFormGroup()}
-          {this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft')}
-          {this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland')}
-          <Button onClick={this.tryToSave}>Save</Button>
+          <fieldset disabled={this.state.saveSuccessful === true}>
+            {this.renderTitleFormGroup()}
+            {this.renderStartDateFormGroup()}
+            {this.renderEndDateFormGroup()}
+            {this.renderAddressFormGroup()}
+            {this.renderCityFormGroup()}
+            {this.renderOrganizationFormGroup()}
+            {this.renderCategoryFormGroup()}
+            {this.renderDescriptionFormGroup()}
+            {this.renderLinksFormGroup()}
+            {this.renderNamesFormGroup()}
+            {this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft')}
+            {this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland')}
+            <Button onClick={this.tryToSave}>Save</Button>
+          </fieldset>
         </Form>
       </div>
     );
