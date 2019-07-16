@@ -51,7 +51,7 @@ export class NavMenu extends Component {
                 <NavLink tag={Link} className="text-dark" to="/events">Events</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/">
+                <NavLink tag={Link} className="text-dark" to="/myevents">
                   Signed in&nbsp;
                   {authContext.getCachedUser().userName}
                 </NavLink>

@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { Events } from './components/Events';
 import { EventDetails } from './components/EventDetails';
 import { NewEvent } from './components/NewEvent';
+import { MyEvents } from './components/MyEvents';
 
 export default class App extends Component {
   displayName = App.name
@@ -15,6 +16,7 @@ export default class App extends Component {
         <Route name='events' path='/events' component={Events} />
         <Route name='newevent' path='/newevent' component={NewEvent} />
         <Route name='eventdetails' path='/eventdetails/:eventid' component={EventDetails} />
+        <Route name='myEvents' path='/myevents' component={MyEvents} />
       </Layout>
     );
   }
