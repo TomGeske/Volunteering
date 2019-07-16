@@ -19,7 +19,7 @@ export class Footer extends Component {
                 {/* Content */}
                 <h2 className="feedback-header text-uppercase">Do you have feedback?</h2>
                 <p>
-                  Please <a class="footer-anchor" href="https://github.com/TomGeske/Volunteering/issues/new">file an issue</a>
+                  Please <a className="footer-anchor" href="https://github.com/TomGeske/Volunteering/issues/new">file an issue</a>
                 </p>
                 {/* Content */}
               </div>
@@ -34,7 +34,7 @@ export class Footer extends Component {
                 <span>
                   Microsoft confidential. For use only by Microsoft​
                   employees and approved vendors working on​​​behalf of​​ Microsoft.&nbsp;
-                  <a class="footer-anchor" href="https://microsoft.sharepoint.com/teams/msdpn/sitepages/default.aspx">Data protection notice​​.</a>
+                  <a className="footer-anchor" href="https://microsoft.sharepoint.com/teams/msdpn/sitepages/default.aspx">Data protection notice​​.</a>
                 </span>
               </div>
               {/* Grid column */}

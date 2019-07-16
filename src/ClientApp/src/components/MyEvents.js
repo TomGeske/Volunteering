@@ -1,17 +1,15 @@
 ﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
-import { ai } from '../TelemetryService';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
-import { ReactBingmaps } from 'react-bingmaps';
-import config from '../Config';
+import { ai } from '../TelemetryService';
 import {
   authContext,
   adalConfig,
 } from '../adalConfig';
 
 export class MyEvents extends Component {
-  static renderEventsTable(_events, _boundary) {
+  static renderEventsTable(_events) {
     return (
       <Container>
         {_events.map(_event => (
@@ -35,12 +33,6 @@ export class MyEvents extends Component {
             </Col>
             <Col>
               <div className="map-small">
-                <ReactBingmaps
-                  id={_event.id}
-                  bingmapKey={config.BING_API_KEY}
-                  boundary={_boundary}
-                  mapOptions={{ 'showLocateMeButton': false, 'showMapTypeSelector': false }}
-                  className="map-small" />
               </div>
             </Col>
           </Row>
@@ -55,17 +47,6 @@ export class MyEvents extends Component {
     super(props);
     this.state = {
       events: [],
-      boundary: {
-        "search": "Switzerland",
-        "polygonStyle": {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2
-        },
-        "option": {
-          entityType: 'PopulatedPlace'
-        }
-      },
       loading: true,
     };
 
@@ -74,25 +55,14 @@ export class MyEvents extends Component {
     fetch('api/Event/GetUserRegisteredEvents/',
       {
         headers: {
-          'Authorization': 'Bearer ' + token,
+          Authorization: 'Bearer ' + token,
         },
-      }
+      },
     ).then(response => response.json())
       .then(data => {
         this.setState({
           events: data,
-          boundary: {
-            "search": "Switzerland",
-            "polygonStyle": {
-              fillColor: 'rgba(161,224,255,0.4)',
-              strokeColor: '#a495b2',
-              strokeThickness: 2
-            },
-            "option": {
-              entityType: 'PopulatedPlace'
-            }
-          },
-          loading: false
+          loading: false,
         });
       });
   }
@@ -112,4 +82,4 @@ export class MyEvents extends Component {
   }
 }
 
-export default withAITracking(ai.reactPlugin, MyEvents, "prrt");
+export default withAITracking(ai.reactPlugin, MyEvents);
