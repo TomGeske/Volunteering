@@ -43,17 +43,18 @@ var EventDetails = /** @class */ (function (_super) {
                 url: 'tbd',
                 description: 'tbd',
                 registrations: [],
-            },
-            boundary: {
-                search: 'Switzerland',
-                polygonStyle: {
-                    fillColor: 'rgba(161,224,255,0.4)',
-                    strokeColor: '#a495b2',
-                    strokeThickness: 2,
-                },
-                option: {
-                    entityType: 'PopulatedPlace',
-                },
+                eventType: 'tbd',
+                boundary: {
+                    search: 'Switzerland',
+                    polygonStyle: {
+                        fillColor: 'rgba(161,224,255,0.4)',
+                        strokeColor: '#a495b2',
+                        strokeThickness: 2,
+                    },
+                    option: {
+                        entityType: 'PopulatedPlace',
+                    },
+                }
             },
         };
         _this.eventid = props.match.params.eventid;
@@ -67,23 +68,12 @@ var EventDetails = /** @class */ (function (_super) {
             .then(function (data) {
             _this.setState({
                 event: data,
-                boundary: {
-                    search: data.eventLocation,
-                    polygonStyle: {
-                        fillColor: 'rgba(161,224,255,0.4)',
-                        strokeColor: '#a495b2',
-                        strokeThickness: 2,
-                    },
-                    option: {
-                        entityType: 'PopulatedPlace',
-                    },
-                },
                 loading: false,
             });
         });
         return _this;
     }
-    EventDetails.renderEventDetails = function (_event, _boundary) {
+    EventDetails.renderEventDetails = function (_event) {
         return (React.createElement(React.Fragment, null,
             React.createElement("h1", { className: "text-center" }, _event.name),
             React.createElement(reactstrap_1.Row, null,
@@ -94,9 +84,9 @@ var EventDetails = /** @class */ (function (_super) {
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
                         React.createElement("b", null, "Date: "),
-                        _event.eventdate,
+                        new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString(),
                         "\u00A0-\u00A0",
-                        _event.eventEndDate)),
+                        new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString())),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement(EventSignUp_1.default, { event: _event }))),
             React.createElement(reactstrap_1.Row, null,
@@ -126,7 +116,7 @@ var EventDetails = /** @class */ (function (_super) {
                     _event.eventLocation,
                     ",\u00A0",
                     _event.country,
-                    React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, boundary: _boundary, zoom: 4, className: "map-large" }))),
+                    React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, boundary: _event.boundary, zoom: 4, className: "map-large" }))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("b", null, "Volunteers"))),
@@ -145,11 +135,25 @@ var EventDetails = /** @class */ (function (_super) {
                                     React.createElement("p", null, _registration.createdTS)));
                         })))))));
     };
+    EventDetails.bindBoundery = function (event) {
+        event.boundary = {
+            search: event.eventLocation,
+            polygonStyle: {
+                fillColor: 'rgba(161,224,255,0.4)',
+                strokeColor: '#a495b2',
+                strokeThickness: 2,
+            },
+            option: {
+                entityType: 'PopulatedPlace',
+            },
+        };
+        return event;
+    };
     EventDetails.prototype.render = function () {
         var contents = this.state.loading
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
-            : EventDetails.renderEventDetails(this.state.event, this.state.boundary);
+            : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));
         return (React.createElement("div", null, contents));
     };
     return EventDetails;

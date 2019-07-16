@@ -10,6 +10,7 @@ import {
 import { ai } from '../TelemetryService';
 import config from '../Config';
 import EventSignUp from './EventSignUp';
+import { IEvent } from '../entities/IEvent'
 import {
   authContext,
   adalConfig,
@@ -18,40 +19,10 @@ import {
 interface IState {
   event: IEvent;
   loading: boolean;
-  boundary: IBoundary;
 }
 
 interface IProps {
 
-}
-
-interface IEvent {
-  id: string;
-  name: string;
-  company: string;
-  ownerName1: string;
-  ownerName2: string;
-  ownerEmail: string;
-  department: string;
-  country: string;
-  eventLocation: string;
-  eventdate: Date;
-  eventEndDate: Date;
-  startEventTime: string;
-  url: string;
-  description: string;
-  registrations: IRegistrations[];
-}
-
-interface IRegistrations {
-  userId: string;
-  createdTS: Date;
-}
-
-interface IBoundary {
-  search: string;
-  polygonStyle: any;
-  option: any;
 }
 
 export class EventDetails extends React.Component<IState, IProps> {
@@ -74,23 +45,24 @@ export class EventDetails extends React.Component<IState, IProps> {
         url: 'tbd',
         description: 'tbd',
         registrations: [],
-      },
-      boundary: {
-        search: 'Switzerland',
-        polygonStyle: {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2,
-        },
-        option: {
-          entityType: 'PopulatedPlace',
-        },
+        eventType: 'tbd',
+        boundary: {
+          search: 'Switzerland',
+          polygonStyle: {
+            fillColor: 'rgba(161,224,255,0.4)',
+            strokeColor: '#a495b2',
+            strokeThickness: 2,
+          },
+          option: {
+            entityType: 'PopulatedPlace',
+          },
+        }
       },
     };
 
   eventid: string;
 
-  static renderEventDetails(_event: IEvent, _boundary: IBoundary) {
+  static renderEventDetails(_event: IEvent) {
     return (
       <>
         <h1 className="text-center">{_event.name}</h1>
@@ -104,9 +76,9 @@ export class EventDetails extends React.Component<IState, IProps> {
           <Col xs={6} md={4}>
             <p>
               <b>Date: </b>
-              {_event.eventdate}
+              {new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString()}
               &nbsp;-&nbsp;
-              {_event.eventEndDate}
+              {new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()}
             </p>
           </Col>
           <Col xs={6} md={4}>
@@ -156,43 +128,59 @@ export class EventDetails extends React.Component<IState, IProps> {
             <ReactBingmaps
               id="_map"
               bingmapKey={config.BING_API_KEY}
-              boundary={_boundary}
+              boundary={_event.boundary}
               zoom={4}
               className="map-large"
             />
           </div>
-         </Row>
-         <Row>
-            <Col xs={6} md={4}>
-                <b>Volunteers</b>
-            </Col>
-         </Row>
-         <Row>
-            <Container>
-                <Table striped bordered hover size="sm">
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>Time Of Registration</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {_event.registrations.map(_registration =>
-                        <tr key={_registration.userId} className="justify-content-md-center">
-                            <td >
-                                <p>{_registration.userId}</p>
-                            </td>
-                            <td>
-                                <p>{_registration.createdTS}</p>
-                            </td>
-                        </tr>
-                        )}
-                    </tbody>
-                </Table>            
+        </Row>
+        <Row>
+          <Col xs={6} md={4}>
+            <b>Volunteers</b>
+          </Col>
+        </Row>
+        <Row>
+          <Container>
+            <Table striped bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Time Of Registration</th>
+                </tr>
+              </thead>
+              <tbody>
+                {_event.registrations.map(_registration =>
+                  <tr key={_registration.userId} className="justify-content-md-center">
+                    <td >
+                      <p>{_registration.userId}</p>
+                    </td>
+                    <td>
+                      <p>{_registration.createdTS}</p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
           </Container>
         </Row>
       </>
     );
+  }
+
+  static bindBoundery(event: IEvent) {
+    event.boundary = {
+      search: event.eventLocation,
+      polygonStyle: {
+        fillColor: 'rgba(161,224,255,0.4)',
+        strokeColor: '#a495b2',
+        strokeThickness: 2,
+      },
+      option: {
+        entityType: 'PopulatedPlace',
+      },
+    };
+
+    return event;
   }
 
   constructor(props) {
@@ -211,17 +199,6 @@ export class EventDetails extends React.Component<IState, IProps> {
       .then((data) => {
         this.setState({
           event: data,
-          boundary: {
-            search: data.eventLocation,
-            polygonStyle: {
-              fillColor: 'rgba(161,224,255,0.4)',
-              strokeColor: '#a495b2',
-              strokeThickness: 2,
-            },
-            option: {
-              entityType: 'PopulatedPlace',
-            },
-          },
           loading: false,
         });
       });
@@ -230,7 +207,7 @@ export class EventDetails extends React.Component<IState, IProps> {
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : EventDetails.renderEventDetails(this.state.event, this.state.boundary);
+      : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));
 
     return (
       <div>
