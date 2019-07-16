@@ -128,11 +128,22 @@ var EventDetails = /** @class */ (function (_super) {
                     _event.country,
                     React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, boundary: _boundary, zoom: 4, className: "map-large" }))),
             React.createElement(reactstrap_1.Row, null,
-                React.createElement(reactstrap_1.Container, null, _event.registrations.map(function (_registration) { return (React.createElement(reactstrap_1.Row, { key: _registration.userId, className: "justify-content-md-center" },
-                    React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
-                        React.createElement("p", null, _registration.userId)),
-                    React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
-                        React.createElement("p", null, _registration.createdTS)))); })))));
+                React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
+                    React.createElement("b", null, "Volunteers"))),
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Container, null,
+                    React.createElement(reactstrap_1.Table, { striped: true, bordered: true, hover: true, size: "sm" },
+                        React.createElement("thead", null,
+                            React.createElement("tr", null,
+                                React.createElement("th", null, "Email"),
+                                React.createElement("th", null, "Time Of Registration"))),
+                        React.createElement("tbody", null, _event.registrations.map(function (_registration) {
+                            return React.createElement("tr", { key: _registration.userId, className: "justify-content-md-center" },
+                                React.createElement("td", null,
+                                    React.createElement("p", null, _registration.userId)),
+                                React.createElement("td", null,
+                                    React.createElement("p", null, _registration.createdTS)));
+                        })))))));
     };
     EventDetails.prototype.render = function () {
         var contents = this.state.loading

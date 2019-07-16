@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ReactBingmaps } from 'react-bingmaps';
 import {
   Container,
+  Table,
   Row,
   Col,
 } from 'reactstrap';
@@ -160,20 +161,34 @@ export class EventDetails extends React.Component<IState, IProps> {
               className="map-large"
             />
           </div>
-        </Row>
-        <Row>
-          <Container>
-            {_event.registrations.map(_registration => (
-
-              <Row key={_registration.userId} className="justify-content-md-center">
-                <Col xs={6} md={4}>
-                  <p>{_registration.userId}</p>
-                </Col>
-                <Col xs={6} md={4}>
-                  <p>{_registration.createdTS}</p>
-                </Col>
-              </Row>
-            ))}
+         </Row>
+         <Row>
+            <Col xs={6} md={4}>
+                <b>Volunteers</b>
+            </Col>
+         </Row>
+         <Row>
+            <Container>
+                <Table striped bordered hover size="sm">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Time Of Registration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {_event.registrations.map(_registration =>
+                        <tr key={_registration.userId} className="justify-content-md-center">
+                            <td >
+                                <p>{_registration.userId}</p>
+                            </td>
+                            <td>
+                                <p>{_registration.createdTS}</p>
+                            </td>
+                        </tr>
+                        )}
+                    </tbody>
+                </Table>            
           </Container>
         </Row>
       </>
