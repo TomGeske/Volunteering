@@ -30,7 +30,12 @@ namespace Microsoft.WWV.Controllers
 
         private readonly string _bingApiKey;
 
-        private static readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _httpClient;
+
+        private readonly MongoClient _mongoClient;
+
+        private IMongoDatabase _db ;
+
 
         public EventController(IConfiguration config)
         {
@@ -41,21 +46,23 @@ namespace Microsoft.WWV.Controllers
             _password = _config["EventDB:Password"];
             _dbName = _config["EventDB:DbName"];
             _bingApiKey = _config["BingApiKey"];
+
+            _httpClient = new HttpClient();
+            _mongoClient = new MongoClient(getDbConnectionString());
+            _db = _mongoClient.GetDatabase(_dbName);
         }
+
 
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
-            return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+           var events = _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+           return events;
         }
 
         [HttpGet("[action]")]
         public IEnumerable<Event> GetUserRegisteredEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var events = _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
             var registeredEvents = new List<Event>();
 
@@ -73,8 +80,6 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Event> GetUserOwnedEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var eventFilter = Builders<Event>.Filter.Eq(e => e.OwnerEmail, User.Identity.Name);
             return _db.GetCollection<Event>("events").Find(eventFilter).ToList();
         }
@@ -86,9 +91,6 @@ namespace Microsoft.WWV.Controllers
             {
                 return NotFound();
             }
-
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
 
             var item = _db.GetCollection<Event>("events").Find(c => c.Id == id).FirstOrDefault();
 
@@ -122,8 +124,6 @@ namespace Microsoft.WWV.Controllers
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
             return Ok(_data.Id);
         }
@@ -153,8 +153,6 @@ namespace Microsoft.WWV.Controllers
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
             Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
 
@@ -178,8 +176,6 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
             var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
 
@@ -229,7 +225,7 @@ namespace Microsoft.WWV.Controllers
         private async Task<Event> resolveEventLocationAsync(Event aEvent)
         {
             var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);
-            var jsonString = await _client.GetStringAsync(url);
+            var jsonString = await _httpClient.GetStringAsync(url);
             var json = JObject.Parse(jsonString);
             var latlong = json["resourceSets"].First["resources"].First["point"]["coordinates"];
 
