@@ -82,9 +82,7 @@ export class MyEvents extends React.Component<IState, IProps> {
     )
   }
 
-  displayName = MyEvents.name
-
-  constructor(props) {
+   constructor(props) {
     super(props);
     this.state = {
       registeredEvents: [],

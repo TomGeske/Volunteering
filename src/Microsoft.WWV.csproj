@@ -36,6 +36,8 @@
     <None Remove="ClientApp\src\components\EventDetails.tsx" />
     <None Remove="ClientApp\src\components\EventSignUp.tsx" />
 	<None Remove="ClientApp\src\components\Events.tsx" />
+	<None Remove="ClientApp\src\components\NewEvent.tsx" />
+	<None Remove="ClientApp\src\components\MyEvents.tsx" />
 	<None Remove="ClientApp\src\entities\IBoundary.ts" />
 	<None Remove="ClientApp\src\entities\IEvent.ts" />
 	<None Remove="ClientApp\src\entities\IRegistrations.ts" />
@@ -45,6 +47,8 @@
     <TypeScriptCompile Include="ClientApp\src\components\EventDetails.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\EventSignUp.tsx" />
 	<TypeScriptCompile Include="ClientApp\src\components\Events.tsx" />
+	<TypeScriptCompile Include="ClientApp\src\components\NewEvent.tsx" />
+	<TypeScriptCompile Include="ClientApp\src\components\MyEvents.tsx" />
 	<TypeScriptCompile Include="ClientApp\src\entities\IBoundary.ts" />
 	<TypeScriptCompile Include="ClientApp\src\entities\IEvent.ts" />
 	<TypeScriptCompile Include="ClientApp\src\entities\IRegistrations.ts" />
