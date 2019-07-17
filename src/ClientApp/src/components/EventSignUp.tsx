@@ -15,7 +15,7 @@ import {
 
 interface IState {
   show: boolean;
-  uiState: string;
+  uiState: 'Open' | 'registration_successfull' | 'registration_failed';
 }
 
 interface IProps {
@@ -24,7 +24,7 @@ interface IProps {
 
 export default class EventSignUp extends React.Component<IProps, IState> {
   state: IState = {
-    uiState: 'open',
+    uiState: "Open",
     show: false,
   }
 
@@ -56,7 +56,14 @@ export default class EventSignUp extends React.Component<IProps, IState> {
   }
 
   private handleClose() {
-    this.setState({ show: false })
+    if (this.state.uiState === 'registration_successfull') {
+      // ToDo: refresh page
+      //this.props.history.push('/eventdetails/' + this.props.event.id)
+      this.setState({ show: false })
+    }
+    else {
+      this.setState({ show: false })
+    }
   }
 
   private handleShow() {
@@ -82,7 +89,11 @@ export default class EventSignUp extends React.Component<IProps, IState> {
   }
 
   private IsRegistered() {
-    var userId : string = authContext.getCachedUser().userName;
+    if (this.props.event.registrations == null) {
+      return false;
+    }
+
+    var userId: string = authContext.getCachedUser().userName;
 
     for (let i = 0; i < this.props.event.registrations.length; i++) {
       if (this.props.event.registrations[i].userId == userId) {

@@ -21,7 +21,7 @@ var EventSignUp = /** @class */ (function (_super) {
     function EventSignUp(props, context) {
         var _this = _super.call(this, props, context) || this;
         _this.state = {
-            uiState: 'open',
+            uiState: "Open",
             show: false,
         };
         _this.handleShow = _this.handleShow.bind(_this);
@@ -47,7 +47,14 @@ var EventSignUp = /** @class */ (function (_super) {
         });
     };
     EventSignUp.prototype.handleClose = function () {
-        this.setState({ show: false });
+        if (this.state.uiState === 'registration_successfull') {
+            // ToDo: refresh page
+            //this.props.history.push('/eventdetails/' + this.props.event.id)
+            this.setState({ show: false });
+        }
+        else {
+            this.setState({ show: false });
+        }
     };
     EventSignUp.prototype.handleShow = function () {
         this.setState({ show: true });
@@ -64,6 +71,9 @@ var EventSignUp = /** @class */ (function (_super) {
         }
     };
     EventSignUp.prototype.IsRegistered = function () {
+        if (this.props.event.registrations == null) {
+            return false;
+        }
         var userId = adalConfig_1.authContext.getCachedUser().userName;
         for (var i = 0; i < this.props.event.registrations.length; i++) {
             if (this.props.event.registrations[i].userId == userId) {

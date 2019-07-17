@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { ReactBingmaps } from 'react-bingmaps';
 import {
-  Container,
   Table,
   Row,
   Col,
@@ -22,7 +21,7 @@ interface IState {
 }
 
 interface IProps {
-
+  
 }
 
 export class EventDetails extends React.Component<IState, IProps> {
@@ -130,9 +129,7 @@ export class EventDetails extends React.Component<IState, IProps> {
             {_event.eventLocation}
             ,&nbsp;
             {_event.country}
-
             <div className="map-large-frame">
-
               <ReactBingmaps
                 id="_map"
                 bingmapKey={config.BING_API_KEY}
