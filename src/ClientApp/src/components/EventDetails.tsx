@@ -89,7 +89,7 @@ export class EventDetails extends React.Component<IState, IProps> {
           <Col xs={6} md={4}>
             <p>
               <b>Microsoft Host: </b>
-              <a href={`mailto:${_event.ownerEmail}`}>
+              <a href={`mailto:${_event.ownerEmail}?subject=${_event.name}`}>
                 {_event.ownerName1}
                 &nbsp;
                 {_event.ownerName2}
