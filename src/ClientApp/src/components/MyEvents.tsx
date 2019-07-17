@@ -1,5 +1,5 @@
 ﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
-import React, { Component } from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Table } from 'reactstrap';
 import { ai } from '../TelemetryService';
@@ -7,8 +7,27 @@ import {
   authContext,
   adalConfig,
 } from '../adalConfig';
+import { IEvent } from '../entities/IEvent';
 
-export class MyEvents extends Component {
+interface IState {
+  registeredEvents: IEvent[];
+  ownedEvents: IEvent[];
+  loadingOwned: boolean;
+  loadingRegistered: boolean;
+}
+
+interface IProps {
+
+}
+
+export class MyEvents extends React.Component<IState, IProps> {
+  state: IState =
+  {
+    registeredEvents: [],
+    ownedEvents: [],
+    loadingOwned: false,
+    loadingRegistered: false,
+  };
   static renderEventButton(type, id) {
     if(type === 'registered') {
       return (
@@ -109,11 +128,11 @@ export class MyEvents extends Component {
   render() {
     let registeredEvents = this.state.loadingRegistered
       ? <p><em>Loading...</em></p>
-      : MyEvents.renderEventsTable(this.state.registeredEvents,"registered" ,this.state.boundary);
+      : MyEvents.renderEventsTable(this.state.registeredEvents,"registered" );
 
     let ownedEvents = this.state.loadingOwned
       ? <p><em>Loading...</em></p>
-      : MyEvents.renderEventsTable(this.state.ownedEvents,"owned",this.state.boundary);
+      : MyEvents.renderEventsTable(this.state.ownedEvents,"owned");
 
     return (
       <div>
