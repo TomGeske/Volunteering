@@ -26,6 +26,7 @@ namespace Microsoft.WWV
         public string StartEventTime { get; set; }
         public string EventLocation { get; set; }
         public string Url { get; set; }
+        public string MediaLink { get; set; }
         public DateTime CreatedTS { get; set; }
         public DateTime UpdatedTS { get; set; }
         public IList<Registration> Registrations { get; set; }

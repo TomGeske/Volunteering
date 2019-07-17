@@ -43,6 +43,7 @@ export class EventDetails extends React.Component<IState, IProps> {
         startEventTime: 'tbd',
         url: 'tbd',
         description: 'tbd',
+        mediaLink: 'tbd',
         registrations: [],
         eventType: 'tbd',
         boundary: {

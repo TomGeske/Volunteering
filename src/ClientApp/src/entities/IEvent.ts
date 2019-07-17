@@ -17,6 +17,7 @@ export interface IEvent {
   url: string;
   description: string;
   eventType: string;
+  mediaLink: string;
   registrations: IRegistrations[];
   boundary: IBoundary;
 }

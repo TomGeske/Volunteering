@@ -42,6 +42,7 @@ var EventDetails = /** @class */ (function (_super) {
                 startEventTime: 'tbd',
                 url: 'tbd',
                 description: 'tbd',
+                mediaLink: 'tbd',
                 registrations: [],
                 eventType: 'tbd',
                 boundary: {
@@ -93,7 +94,7 @@ var EventDetails = /** @class */ (function (_super) {
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
                         React.createElement("b", null, "Microsoft Host: "),
-                        React.createElement("a", { href: "mailto:" + _event.ownerEmail },
+                        React.createElement("a", { href: "mailto:" + _event.ownerEmail + "?subject=" + _event.name },
                             _event.ownerName1,
                             "\u00A0",
                             _event.ownerName2),
