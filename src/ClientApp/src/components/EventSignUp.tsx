@@ -1,11 +1,13 @@
 ﻿import * as React from 'react';
 import {
+  Alert,
   Button,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
+import { IEvent } from '../entities/IEvent'
 import {
   authContext,
   adalConfig,
@@ -13,19 +15,16 @@ import {
 
 interface IState {
   show: boolean;
+  uiState: string;
 }
 
 interface IProps {
   event: IEvent;
 }
 
-interface IEvent {
-  id: string;
-  name: string;
-}
-
 export default class EventSignUp extends React.Component<IProps, IState> {
-  state = {
+  state: IState = {
+    uiState: 'open',
     show: false,
   }
 
@@ -38,7 +37,6 @@ export default class EventSignUp extends React.Component<IProps, IState> {
   }
 
   private handleRegister() {
-    this.handleClose();
     // call Registration and pass user & event
     var token = authContext.getCachedToken(adalConfig.endpoints.api);
 
@@ -48,7 +46,13 @@ export default class EventSignUp extends React.Component<IProps, IState> {
           'Authorization': 'Bearer ' + token,
         }
       }
-    );
+    ).then(response => {
+      if (response.status === 200 || response.status === 201) {
+        this.setState({ uiState: 'registration_successfull' });
+      } else {
+        this.setState({ uiState: 'registration_failed' });
+      }
+    });
   }
 
   private handleClose() {
@@ -59,34 +63,75 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     this.setState({ show: true })
   }
 
-  public render() {
-    return (
-      <>
-        <Button variant="primary" onClick={this.handleShow}>
-          Register
-        </Button>
+  private renderStatusMessages() {
+    if (this.state.uiState === 'registration_successfull') {
+      return (
+        <Alert color="success">
+          Registration successfull
+        </Alert>
+      );
+    } else if (this.state.uiState === 'registration_failed') {
+      return (
+        <Alert color="danger">
+          Registration failed.
+        </Alert>
+      );
+    } else {
+      return null;
+    }
+  }
 
-        <Modal isOpen={this.state.show} defaultChecked>
-          <ModalHeader>
-            Event Registration {this.props.event.name}
-          </ModalHeader>
-          <ModalBody>
-            Please, confirm:<br />
-            <ol>
-              <li>You have approval from your line manager</li>
-              <li>You entered your volunteering days in <a href="https://msvacation">https://msvacation</a></li>
-            </ol>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Cancel
+  private IsRegistered() {
+    var userId : string = authContext.getCachedUser().userName;
+
+    for (let i = 0; i < this.props.event.registrations.length; i++) {
+      if (this.props.event.registrations[i].userId == userId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public render() {
+
+    if (this.IsRegistered()) {
+      return (
+        <p>
+          <b>You are registered</b>
+        </p>
+      );
+    }
+    else {
+      return (
+        <>
+          <Button variant="primary" onClick={this.handleShow}>
+            Register
+          </Button>
+
+          <Modal isOpen={this.state.show} defaultChecked >
+            <ModalHeader>
+              Event Registration:&nbsp;{this.props.event.name}
+            </ModalHeader>
+            <ModalBody>
+              {this.renderStatusMessages()}
+              Please, confirm:<br />
+              <ol>
+                <li>You have approval from your line manager</li>
+                <li>You entered your volunteering days in <a href="https://msvacation" target="_blank">https://msvacation</a></li>
+              </ol>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="secondary" onClick={this.handleClose}>
+                Close
             </Button>
-            <Button variant="primary" onClick={this.handleRegister}>
-              I agree
+              <Button variant="primary" onClick={this.handleRegister}>
+                I agree
             </Button>
-          </ModalFooter>
-        </Modal>
-      </>
-    );
+            </ModalFooter>
+          </Modal>
+        </>
+      );
+    }
   }
 }

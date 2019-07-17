@@ -118,35 +118,50 @@ var EventDetails = /** @class */ (function (_super) {
                     _event.country,
                     React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, boundary: _event.boundary, zoom: 4, className: "map-large" }))),
             React.createElement(reactstrap_1.Row, null,
-                React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
-                    React.createElement("b", null, "Volunteers"))),
-            React.createElement(reactstrap_1.Row, null,
+                React.createElement("h4", null,
+                    React.createElement("b", null, "Registered volunteers")),
                 React.createElement(reactstrap_1.Container, null,
                     React.createElement(reactstrap_1.Table, { striped: true, bordered: true, hover: true, size: "sm" },
                         React.createElement("thead", null,
                             React.createElement("tr", null,
-                                React.createElement("th", null, "Email"),
-                                React.createElement("th", null, "Time Of Registration"))),
-                        React.createElement("tbody", null, _event.registrations.map(function (_registration) {
-                            return React.createElement("tr", { key: _registration.userId, className: "justify-content-md-center" },
-                                React.createElement("td", null,
-                                    React.createElement("p", null, _registration.userId)),
-                                React.createElement("td", null,
-                                    React.createElement("p", null, _registration.createdTS)));
-                        })))))));
+                                React.createElement("th", null, "Name"),
+                                React.createElement("th", null, "Date of Registration"))),
+                        React.createElement("tbody", null, EventDetails.renderRegistrationBody(_event)))))));
+    };
+    EventDetails.renderRegistrationBody = function (_event) {
+        if (_event.registrations == null) {
+            return (React.createElement("tr", { className: "justify-content-md-center" },
+                React.createElement("td", { colSpan: 2 },
+                    React.createElement("p", null, "No registrations yet"))));
+        }
+        else {
+            return (_event.registrations.map(function (_registration) {
+                return React.createElement("tr", { key: _registration.userId, className: "justify-content-md-center" },
+                    React.createElement("td", null,
+                        React.createElement("p", null,
+                            React.createElement("a", { href: "mailto:" + _registration.userId },
+                                _registration.name1,
+                                "\u00A0",
+                                _registration.name2))),
+                    React.createElement("td", null,
+                        React.createElement("p", null, new Date(Date.parse(_registration.createdTS.toString())).toLocaleDateString())));
+            }));
+        }
     };
     EventDetails.bindBoundery = function (event) {
-        event.boundary = {
-            search: event.eventLocation,
-            polygonStyle: {
-                fillColor: 'rgba(161,224,255,0.4)',
-                strokeColor: '#a495b2',
-                strokeThickness: 2,
-            },
-            option: {
-                entityType: 'PopulatedPlace',
-            },
-        };
+        if (event.eventLocation && event.eventLocation.length > 0) {
+            event.boundary = {
+                search: event.eventLocation,
+                polygonStyle: {
+                    fillColor: 'rgba(161,224,255,0.4)',
+                    strokeColor: '#a495b2',
+                    strokeThickness: 2,
+                },
+                option: {
+                    entityType: 'PopulatedPlace',
+                },
+            };
+        }
         return event;
     };
     EventDetails.prototype.render = function () {

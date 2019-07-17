@@ -30,7 +30,9 @@ namespace Microsoft.WWV.Controllers
 
         private readonly string _bingApiKey;
 
-        private static readonly HttpClient _client = new HttpClient();
+        private  readonly HttpClient _client = new HttpClient();
+
+        private readonly IMongoDatabase _db;
 
         public EventController(IConfiguration config)
         {
@@ -41,21 +43,19 @@ namespace Microsoft.WWV.Controllers
             _password = _config["EventDB:Password"];
             _dbName = _config["EventDB:DbName"];
             _bingApiKey = _config["BingApiKey"];
+
+            _db = new MongoClient(getDbConnectionString()).GetDatabase(_dbName);
         }
 
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
-            return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+           return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
         }
 
         [HttpGet("[action]")]
         public IEnumerable<Event> GetUserRegisteredEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var events = _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
             var registeredEvents = new List<Event>();
 
@@ -73,8 +73,6 @@ namespace Microsoft.WWV.Controllers
         [HttpGet("[action]")]
         public IEnumerable<Event> GetUserOwnedEvents()
         {
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var eventFilter = Builders<Event>.Filter.Eq(e => e.OwnerEmail, User.Identity.Name);
             return _db.GetCollection<Event>("events").Find(eventFilter).ToList();
         }
@@ -86,9 +84,6 @@ namespace Microsoft.WWV.Controllers
             {
                 return NotFound();
             }
-
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
 
             var item = _db.GetCollection<Event>("events").Find(c => c.Id == id).FirstOrDefault();
 
@@ -122,8 +117,6 @@ namespace Microsoft.WWV.Controllers
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             await _db.GetCollection<Event>("events").InsertOneAsync(_data);
             return Ok(_data.Id);
         }
@@ -148,13 +141,11 @@ namespace Microsoft.WWV.Controllers
 
             // some meta data
             _data.UpdatedTS = DateTime.Now.ToUniversalTime();
-                  
+
             _data.OwnerEmail = User.Identity.Name;
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
             Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
 
@@ -178,8 +169,6 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            MongoClient _client = new MongoClient(getDbConnectionString());
-            var _db = _client.GetDatabase(this._dbName);
             var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
             var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
 
@@ -201,6 +190,8 @@ namespace Microsoft.WWV.Controllers
                 item.Registrations.Add(new Registration()
                 {
                     UserId = User.Identity.Name,
+                    Name1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value,
+                    Name2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value,
                     CreatedTS = DateTime.UtcNow
                 });
                 var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
