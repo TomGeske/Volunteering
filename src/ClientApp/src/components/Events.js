@@ -95,8 +95,8 @@ var Events = /** @class */ (function (_super) {
                 React.createElement("em", null, "Loading..."))
             : Events.renderEventsTable(Events.bindBoundery(this.state.events));
         return (React.createElement("div", null,
-            React.createElement("h2", { className: "text-center" }, "Upcoming events"),
             React.createElement("a", { className: "btn btn-primary btn-lg", href: "./newevent", role: "button" }, "Create event \u00BB"),
+            React.createElement("h2", { className: "text-center" }, "Upcoming events"),
             React.createElement("br", null),
             contents));
     };
