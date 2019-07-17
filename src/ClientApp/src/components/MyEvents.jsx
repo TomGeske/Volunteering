@@ -1,7 +1,7 @@
 ﻿import { withAITracking } from '@microsoft/applicationinsights-react-js';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Table } from 'reactstrap';
+import { Container, Table } from 'reactstrap';
 import { ai } from '../TelemetryService';
 import {
   authContext,
