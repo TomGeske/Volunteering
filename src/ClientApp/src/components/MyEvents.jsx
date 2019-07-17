@@ -47,7 +47,7 @@ export class MyEvents extends Component {
                      <p>{_event.company}</p>
                    </td>
                    <td>
-                     <p>{_event.registrations.length}</p>
+                     <p>{_event.registrations==null? 0 : _event.registrations.length}</p>
                    </td>
                    <td>
                      <p>{new Date(_event.eventdate).toLocaleDateString()}</p>
