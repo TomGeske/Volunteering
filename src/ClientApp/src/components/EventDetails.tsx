@@ -120,25 +120,39 @@ export class EventDetails extends React.Component<IState, IProps> {
           </Col>
         </Row>
         <Row>
-          <div className="map-large-frame">
+          <Col>
+            <br />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <b>Meeting Point Location:</b>
             {_event.eventLocation}
             ,&nbsp;
             {_event.country}
-            <ReactBingmaps
-              id="_map"
-              bingmapKey={config.BING_API_KEY}
-              boundary={_event.boundary}
-              zoom={4}
-              className="map-large"
-            />
-          </div>
+
+            <div className="map-large-frame">
+
+              <ReactBingmaps
+                id="_map"
+                bingmapKey={config.BING_API_KEY}
+                boundary={_event.boundary}
+                zoom={4}
+                className="map-large"
+              />
+            </div>
+          </Col>
         </Row>
         <Row>
-          <h4>
-            <b>Registered volunteers</b>
-          </h4>
-          <Container>
+          <Col>
+            <br />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <h4>
+              <b>Registered volunteers</b>
+            </h4>
             <Table striped bordered hover size="sm">
               <thead>
                 <tr>
@@ -150,7 +164,7 @@ export class EventDetails extends React.Component<IState, IProps> {
                 {EventDetails.renderRegistrationBody(_event)}
               </tbody>
             </Table>
-          </Container>
+          </Col>
         </Row>
       </>
     );
