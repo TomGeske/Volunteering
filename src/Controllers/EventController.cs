@@ -148,7 +148,7 @@ namespace Microsoft.WWV.Controllers
 
             // some meta data
             _data.UpdatedTS = DateTime.Now.ToUniversalTime();
-                  
+
             _data.OwnerEmail = User.Identity.Name;
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
@@ -201,6 +201,8 @@ namespace Microsoft.WWV.Controllers
                 item.Registrations.Add(new Registration()
                 {
                     UserId = User.Identity.Name,
+                    Name1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value,
+                    Name2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value,
                     CreatedTS = DateTime.UtcNow
                 });
                 var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
