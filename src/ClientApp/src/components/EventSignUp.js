@@ -63,25 +63,40 @@ var EventSignUp = /** @class */ (function (_super) {
             return null;
         }
     };
+    EventSignUp.prototype.IsRegistered = function () {
+        var userId = adalConfig_1.authContext.getCachedUser().userName;
+        for (var i = 0; i < this.props.event.registrations.length; i++) {
+            if (this.props.event.registrations[i].userId == userId) {
+                return true;
+            }
+        }
+        return false;
+    };
     EventSignUp.prototype.render = function () {
-        return (React.createElement(React.Fragment, null,
-            React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleShow }, "Register"),
-            React.createElement(reactstrap_1.Modal, { isOpen: this.state.show, defaultChecked: true },
-                React.createElement(reactstrap_1.ModalHeader, null,
-                    "Event Registration:\u00A0",
-                    this.props.event.name),
-                React.createElement(reactstrap_1.ModalBody, null,
-                    this.renderStatusMessages(),
-                    "Please, confirm:",
-                    React.createElement("br", null),
-                    React.createElement("ol", null,
-                        React.createElement("li", null, "You have approval from your line manager"),
-                        React.createElement("li", null,
-                            "You entered your volunteering days in ",
-                            React.createElement("a", { href: "https://msvacation", target: "_blank" }, "https://msvacation")))),
-                React.createElement(reactstrap_1.ModalFooter, null,
-                    React.createElement(reactstrap_1.Button, { variant: "secondary", onClick: this.handleClose }, "Close"),
-                    React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleRegister }, "I agree")))));
+        if (this.IsRegistered()) {
+            return (React.createElement("p", null,
+                React.createElement("b", null, "You are registered")));
+        }
+        else {
+            return (React.createElement(React.Fragment, null,
+                React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleShow }, "Register"),
+                React.createElement(reactstrap_1.Modal, { isOpen: this.state.show, defaultChecked: true },
+                    React.createElement(reactstrap_1.ModalHeader, null,
+                        "Event Registration:\u00A0",
+                        this.props.event.name),
+                    React.createElement(reactstrap_1.ModalBody, null,
+                        this.renderStatusMessages(),
+                        "Please, confirm:",
+                        React.createElement("br", null),
+                        React.createElement("ol", null,
+                            React.createElement("li", null, "You have approval from your line manager"),
+                            React.createElement("li", null,
+                                "You entered your volunteering days in ",
+                                React.createElement("a", { href: "https://msvacation", target: "_blank" }, "https://msvacation")))),
+                    React.createElement(reactstrap_1.ModalFooter, null,
+                        React.createElement(reactstrap_1.Button, { variant: "secondary", onClick: this.handleClose }, "Close"),
+                        React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleRegister }, "I agree")))));
+        }
     };
     return EventSignUp;
 }(React.Component));

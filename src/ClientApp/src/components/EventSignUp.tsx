@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
+import { IEvent } from '../entities/IEvent'
 import {
   authContext,
   adalConfig,
@@ -19,11 +20,6 @@ interface IState {
 
 interface IProps {
   event: IEvent;
-}
-
-interface IEvent {
-  id: string;
-  name: string;
 }
 
 export default class EventSignUp extends React.Component<IProps, IState> {
@@ -85,35 +81,57 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     }
   }
 
-  public render() {
-    return (
-      <>
-        <Button variant="primary" onClick={this.handleShow}>
-          Register
-        </Button>
+  private IsRegistered() {
+    var userId : string = authContext.getCachedUser().userName;
 
-        <Modal isOpen={this.state.show} defaultChecked >
-          <ModalHeader>
-            Event Registration:&nbsp;{this.props.event.name}
-          </ModalHeader>
-          <ModalBody>
-            {this.renderStatusMessages()}
-            Please, confirm:<br />
-            <ol>
-              <li>You have approval from your line manager</li>
-              <li>You entered your volunteering days in <a href="https://msvacation" target="_blank">https://msvacation</a></li>
-            </ol>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="secondary" onClick={this.handleClose}>
-              Close
+    for (let i = 0; i < this.props.event.registrations.length; i++) {
+      if (this.props.event.registrations[i].userId == userId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public render() {
+
+    if (this.IsRegistered()) {
+      return (
+        <p>
+          <b>You are registered</b>
+        </p>
+      );
+    }
+    else {
+      return (
+        <>
+          <Button variant="primary" onClick={this.handleShow}>
+            Register
+          </Button>
+
+          <Modal isOpen={this.state.show} defaultChecked >
+            <ModalHeader>
+              Event Registration:&nbsp;{this.props.event.name}
+            </ModalHeader>
+            <ModalBody>
+              {this.renderStatusMessages()}
+              Please, confirm:<br />
+              <ol>
+                <li>You have approval from your line manager</li>
+                <li>You entered your volunteering days in <a href="https://msvacation" target="_blank">https://msvacation</a></li>
+              </ol>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="secondary" onClick={this.handleClose}>
+                Close
             </Button>
-            <Button variant="primary" onClick={this.handleRegister}>
-              I agree
+              <Button variant="primary" onClick={this.handleRegister}>
+                I agree
             </Button>
-          </ModalFooter>
-        </Modal>
-      </>
-    );
+            </ModalFooter>
+          </Modal>
+        </>
+      );
+    }
   }
 }

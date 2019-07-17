@@ -135,30 +135,19 @@ export class EventDetails extends React.Component<IState, IProps> {
           </div>
         </Row>
         <Row>
-          <Col xs={6} md={4}>
-            <b>Volunteers</b>
-          </Col>
-        </Row>
-        <Row>
+          <h4>
+            <b>Registered volunteers</b>
+          </h4>
           <Container>
             <Table striped bordered hover size="sm">
               <thead>
                 <tr>
-                  <th>Email</th>
-                  <th>Time Of Registration</th>
+                  <th>Name</th>
+                  <th>Date of Registration</th>
                 </tr>
               </thead>
               <tbody>
-                {_event.registrations.map(_registration =>
-                  <tr key={_registration.userId} className="justify-content-md-center">
-                    <td >
-                      <p>{_registration.userId}</p>
-                    </td>
-                    <td>
-                      <p>{_registration.createdTS}</p>
-                    </td>
-                  </tr>
-                )}
+                {EventDetails.renderRegistrationBody(_event)}
               </tbody>
             </Table>
           </Container>
@@ -167,19 +156,53 @@ export class EventDetails extends React.Component<IState, IProps> {
     );
   }
 
-  static bindBoundery(event: IEvent) {
-    event.boundary = {
-      search: event.eventLocation,
-      polygonStyle: {
-        fillColor: 'rgba(161,224,255,0.4)',
-        strokeColor: '#a495b2',
-        strokeThickness: 2,
-      },
-      option: {
-        entityType: 'PopulatedPlace',
-      },
-    };
+  private static renderRegistrationBody(_event: IEvent) {
+    if (_event.registrations == null) {
+      return (
+        <tr className="justify-content-md-center">
+          <td colSpan={2} >
+            <p>
+              No registrations yet
+            </p>
+          </td>
+        </tr>
+      );
+    }
+    else {
+      return (
+        _event.registrations.map(_registration =>
+          <tr key={_registration.userId} className="justify-content-md-center">
+            <td >
+              <p>
+                <a href={`mailto:${_registration.userId}`}>
+                  {_registration.name1}
+                  &nbsp;
+                  {_registration.name2}
+                </a>
+              </p>
+            </td>
+            <td>
+              <p>{new Date(Date.parse(_registration.createdTS.toString())).toLocaleDateString()}</p>
+            </td>
+          </tr>
+        ));
+    }
+  }
 
+  static bindBoundery(event: IEvent) {
+    if (event.eventLocation && event.eventLocation.length > 0) {
+      event.boundary = {
+        search: event.eventLocation,
+        polygonStyle: {
+          fillColor: 'rgba(161,224,255,0.4)',
+          strokeColor: '#a495b2',
+          strokeThickness: 2,
+        },
+        option: {
+          entityType: 'PopulatedPlace',
+        },
+      };
+    }
     return event;
   }
 
