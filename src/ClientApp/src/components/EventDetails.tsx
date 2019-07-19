@@ -15,54 +15,54 @@ import {
   adalConfig,
 } from '../adalConfig';
 
-interface IState {
+interface State {
   event: IEvent;
   loading: boolean;
 }
 
-interface IProps {
+interface Props {
   
 }
 
-export class EventDetails extends React.Component<IState, IProps> {
-  state: IState =
-    {
-      loading: true,
-      event: {
-        id: 'tbd',
-        name: 'tbd',
-        company: 'tbd',
-        ownerName1: 'tbd',
-        ownerName2: 'tbd',
-        ownerEmail: 'tbd',
-        department: 'tbd',
-        country: 'tbd',
-        eventLocation: 'tbd',
-        eventdate: new Date(),
-        eventEndDate: new Date(),
-        startEventTime: 'tbd',
-        url: 'tbd',
-        description: 'tbd',
-        mediaLink: 'tbd',
-        registrations: [],
-        eventType: 'tbd',
-        boundary: {
-          search: 'Switzerland',
-          polygonStyle: {
-            fillColor: 'rgba(161,224,255,0.4)',
-            strokeColor: '#a495b2',
-            strokeThickness: 2,
-          },
-          option: {
-            entityType: 'PopulatedPlace',
-          },
-        }
-      },
-    };
+export class EventDetails extends React.Component<State, Props> {
+  state: State =
+  {
+    loading: true,
+    event: {
+      id: 'tbd',
+      name: 'tbd',
+      company: 'tbd',
+      ownerName1: 'tbd',
+      ownerName2: 'tbd',
+      ownerEmail: 'tbd',
+      department: 'tbd',
+      country: 'tbd',
+      eventLocation: 'tbd',
+      eventdate: new Date(),
+      eventEndDate: new Date(),
+      startEventTime: 'tbd',
+      url: 'tbd',
+      description: 'tbd',
+      mediaLink: 'tbd',
+      registrations: [],
+      eventType: 'tbd',
+      boundary: {
+        search: 'Switzerland',
+        polygonStyle: {
+          fillColor: 'rgba(161,224,255,0.4)',
+          strokeColor: '#a495b2',
+          strokeThickness: 2,
+        },
+        option: {
+          entityType: 'PopulatedPlace',
+        },
+      }
+    },
+  };
 
-  eventid: string;
+  private eventid: string;
 
-  static renderEventDetails(_event: IEvent) {
+  private static renderEventDetails(_event: IEvent) {
     return (
       <>
         <h1 className="text-center">{_event.name}</h1>
@@ -201,7 +201,7 @@ export class EventDetails extends React.Component<IState, IProps> {
     }
   }
 
-  static bindBoundery(event: IEvent) {
+  private static bindBoundery(event: IEvent): IEvent {
     if (event.eventLocation && event.eventLocation.length > 0) {
       event.boundary = {
         search: event.eventLocation,
@@ -222,7 +222,7 @@ export class EventDetails extends React.Component<IState, IProps> {
     super(props);
     this.eventid = props.match.params.eventid;
 
-    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+    const token: string = authContext.getCachedToken(adalConfig.endpoints.api);
 
     fetch(`api/Event/${this.eventid}`,
       {
@@ -239,7 +239,7 @@ export class EventDetails extends React.Component<IState, IProps> {
       });
   }
 
-  render() {
+  render(): React.ReactNode {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
       : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));

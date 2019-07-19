@@ -8,15 +8,9 @@ import { createBrowserHistory } from 'history';
 import { ai } from './TelemetryService';
 
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
 
 import { authContext } from './adalConfig';
-
-window.Logging.log = function (message) {
-  console.log(message); // this enables logging to the console
-};
-
-window.Logging.level = 2; // 0 = only error, 1 = up to warnings, 2 = up to info, 3 = up to verbose
 
 const history = createBrowserHistory({ basename: '' });
 const DO_NOT_LOGIN = false;
@@ -38,4 +32,8 @@ ReactDOM.render(
   rootElement
 );
 
-registerServiceWorker();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+

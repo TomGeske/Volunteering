@@ -1,28 +1,28 @@
-﻿import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
-
-class TelemetryService {
-
-    constructor() {
-        this.reactPlugin = new ReactPlugin();
+"use strict";
+exports.__esModule = true;
+var applicationinsights_web_1 = require("@microsoft/applicationinsights-web");
+var applicationinsights_react_js_1 = require("@microsoft/applicationinsights-react-js");
+var TelemetryService = /** @class */ (function () {
+    function TelemetryService() {
+        this.reactPlugin = new applicationinsights_react_js_1.ReactPlugin();
+        this.appInsights = undefined;
     }
-
-    initialize(reactPluginConfig) {
-        let INSTRUMENTATION_KEY = 'a450a2bc-72cd-45a6-8e75-f3afed3b2382'; // Enter your instrumentation key here
-
-        this.appInsights = new ApplicationInsights({
+    TelemetryService.prototype.initialize = function (reactPluginConfig) {
+        var _a;
+        var INSTRUMENTATION_KEY = 'a450a2bc-72cd-45a6-8e75-f3afed3b2382'; // Enter your instrumentation key here
+        this.appInsights = new applicationinsights_web_1.ApplicationInsights({
             config: {
                 instrumentationKey: INSTRUMENTATION_KEY,
                 maxBatchInterval: 0,
                 disableFetchTracking: false,
                 extensions: [this.reactPlugin],
-                extensionConfig: {
-                    [this.reactPlugin.identifier]: reactPluginConfig
-                }
+                extensionConfig: (_a = {},
+                    _a[this.reactPlugin.identifier] = reactPluginConfig,
+                    _a)
             }
         });
         this.appInsights.loadAppInsights();
-    }
-}
-
-export let ai = new TelemetryService();
+    };
+    return TelemetryService;
+}());
+exports.ai = new TelemetryService();

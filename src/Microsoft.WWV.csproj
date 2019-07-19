@@ -34,24 +34,36 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\components\EventDetails.tsx" />
+    <None Remove="ClientApp\src\components\Events.tsx" />
     <None Remove="ClientApp\src\components\EventSignUp.tsx" />
-	<None Remove="ClientApp\src\components\Events.tsx" />
-	<None Remove="ClientApp\src\components\NewEvent.tsx" />
-	<None Remove="ClientApp\src\components\MyEvents.tsx" />
-	<None Remove="ClientApp\src\entities\IBoundary.ts" />
-	<None Remove="ClientApp\src\entities\IEvent.ts" />
-	<None Remove="ClientApp\src\entities\IRegistrations.ts" />
+    <None Remove="ClientApp\src\components\Footer.tsx" />
+    <None Remove="ClientApp\src\components\Layout.tsx" />
+    <None Remove="ClientApp\src\components\MyEvents.tsx" />
+    <None Remove="ClientApp\src\components\NavMenu.tsx" />
+    <None Remove="ClientApp\src\components\NewEvent.tsx" />
+    
+    <None Remove="ClientApp\src\entities\IBoundary.ts" />
+    <None Remove="ClientApp\src\entities\IEvent.ts" />
+    <None Remove="ClientApp\src\entities\IRegistrations.ts" />
+
+    <None Remove="ClientApp\src\App.tsx" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\components\EventDetails.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\Events.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\EventSignUp.tsx" />
-	<TypeScriptCompile Include="ClientApp\src\components\Events.tsx" />
-	<TypeScriptCompile Include="ClientApp\src\components\NewEvent.tsx" />
-	<TypeScriptCompile Include="ClientApp\src\components\MyEvents.tsx" />
-	<TypeScriptCompile Include="ClientApp\src\entities\IBoundary.ts" />
-	<TypeScriptCompile Include="ClientApp\src\entities\IEvent.ts" />
-	<TypeScriptCompile Include="ClientApp\src\entities\IRegistrations.ts" />
+    <TypeScriptCompile Include="ClientApp\src\components\Footer.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\Layout.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\MyEvents.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\NavMenu.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\NewEvent.tsx" />
+
+    <TypeScriptCompile Include="ClientApp\src\entities\IBoundary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\IEvent.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\IRegistrations.ts" />
+
+    <TypeScriptCompile Include="ClientApp\src\App.tsx" />
   </ItemGroup>
 
   <ItemGroup>
