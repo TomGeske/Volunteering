@@ -117,6 +117,7 @@ var EventDetails = /** @class */ (function (_super) {
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, null,
                     React.createElement("b", null, "Meeting Point Location:"),
+                    ",\u00A0",
                     _event.eventLocation,
                     ",\u00A0",
                     _event.country,
