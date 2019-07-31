@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 import { ReactBingmaps } from 'react-bingmaps';
 import { ai } from '../TelemetryService';
-import { IEvent } from '../entities/IEvent'
+import { Event } from '../entities/Event'
 import config from '../Config';
 
 import {
@@ -12,40 +12,35 @@ import {
   adalConfig,
 } from '../adalConfig';
 
-interface IState {
-  events: IEvent[];
+interface State {
+  events: Event[];
   loading: boolean;
 }
 
-interface IProps {
+export class Events extends React.Component<State, {}> {
+  public state: State =
+  {
+    loading: true,
+    events: [],
+  };
 
-}
-
-export class Events extends React.Component<IState, IProps> {
-  state: IState =
-    {
-      loading: true,
-      events: [],
-    };
-
-  static renderEventsTable(_events: IEvent[]) {
+  private static renderEventsTable(_events: Event[]): React.ReactNode {
     return (
       _events.map(_event => (
-
         <Row key={_event.id} className="justify-content-md-center">
           <Col sm>
             <h3>{_event.name}</h3>
             <p>
               <b>Event organizer:</b>
               &nbsp;
-                {_event.ownerName1}
+              {_event.ownerName1}
               &nbsp;
-                {_event.ownerName2}
+              {_event.ownerName2}
             </p>
             <p>
               <b>Event type:</b>
               &nbsp;
-                {_event.eventType}
+              {_event.eventType}
             </p>
           </Col>
           <Col sm>
@@ -53,7 +48,7 @@ export class Events extends React.Component<IState, IProps> {
               className="btn btn-primary mb1 bg-green"
               to={{ pathname: '/eventdetails/' + _event.id }}>
               Details
-              </Link>
+            </Link>
             <br />
             <b>Date:</b>
             &nbsp;
@@ -76,7 +71,7 @@ export class Events extends React.Component<IState, IProps> {
     );
   }
 
-  static bindBoundery(events: IEvent[]) {
+  private static bindBoundery(events: Event[]): Event[] {
     for (let i = 0; i < events.length; i++) {
       events[i].boundary = {
         search: events[i].eventLocation,
@@ -93,14 +88,14 @@ export class Events extends React.Component<IState, IProps> {
     return events;
   }
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.state = {
       events: [],
       loading: true,
     };
 
-    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+    const token = authContext.getCachedToken(adalConfig.endpoints.api);
 
     fetch('api/Event/',
       {
@@ -117,8 +112,8 @@ export class Events extends React.Component<IState, IProps> {
       });
   }
 
-  render() {
-    let contents = this.state.loading
+  public render(): React.ReactNode {
+    const contents = this.state.loading
       ? <p><em>Loading...</em></p>
       : Events.renderEventsTable(Events.bindBoundery(this.state.events));
 

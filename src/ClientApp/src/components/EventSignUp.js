@@ -67,7 +67,7 @@ var EventSignUp = /** @class */ (function (_super) {
             return (React.createElement(reactstrap_1.Alert, { color: "danger" }, "Registration failed."));
         }
         else {
-            return null;
+            return (React.createElement(React.Fragment, null));
         }
     };
     EventSignUp.prototype.IsRegistered = function () {

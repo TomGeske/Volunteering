@@ -13,33 +13,29 @@ import { FormControl } from 'react-bootstrap';
 import { authContext } from '../adalConfig';
 import './NavMenu.css';
 
-interface IState {
+interface State {
   collapsed: boolean;
 }
 
-interface IProps {
+export class NavMenu extends React.Component<State, {}> {
+  public state: State =
+  {
+    collapsed: true
+  }
 
-}
-
-export class NavMenu extends React.Component<IState, IProps> {
-  state: IState =
-    {
-      collapsed: true
-    }
-
-   constructor(props) {
+  public constructor(props) {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
   }
 
-  toggleNavbar() {
+  private toggleNavbar(): void {
     this.setState({
       collapsed: !this.state.collapsed,
     });
   }
 
-  render() {
+  public render(): React.ReactNode {
     return (
       <header>
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light expand="lg">

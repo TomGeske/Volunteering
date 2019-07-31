@@ -7,28 +7,28 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { IEvent } from '../entities/IEvent'
+import { Event } from '../entities/Event'
 import {
   authContext,
   adalConfig,
 } from '../adalConfig';
 
-interface IState {
+interface State {
   show: boolean;
   uiState: 'Open' | 'registration_successfull' | 'registration_failed';
 }
 
-interface IProps {
-  event: IEvent;
+interface Props {
+  event: Event;
 }
 
-export default class EventSignUp extends React.Component<IProps, IState> {
-  state: IState = {
+export default class EventSignUp extends React.Component<Props, State> {
+  public state: State = {
     uiState: "Open",
     show: false,
   }
 
-  constructor(props, context) {
+  public constructor(props, context) {
     super(props, context);
 
     this.handleShow = this.handleShow.bind(this);
@@ -36,9 +36,9 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     this.handleRegister = this.handleRegister.bind(this);
   }
 
-  private handleRegister() {
+  private handleRegister(): void {
     // call Registration and pass user & event
-    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+    const token: string = authContext.getCachedToken(adalConfig.endpoints.api);
 
     fetch(`api/Event/AddRegistration/${this.props.event.id}`,
       {
@@ -55,7 +55,7 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     });
   }
 
-  private handleClose() {
+  private handleClose(): void {
     if (this.state.uiState === 'registration_successfull') {
       // ToDo: refresh page
       //this.props.history.push('/eventdetails/' + this.props.event.id)
@@ -66,11 +66,11 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     }
   }
 
-  private handleShow() {
+  private handleShow(): void {
     this.setState({ show: true })
   }
 
-  private renderStatusMessages() {
+  private renderStatusMessages(): JSX.Element {
     if (this.state.uiState === 'registration_successfull') {
       return (
         <Alert color="success">
@@ -84,16 +84,18 @@ export default class EventSignUp extends React.Component<IProps, IState> {
         </Alert>
       );
     } else {
-      return null;
+      return (
+        <></>
+      );
     }
   }
 
-  private IsRegistered() {
+  private IsRegistered(): boolean {
     if (this.props.event.registrations == null) {
       return false;
     }
 
-    var userId: string = authContext.getCachedUser().userName;
+    const userId: string = authContext.getCachedUser().userName;
 
     for (let i = 0; i < this.props.event.registrations.length; i++) {
       if (this.props.event.registrations[i].userId == userId) {
@@ -104,7 +106,7 @@ export default class EventSignUp extends React.Component<IProps, IState> {
     return false;
   }
 
-  public render() {
+  public render(): React.ReactNode {
 
     if (this.IsRegistered()) {
       return (
@@ -135,10 +137,10 @@ export default class EventSignUp extends React.Component<IProps, IState> {
             <ModalFooter>
               <Button variant="secondary" onClick={this.handleClose}>
                 Close
-            </Button>
+              </Button>
               <Button variant="primary" onClick={this.handleRegister}>
                 I agree
-            </Button>
+              </Button>
             </ModalFooter>
           </Modal>
         </>

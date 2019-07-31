@@ -1,5 +1,15 @@
-﻿export interface IBoundary {
+﻿export interface Boundary {
   search: string;
-  polygonStyle: any;
-  option: any;
+  polygonStyle: PolygonStyle;
+  option: Option;
+}
+
+interface PolygonStyle {
+  fillColor: string;
+  strokeColor: string;
+  strokeThickness: number;
+}
+
+interface Option {
+  entityType: string;
 }

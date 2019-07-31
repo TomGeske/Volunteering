@@ -21,7 +21,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": [ "node", "jest" ]
+    "types": [ "node" ]
   },
   "exclude": [
     "node_modules"

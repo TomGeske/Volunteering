@@ -42,9 +42,9 @@
     <None Remove="ClientApp\src\components\NavMenu.tsx" />
     <None Remove="ClientApp\src\components\NewEvent.tsx" />
     
-    <None Remove="ClientApp\src\entities\IBoundary.ts" />
-    <None Remove="ClientApp\src\entities\IEvent.ts" />
-    <None Remove="ClientApp\src\entities\IRegistrations.ts" />
+    <None Remove="ClientApp\src\entities\Boundary.ts" />
+    <None Remove="ClientApp\src\entities\Event.ts" />
+    <None Remove="ClientApp\src\entities\Registration.ts" />
 
     <None Remove="ClientApp\src\App.tsx" />
   </ItemGroup>
@@ -59,9 +59,9 @@
     <TypeScriptCompile Include="ClientApp\src\components\NavMenu.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\NewEvent.tsx" />
 
-    <TypeScriptCompile Include="ClientApp\src\entities\IBoundary.ts" />
-    <TypeScriptCompile Include="ClientApp\src\entities\IEvent.ts" />
-    <TypeScriptCompile Include="ClientApp\src\entities\IRegistrations.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\Boundary.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\Event.ts" />
+    <TypeScriptCompile Include="ClientApp\src\entities\Registration.ts" />
 
     <TypeScriptCompile Include="ClientApp\src\App.tsx" />
   </ItemGroup>

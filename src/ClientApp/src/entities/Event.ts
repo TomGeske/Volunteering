@@ -1,7 +1,7 @@
-﻿import { IBoundary } from './IBoundary'
-import { IRegistrations } from './IRegistrations'
+﻿import { Boundary } from './Boundary'
+import { Registration } from './Registration'
 
-export interface IEvent {
+export interface Event {
   id: string;
   name: string;
   company: string;
@@ -18,6 +18,6 @@ export interface IEvent {
   description: string;
   eventType: string;
   mediaLink: string;
-  registrations: IRegistrations[];
-  boundary: IBoundary;
+  registrations: Registration[];
+  boundary: Boundary;
 }

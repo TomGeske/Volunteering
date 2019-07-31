@@ -1,4 +1,4 @@
-﻿export interface IRegistrations {
+﻿export interface Registration {
   userId: string;
   createdTS: Date;
   name1: string;

@@ -4,7 +4,7 @@ import { NavMenu } from './NavMenu';
 import { Footer } from './Footer'
 
 export class Layout extends React.Component {
-  render() {
+  public render(): React.ReactNode {
     return (
       <div>
         <NavMenu collapsed={true} />

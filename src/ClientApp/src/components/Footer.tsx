@@ -1,9 +1,7 @@
 ﻿import * as React from 'react';
-import { withAITracking } from '@microsoft/applicationinsights-react-js';
-import { ai } from '../TelemetryService';
 
 export class Footer extends React.Component {
-  render() {
+  public render(): React.ReactNode {
     return (
       <div>
         {/* Footer */}
@@ -52,5 +50,3 @@ export class Footer extends React.Component {
     );
   }
 }
-
-export default withAITracking(ai.reactPlugin, Footer);

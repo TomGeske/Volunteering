@@ -14,8 +14,6 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
-var applicationinsights_react_js_1 = require("@microsoft/applicationinsights-react-js");
-var TelemetryService_1 = require("../TelemetryService");
 var Footer = /** @class */ (function (_super) {
     __extends(Footer, _super);
     function Footer() {
@@ -44,5 +42,4 @@ var Footer = /** @class */ (function (_super) {
     return Footer;
 }(React.Component));
 exports.Footer = Footer;
-exports.default = applicationinsights_react_js_1.withAITracking(TelemetryService_1.ai.reactPlugin, Footer);
 //# sourceMappingURL=Footer.js.map

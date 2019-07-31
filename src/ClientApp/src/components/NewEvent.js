@@ -184,7 +184,7 @@ var NewEvent = /** @class */ (function (_super) {
                 React.createElement(reactstrap_1.CustomInput, { type: "checkbox", id: propertyName, name: propertyName, value: value, invalid: isValid === false, onChange: this.handleInputChange, label: text })));
         }
         else {
-            return null;
+            return (React.createElement(React.Fragment, null));
         }
     };
     NewEvent.prototype.renderTitleFormGroup = function () {
@@ -319,7 +319,7 @@ var NewEvent = /** @class */ (function (_super) {
             return (React.createElement(reactstrap_1.Alert, { color: "danger" }, "The event start date and time must be before the end date and time"));
         }
         else {
-            return null;
+            return (React.createElement(React.Fragment, null));
         }
     };
     NewEvent.prototype.render = function () {

@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var applicationinsights_web_1 = require("@microsoft/applicationinsights-web");
 var applicationinsights_react_js_1 = require("@microsoft/applicationinsights-react-js");
 var TelemetryService = /** @class */ (function () {
@@ -26,3 +26,4 @@ var TelemetryService = /** @class */ (function () {
     return TelemetryService;
 }());
 exports.ai = new TelemetryService();
+//# sourceMappingURL=TelemetryService.js.map

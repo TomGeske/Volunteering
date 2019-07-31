@@ -7,29 +7,31 @@ import {
   authContext,
   adalConfig,
 } from '../adalConfig';
-import { IEvent } from '../entities/IEvent';
+import { Event } from '../entities/Event';
 
-interface IState {
-  registeredEvents: IEvent[];
-  ownedEvents: IEvent[];
+interface State {
+  registeredEvents: Event[];
+  ownedEvents: Event[];
   loadingOwned: boolean;
   loadingRegistered: boolean;
 }
 
-interface IProps {
-
+enum EventType {
+  Registered,
+  Owned
 }
 
-export class MyEvents extends React.Component<IState, IProps> {
-  state: IState =
+export class MyEvents extends React.Component<State, {}> {
+  public state: State =
   {
     registeredEvents: [],
     ownedEvents: [],
     loadingOwned: false,
     loadingRegistered: false,
   };
-  static renderEventButton(type, id) {
-    if(type === 'registered') {
+
+  private static renderEventButton(type: EventType, id: string): React.ReactNode {
+    if (type === EventType.Registered) {
       return (
         <Link className="btn btn-primary mb3 bg-green" to={{
           pathname: '/eventdetails/' + id
@@ -43,46 +45,47 @@ export class MyEvents extends React.Component<IState, IProps> {
       );
     }
   }
-  static renderEventsTable(_events, type) {
+
+  private static renderEventsTable(_events: Event[], type: EventType): React.ReactNode {
     return (
       <Container>
-         <Table striped bordered hover size="sm">
-             <thead>
-               <tr>
-                 <th>Name</th>
-                 <th>Company</th>
-                 <th># Volunteers</th>
-                 <th> Registration Date</th>
-                 <th></th>
-               </tr>
-             </thead>
-             <tbody>
-              {_events.map(_event => (
-                 <tr key={_event.id} className="justify-content-md-center">
-                   <td >
-                     <p>{_event.name}</p>
-                   </td>
-                   <td>
-                     <p>{_event.company}</p>
-                   </td>
-                   <td>
-                     <p>{_event.registrations==null? 0 : _event.registrations.length}</p>
-                   </td>
-                   <td>
-                     <p>{new Date(_event.eventdate).toLocaleDateString()}</p>
-                   </td>
-                   <td align="right">
-                      {this.renderEventButton(type, _event.id)}
-                   </td>
-                 </tr>
-               ))}
-             </tbody>
-           </Table>
+        <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Company</th>
+              <th># Volunteers</th>
+              <th> Registration Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {_events.map((_event): JSX.Element  => (
+              <tr key={_event.id} className="justify-content-md-center">
+                <td >
+                  <p>{_event.name}</p>
+                </td>
+                <td>
+                  <p>{_event.company}</p>
+                </td>
+                <td>
+                  <p>{_event.registrations == null ? 0 : _event.registrations.length}</p>
+                </td>
+                <td>
+                  <p>{new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString()}</p>
+                </td>
+                <td align="right">
+                  {this.renderEventButton(type, _event.id)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </Container>
     )
   }
 
-   constructor(props) {
+  public constructor(props) {
     super(props);
     this.state = {
       registeredEvents: [],
@@ -91,7 +94,7 @@ export class MyEvents extends React.Component<IState, IProps> {
       loadingOwned: true
     };
 
-    var token = authContext.getCachedToken(adalConfig.endpoints.api);
+    const token = authContext.getCachedToken(adalConfig.endpoints.api);
 
     fetch(`api/Event/GetUserRegisteredEvents/`,
       {
@@ -122,15 +125,14 @@ export class MyEvents extends React.Component<IState, IProps> {
       });
   }
 
-
-  render() {
-    let registeredEvents = this.state.loadingRegistered
+  public render(): React.ReactNode {
+    const registeredEvents = this.state.loadingRegistered
       ? <p><em>Loading...</em></p>
-      : MyEvents.renderEventsTable(this.state.registeredEvents,"registered" );
+      : MyEvents.renderEventsTable(this.state.registeredEvents, EventType.Registered);
 
-    let ownedEvents = this.state.loadingOwned
+    const ownedEvents = this.state.loadingOwned
       ? <p><em>Loading...</em></p>
-      : MyEvents.renderEventsTable(this.state.ownedEvents,"owned");
+      : MyEvents.renderEventsTable(this.state.ownedEvents, EventType.Owned);
 
     return (
       <div>

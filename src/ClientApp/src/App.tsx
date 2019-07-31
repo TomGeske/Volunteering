@@ -7,7 +7,7 @@ import { NewEvent } from './components/NewEvent';
 import { MyEvents } from './components/MyEvents';
 
 export default class App extends React.Component {
-  render() {
+  public render(): React.ReactNode {
     return (
       <Layout>
         <Route exact path='/' component={Events} />

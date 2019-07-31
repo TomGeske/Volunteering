@@ -2,16 +2,16 @@
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
 
 class TelemetryService {
-  reactPlugin: ReactPlugin;
-  appInsights?: ApplicationInsights;
+  public reactPlugin: ReactPlugin;
+  public appInsights?: ApplicationInsights;
 
-  constructor() {
+  public constructor() {
     this.reactPlugin = new ReactPlugin();
     this.appInsights = undefined;
   }
 
-  initialize(reactPluginConfig) {
-    let INSTRUMENTATION_KEY = 'a450a2bc-72cd-45a6-8e75-f3afed3b2382'; // Enter your instrumentation key here
+  public initialize(reactPluginConfig): void {
+    const INSTRUMENTATION_KEY = 'a450a2bc-72cd-45a6-8e75-f3afed3b2382'; // Enter your instrumentation key here
 
     this.appInsights = new ApplicationInsights({
       config: {
@@ -28,4 +28,4 @@ class TelemetryService {
   }
 }
 
-export let ai = new TelemetryService();
+export const ai = new TelemetryService();

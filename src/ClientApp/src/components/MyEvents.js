@@ -19,6 +19,11 @@ var react_router_dom_1 = require("react-router-dom");
 var reactstrap_1 = require("reactstrap");
 var TelemetryService_1 = require("../TelemetryService");
 var adalConfig_1 = require("../adalConfig");
+var EventType;
+(function (EventType) {
+    EventType[EventType["Registered"] = 0] = "Registered";
+    EventType[EventType["Owned"] = 1] = "Owned";
+})(EventType || (EventType = {}));
 var MyEvents = /** @class */ (function (_super) {
     __extends(MyEvents, _super);
     function MyEvents(props) {
@@ -61,7 +66,7 @@ var MyEvents = /** @class */ (function (_super) {
         return _this;
     }
     MyEvents.renderEventButton = function (type, id) {
-        if (type === 'registered') {
+        if (type === EventType.Registered) {
             return (React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb3 bg-green", to: {
                     pathname: '/eventdetails/' + id
                 } }, "Details"));
@@ -91,18 +96,18 @@ var MyEvents = /** @class */ (function (_super) {
                     React.createElement("td", null,
                         React.createElement("p", null, _event.registrations == null ? 0 : _event.registrations.length)),
                     React.createElement("td", null,
-                        React.createElement("p", null, new Date(_event.eventdate).toLocaleDateString())),
+                        React.createElement("p", null, new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString())),
                     React.createElement("td", { align: "right" }, _this.renderEventButton(type, _event.id)))); })))));
     };
     MyEvents.prototype.render = function () {
         var registeredEvents = this.state.loadingRegistered
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
-            : MyEvents.renderEventsTable(this.state.registeredEvents, "registered");
+            : MyEvents.renderEventsTable(this.state.registeredEvents, EventType.Registered);
         var ownedEvents = this.state.loadingOwned
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
-            : MyEvents.renderEventsTable(this.state.ownedEvents, "owned");
+            : MyEvents.renderEventsTable(this.state.ownedEvents, EventType.Owned);
         return (React.createElement("div", null,
             React.createElement("h1", { className: "text-left" }, "Events I registered for"),
             React.createElement("br", null),

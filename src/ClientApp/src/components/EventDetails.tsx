@@ -9,23 +9,20 @@ import {
 import { ai } from '../TelemetryService';
 import config from '../Config';
 import EventSignUp from './EventSignUp';
-import { IEvent } from '../entities/IEvent'
+import { Event } from '../entities/Event'
+import { Registration } from '../entities/Registration'
 import {
   authContext,
   adalConfig,
 } from '../adalConfig';
 
 interface State {
-  event: IEvent;
+  event: Event;
   loading: boolean;
 }
 
-interface Props {
-  
-}
-
-export class EventDetails extends React.Component<State, Props> {
-  state: State =
+export class EventDetails extends React.Component<State, {}> {
+  public state: State =
   {
     loading: true,
     event: {
@@ -62,7 +59,7 @@ export class EventDetails extends React.Component<State, Props> {
 
   private eventid: string;
 
-  private static renderEventDetails(_event: IEvent) {
+  private static renderEventDetails(_event: Event): React.ReactNode {
     return (
       <>
         <h1 className="text-center">{_event.name}</h1>
@@ -168,7 +165,7 @@ export class EventDetails extends React.Component<State, Props> {
     );
   }
 
-  private static renderRegistrationBody(_event: IEvent) {
+  private static renderRegistrationBody(_event: Event): React.ReactNode {
     if (_event.registrations == null) {
       return (
         <tr className="justify-content-md-center">
@@ -182,7 +179,7 @@ export class EventDetails extends React.Component<State, Props> {
     }
     else {
       return (
-        _event.registrations.map(_registration =>
+        _event.registrations.map((_registration): JSX.Element  =>
           <tr key={_registration.userId} className="justify-content-md-center">
             <td >
               <p>
@@ -201,7 +198,7 @@ export class EventDetails extends React.Component<State, Props> {
     }
   }
 
-  private static bindBoundery(event: IEvent): IEvent {
+  private static bindBoundery(event: Event): Event {
     if (event.eventLocation && event.eventLocation.length > 0) {
       event.boundary = {
         search: event.eventLocation,
@@ -218,7 +215,7 @@ export class EventDetails extends React.Component<State, Props> {
     return event;
   }
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.eventid = props.match.params.eventid;
 
@@ -239,8 +236,8 @@ export class EventDetails extends React.Component<State, Props> {
       });
   }
 
-  render(): React.ReactNode {
-    let contents = this.state.loading
+  public render(): React.ReactNode {
+    const contents = this.state.loading
       ? <p><em>Loading...</em></p>
       : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));
 

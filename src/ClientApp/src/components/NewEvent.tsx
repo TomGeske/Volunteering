@@ -4,7 +4,7 @@ import { Alert, Col, Row, Button, Form, FormGroup, Label, Input, CustomInput } f
 import { ai } from '../TelemetryService';
 import { authContext, adalConfig, } from '../adalConfig';
 
-interface IState {
+interface State {
   uiState: 'new' | 'missing_required_field' | 'save_error' | 'date_ordering_error' | 'save_successful';
   title: FormValue;
   startDate: FormValue;
@@ -30,12 +30,8 @@ interface FormValue {
   isValid?: boolean;
 }
 
-interface IProps {
-}
-
-
-export class NewEvent extends React.Component<IState, IProps> {
-  state: IState = {
+export class NewEvent extends React.Component<State, {}> {
+  public state: State = {
     uiState: 'new',
     title: {},
     startDate: {},
@@ -56,23 +52,23 @@ export class NewEvent extends React.Component<IState, IProps> {
     acknowledge2: {}
   };
 
-  constructor(props) {
+  public constructor(props) {
     super(props);
     this.tryToSave = this.tryToSave.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.saveDataOnServer = this.saveDataOnServer.bind(this);
   }
 
-  private tryToSave(event: React.MouseEvent<any, MouseEvent>): void {
+  private tryToSave(event: React.MouseEvent<NewEvent, MouseEvent>): void {
     const newState = {
       uiState: 'new'
     };
 
-    const textFieldsToValidate: (keyof IState)[] = [
+    const textFieldsToValidate: (keyof State)[] = [
       'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'department'
     ];
 
-    textFieldsToValidate.forEach((propertyName: keyof IState) => {
+    textFieldsToValidate.forEach((propertyName: keyof State): void => {
       const existingProperty: FormValue = this.state[propertyName] as FormValue;
       newState[propertyName] = {};
       const newProperty: FormValue = newState[propertyName];
@@ -86,11 +82,11 @@ export class NewEvent extends React.Component<IState, IProps> {
       }
     });
 
-    const checkboxFieldsToValidate: (keyof IState)[] = [
+    const checkboxFieldsToValidate: (keyof State)[] = [
       'acknowledge1', 'acknowledge2'
     ];
 
-    checkboxFieldsToValidate.forEach((propertyName: keyof IState) => {
+    checkboxFieldsToValidate.forEach((propertyName: keyof State) => {
       const existingProperty: FormValue = this.state[propertyName] as FormValue;
       newState[propertyName] = {};
       const newProperty: FormValue = newState[propertyName];
@@ -142,7 +138,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     return new Date(endDate + 'T' + endTime);
   }
 
-  private saveDataOnServer() {
+  private saveDataOnServer(): void {
     const token = authContext.getCachedToken(adalConfig.endpoints.api);
 
     const startDateTime = this.getStartDateTime();
@@ -178,7 +174,7 @@ export class NewEvent extends React.Component<IState, IProps> {
       });
   }
 
-  private handleInputChange(event) {
+  private handleInputChange(event): void {
     const target = event.target;
     const name = target.name;
     const newState = {};
@@ -197,7 +193,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     this.setState(newState);
   }
 
-  private renderCheckBoxFormGroup(propertyName: keyof IState, label: string, text: string): JSX.Element | null {
+  private renderCheckBoxFormGroup(propertyName: keyof State, label: string, text: string): JSX.Element | null {
     const property = this.state[propertyName];
     if (typeof property !== 'boolean' && typeof property !== 'string' && property != null) {
       const value = property.value;
@@ -216,7 +212,9 @@ export class NewEvent extends React.Component<IState, IProps> {
 
       );
     } else {
-      return null;
+      return (
+        <></>
+      );
     }
   }
 
@@ -454,7 +452,7 @@ export class NewEvent extends React.Component<IState, IProps> {
     );
   }
 
-  private renderFormErrorMessages() {
+  private renderFormErrorMessages(): JSX.Element {
     if (this.state.uiState === 'missing_required_field') {
       return (
         <Alert color="danger">
@@ -480,11 +478,13 @@ export class NewEvent extends React.Component<IState, IProps> {
         </Alert>
       );
     } else {
-      return null;
+      return (
+        <></>
+      );
     }
   }
 
-  render() {
+  public render(): React.ReactNode {
     return (
       <div>
         <h1 className="text-center">Create new event</h1>
