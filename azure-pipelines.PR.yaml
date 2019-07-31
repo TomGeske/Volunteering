@@ -1,6 +1,8 @@
 pool:
   vmImage: 'windows-2019'
 
+trigger: none
+
 pr:
 - master
 
