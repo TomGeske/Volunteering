@@ -44,7 +44,7 @@ namespace Microsoft.WWV.Controllers
             _dbName = _config["EventDB:DbName"];
             _bingApiKey = _config["BingApiKey"];
 
-            _db = new MongoClient(getDbConnectionString()).GetDatabase(_dbName);
+            _db = new MongoClient(GetDbConnectionString()).GetDatabase(_dbName);
         }
 
         [HttpGet]
@@ -108,7 +108,7 @@ namespace Microsoft.WWV.Controllers
             }
             if (_data.Country != null && _data.EventLocation != null)
             {
-                _data = await resolveEventLocationAsync(_data);
+                _data = await ResolveEventLocationAsync(_data);
             }
 
             // some meta data
@@ -122,7 +122,7 @@ namespace Microsoft.WWV.Controllers
         }
 
         [HttpPut("[action]")]
-        public async Task<IActionResult> updateEvent([FromBody] Event _data)
+        public async Task<IActionResult> UpdateEvent([FromBody] Event _data)
         {
             if (string.IsNullOrEmpty(_data.Country))
             {
@@ -136,7 +136,7 @@ namespace Microsoft.WWV.Controllers
 
             if (_data.Country != null && _data.EventLocation != null)
             {
-                _data = await resolveEventLocationAsync(_data);
+                _data = await ResolveEventLocationAsync(_data);
             }
 
             // some meta data
@@ -201,13 +201,17 @@ namespace Microsoft.WWV.Controllers
             return Ok(modifications);
         }
 
-        private MongoClientSettings getDbConnectionString()
+        private MongoClientSettings GetDbConnectionString()
         {
-            MongoClientSettings settings = new MongoClientSettings();
-            settings.Server = new MongoServerAddress(_host, 10255);
-            settings.UseSsl = true;
-            settings.SslSettings = new SslSettings();
-            settings.SslSettings.EnabledSslProtocols = SslProtocols.Tls12;
+            var settings = new MongoClientSettings
+            {
+                Server = new MongoServerAddress(_host, 10255),
+                UseSsl = true,
+                SslSettings = new SslSettings
+                {
+                    EnabledSslProtocols = SslProtocols.Tls12
+                }
+            };
 
             MongoIdentity identity = new MongoInternalIdentity(_dbName, _userName);
             MongoIdentityEvidence evidence = new PasswordEvidence(_password);
@@ -217,7 +221,7 @@ namespace Microsoft.WWV.Controllers
             return settings;
         }
 
-        private async Task<Event> resolveEventLocationAsync(Event aEvent)
+        private async Task<Event> ResolveEventLocationAsync(Event aEvent)
         {
             var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);
             var jsonString = await _client.GetStringAsync(url);
