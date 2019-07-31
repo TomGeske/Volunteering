@@ -124,6 +124,7 @@ export class EventDetails extends React.Component<State, {}> {
         <Row>
           <Col>
             <b>Meeting Point Location:</b>
+            ,&nbsp;
             {_event.eventLocation}
             ,&nbsp;
             {_event.country}
