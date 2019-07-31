@@ -1,6 +1,18 @@
 pool:
   vmImage: 'windows-2019'
 
+pr: none
+
+trigger:
+  batch: True
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+    - LICENSE
+
 variables:
   BuildConfiguration: Release
 
