@@ -24,6 +24,7 @@ namespace Microsoft.WWV
         public DateTime Eventdate { get; set; }
         public DateTime EventEndDate { get; set; }
         public string StartEventTime { get; set; }
+        public string EndEventTime { get; set; }
         public string EventLocation { get; set; }
         public string Url { get; set; }
         public string MediaLink { get; set; }

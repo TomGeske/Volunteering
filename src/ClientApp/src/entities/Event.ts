@@ -14,6 +14,7 @@ export interface Event {
   eventdate: Date;
   eventEndDate: Date;
   startEventTime: string;
+  endEventTime: string;
   url: string;
   description: string;
   eventType: string;

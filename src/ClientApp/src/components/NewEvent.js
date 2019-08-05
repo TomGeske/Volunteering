@@ -140,6 +140,7 @@ var NewEvent = /** @class */ (function (_super) {
                 eventdate: startDateTime.toISOString(),
                 eventEndDate: endDateTime.toISOString(),
                 startEventTime: this.state.startTime.value,
+                endEventTime: this.state.endTime.value,
                 eventLocation: this.state.address.value + ' ' + this.state.addressNumber.value + ', ' + this.state.city.value + ' Switzerland',
                 url: this.state.website.value,
                 registrations: []
