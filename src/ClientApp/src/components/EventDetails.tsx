@@ -10,7 +10,6 @@ import { ai } from '../TelemetryService';
 import config from '../Config';
 import EventSignUp from './EventSignUp';
 import { Event } from '../entities/Event'
-import { Registration } from '../entities/Registration'
 import {
   authContext,
   adalConfig,
@@ -38,6 +37,7 @@ export class EventDetails extends React.Component<State, {}> {
       eventdate: new Date(),
       eventEndDate: new Date(),
       startEventTime: 'tbd',
+      endEventTime: 'tbd',
       url: 'tbd',
       description: 'tbd',
       mediaLink: 'tbd',
@@ -67,7 +67,7 @@ export class EventDetails extends React.Component<State, {}> {
           <Col xs={6} md={4}>
             <p>
               <b>Event Organisation: </b>
-              {_event.company}
+              <a href={_event.url} title={_event.company}>{_event.company}</a>
             </p>
           </Col>
           <Col xs={6} md={4}>
@@ -101,12 +101,14 @@ export class EventDetails extends React.Component<State, {}> {
             <p>
               <b>Time: </b>
               {_event.startEventTime}
+              &nbsp;-&nbsp;
+              {_event.endEventTime}
             </p>
           </Col>
           <Col xs={6} md={4}>
             <p>
               <b>
-                <a href={_event.url}>Website</a>
+                {EventDetails.renderMediaLink(_event.mediaLink)}
               </b>
             </p>
           </Col>
@@ -124,7 +126,7 @@ export class EventDetails extends React.Component<State, {}> {
         <Row>
           <Col>
             <b>Meeting Point Location:</b>
-            ,&nbsp;
+            &nbsp;
             {_event.eventLocation}
             ,&nbsp;
             {_event.country}
@@ -180,7 +182,7 @@ export class EventDetails extends React.Component<State, {}> {
     }
     else {
       return (
-        _event.registrations.map((_registration): JSX.Element  =>
+        _event.registrations.map((_registration): JSX.Element =>
           <tr key={_registration.userId} className="justify-content-md-center">
             <td >
               <p>
@@ -196,6 +198,17 @@ export class EventDetails extends React.Component<State, {}> {
             </td>
           </tr>
         ));
+    }
+  }
+
+  private static renderMediaLink(mediaLink: string): JSX.Element {
+    if (mediaLink === '') {
+      return (
+        <a href={mediaLink} target="_blank">Media Link</a>
+      );
+    }
+    else {
+      return (<></>);
     }
   }
 
