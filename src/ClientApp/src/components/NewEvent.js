@@ -298,10 +298,12 @@ var NewEvent = /** @class */ (function (_super) {
                     React.createElement(reactstrap_1.Input, { type: "select", defaultValue: "none", name: "department", id: "department", value: this.state.department.value, onChange: this.handleInputChange, invalid: this.state.department.isValid === false },
                         React.createElement("option", { disabled: true, value: "none" }, " -- select an option -- "),
                         React.createElement("option", null, "ATU"),
-                        React.createElement("option", null, "STU"),
                         React.createElement("option", null, "CSU"),
-                        React.createElement("option", null, "OCP & SMB"),
+                        React.createElement("option", null, "Engineering"),
                         React.createElement("option", null, "M&O"),
+                        React.createElement("option", null, "OCP & SMB"),
+                        React.createElement("option", null, "Services"),
+                        React.createElement("option", null, "STU"),
                         React.createElement("option", null, "Other / Don't Know"))))));
     };
     NewEvent.prototype.renderFormErrorMessages = function () {

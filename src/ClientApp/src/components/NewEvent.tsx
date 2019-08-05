@@ -441,10 +441,12 @@ export class NewEvent extends React.Component<State, {}> {
               invalid={this.state.department.isValid === false}>
               <option disabled value="none"> -- select an option -- </option>
               <option>ATU</option>
-              <option>STU</option>
               <option>CSU</option>
-              <option>OCP &amp; SMB</option>
+              <option>Engineering</option>
               <option>M&amp;O</option>
+              <option>OCP &amp; SMB</option>
+              <option>Services</option>
+              <option>STU</option>
               <option>Other / Don't Know</option>
             </Input>
           </Col>
