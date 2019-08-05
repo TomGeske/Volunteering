@@ -22,40 +22,40 @@ interface State {
 
 export class EventDetails extends React.Component<State, {}> {
   public state: State =
-  {
-    loading: true,
-    event: {
-      id: 'tbd',
-      name: 'tbd',
-      company: 'tbd',
-      ownerName1: 'tbd',
-      ownerName2: 'tbd',
-      ownerEmail: 'tbd',
-      department: 'tbd',
-      country: 'tbd',
-      eventLocation: 'tbd',
-      eventdate: new Date(),
-      eventEndDate: new Date(),
-      startEventTime: 'tbd',
-      endEventTime: 'tbd',
-      url: 'tbd',
-      description: 'tbd',
-      mediaLink: 'tbd',
-      registrations: [],
-      eventType: 'tbd',
-      boundary: {
-        search: 'Switzerland',
-        polygonStyle: {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2,
-        },
-        option: {
-          entityType: 'PopulatedPlace',
-        },
-      }
-    },
-  };
+    {
+      loading: true,
+      event: {
+        id: 'tbd',
+        name: 'tbd',
+        company: 'tbd',
+        ownerName1: 'tbd',
+        ownerName2: 'tbd',
+        ownerEmail: 'tbd',
+        department: 'tbd',
+        country: 'tbd',
+        eventLocation: 'tbd',
+        eventdate: new Date(),
+        eventEndDate: new Date(),
+        startEventTime: 'tbd',
+        endEventTime: 'tbd',
+        url: 'tbd',
+        description: 'tbd',
+        mediaLink: 'tbd',
+        registrations: [],
+        eventType: 'tbd',
+        boundary: {
+          search: 'Switzerland',
+          polygonStyle: {
+            fillColor: 'rgba(161,224,255,0.4)',
+            strokeColor: '#a495b2',
+            strokeThickness: 2,
+          },
+          option: {
+            entityType: 'PopulatedPlace',
+          },
+        }
+      },
+    };
 
   private eventid: string;
 
@@ -67,7 +67,7 @@ export class EventDetails extends React.Component<State, {}> {
           <Col xs={6} md={4}>
             <p>
               <b>Event Organisation: </b>
-              {_event.company}
+              <a href={_event.url} title={_event.company}>{_event.company}</a>
             </p>
           </Col>
           <Col xs={6} md={4}>
@@ -108,7 +108,7 @@ export class EventDetails extends React.Component<State, {}> {
           <Col xs={6} md={4}>
             <p>
               <b>
-                <a href={_event.url}>Website</a>
+                {EventDetails.renderMediaLink(_event.mediaLink)}
               </b>
             </p>
           </Col>
@@ -182,7 +182,7 @@ export class EventDetails extends React.Component<State, {}> {
     }
     else {
       return (
-        _event.registrations.map((_registration): JSX.Element  =>
+        _event.registrations.map((_registration): JSX.Element =>
           <tr key={_registration.userId} className="justify-content-md-center">
             <td >
               <p>
@@ -198,6 +198,17 @@ export class EventDetails extends React.Component<State, {}> {
             </td>
           </tr>
         ));
+    }
+  }
+
+  private static renderMediaLink(mediaLink: string): JSX.Element {
+    if (mediaLink === '') {
+      return (
+        <a href={mediaLink} target="_blank">Media Link</a>
+      );
+    }
+    else {
+      return (<></>);
     }
   }
 

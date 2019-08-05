@@ -82,7 +82,7 @@ var EventDetails = /** @class */ (function (_super) {
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
                         React.createElement("b", null, "Event Organisation: "),
-                        _event.company)),
+                        React.createElement("a", { href: _event.url, title: _event.company }, _event.company))),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
                         React.createElement("b", null, "Date: "),
@@ -110,8 +110,7 @@ var EventDetails = /** @class */ (function (_super) {
                         _event.endEventTime)),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
-                        React.createElement("b", null,
-                            React.createElement("a", { href: _event.url }, "Website"))))),
+                        React.createElement("b", null, EventDetails.renderMediaLink(_event.mediaLink))))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, null, _event.description)),
             React.createElement(reactstrap_1.Row, null,
@@ -158,6 +157,14 @@ var EventDetails = /** @class */ (function (_super) {
                     React.createElement("td", null,
                         React.createElement("p", null, new Date(Date.parse(_registration.createdTS.toString())).toLocaleDateString())));
             }));
+        }
+    };
+    EventDetails.renderMediaLink = function (mediaLink) {
+        if (mediaLink === '') {
+            return (React.createElement("a", { href: mediaLink, target: "_blank" }, "Media Link"));
+        }
+        else {
+            return (React.createElement(React.Fragment, null));
         }
     };
     EventDetails.bindBoundery = function (event) {

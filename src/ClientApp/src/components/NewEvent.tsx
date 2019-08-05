@@ -163,6 +163,7 @@ export class NewEvent extends React.Component<State, {}> {
         endEventTime: this.state.endTime.value,
         eventLocation: this.state.address.value + ' ' + this.state.addressNumber.value + ', ' + this.state.city.value + ' Switzerland',
         url: this.state.website.value,
+        mediaLink: this.state.mediaLink.value,
         registrations: []
       })
     })
