@@ -22,40 +22,40 @@ interface State {
 
 export class EventDetails extends React.Component<State, {}> {
   public state: State =
-    {
-      loading: true,
-      event: {
-        id: 'tbd',
-        name: 'tbd',
-        company: 'tbd',
-        ownerName1: 'tbd',
-        ownerName2: 'tbd',
-        ownerEmail: 'tbd',
-        department: 'tbd',
-        country: 'tbd',
-        eventLocation: 'tbd',
-        eventdate: new Date(),
-        eventEndDate: new Date(),
-        startEventTime: 'tbd',
-        endEventTime: 'tbd',
-        url: 'tbd',
-        description: 'tbd',
-        mediaLink: 'tbd',
-        registrations: [],
-        eventType: 'tbd',
-        boundary: {
-          search: 'Switzerland',
-          polygonStyle: {
-            fillColor: 'rgba(161,224,255,0.4)',
-            strokeColor: '#a495b2',
-            strokeThickness: 2,
-          },
-          option: {
-            entityType: 'PopulatedPlace',
-          },
-        }
-      },
-    };
+  {
+    loading: true,
+    event: {
+      id: 'tbd',
+      name: 'tbd',
+      company: 'tbd',
+      ownerName1: 'tbd',
+      ownerName2: 'tbd',
+      ownerEmail: 'tbd',
+      department: 'tbd',
+      country: 'tbd',
+      eventLocation: 'tbd',
+      eventdate: new Date(),
+      eventEndDate: new Date(),
+      startEventTime: 'tbd',
+      endEventTime: 'tbd',
+      url: 'tbd',
+      description: 'tbd',
+      mediaLink: 'tbd',
+      registrations: [],
+      eventType: 'tbd',
+      boundary: {
+        search: 'Switzerland',
+        polygonStyle: {
+          fillColor: 'rgba(161,224,255,0.4)',
+          strokeColor: '#a495b2',
+          strokeThickness: 2,
+        },
+        option: {
+          entityType: 'PopulatedPlace',
+        },
+      }
+    },
+  };
 
   private eventid: string;
 
