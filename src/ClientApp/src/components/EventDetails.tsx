@@ -202,7 +202,8 @@ export class EventDetails extends React.Component<State, {}> {
   }
 
   private static renderMediaLink(mediaLink: string): JSX.Element {
-    if (mediaLink === '') {
+    console.trace('mediaLink: ' + mediaLink);
+    if (mediaLink !== null && mediaLink !== '') {
       return (
         <a href={mediaLink} target="_blank">Media Link</a>
       );
