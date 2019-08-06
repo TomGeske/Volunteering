@@ -160,7 +160,6 @@ var EventDetails = /** @class */ (function (_super) {
         }
     };
     EventDetails.renderMediaLink = function (mediaLink) {
-        console.trace('mediaLink: ' + mediaLink);
         if (mediaLink !== null && mediaLink !== '') {
             return (React.createElement("a", { href: mediaLink, target: "_blank" }, "Media Link"));
         }
