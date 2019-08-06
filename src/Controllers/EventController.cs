@@ -20,18 +20,17 @@ namespace Microsoft.WWV.Controllers
     [Route("api/[controller]")]
     public class EventController : Controller
     {
+        private const string defaultCountry = "Switzerland";
         private readonly IConfiguration _config;
 
         private readonly string _host;
         private readonly string _userName;
-        // Todo: should go to KeyVault: https://azure.microsoft.com/en-us/resources/samples/key-vault-dotnet-core-quickstart/
         private readonly string _password;
         private readonly string _dbName;
 
         private readonly string _bingApiKey;
 
         private  readonly HttpClient _client = new HttpClient();
-
         private readonly IMongoDatabase _db;
 
         public EventController(IConfiguration config)
@@ -50,13 +49,14 @@ namespace Microsoft.WWV.Controllers
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
-           return _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+            var now = DateTime.UtcNow.Date;
+            return _db.GetCollection<Event>("events").Find(c => c.Country == defaultCountry && (c.Eventdate >= now || c.EventEndDate >= now)).ToList();
         }
 
         [HttpGet("[action]")]
         public IEnumerable<Event> GetUserRegisteredEvents()
         {
-            var events = _db.GetCollection<Event>("events").Find(new BsonDocument()).ToList();
+            var events = _db.GetCollection<Event>("events").Find(c => c.Country == defaultCountry).ToList();
             var registeredEvents = new List<Event>();
 
             foreach (var e in events)
@@ -85,7 +85,7 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            var item = _db.GetCollection<Event>("events").Find(c => c.Id == id).FirstOrDefault();
+            var item = _db.GetCollection<Event>("events").Find(c => c.Country == defaultCountry && c.Id == id).FirstOrDefault();
 
             if (item == null)
             {
@@ -147,7 +147,7 @@ namespace Microsoft.WWV.Controllers
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
             var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
-            Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
+            Builders<Event>.Filter.Eq(c => c.Country, defaultCountry);
 
             var updateEvent = _db.GetCollection<Event>("events").Find(eventFilter).FirstOrDefault();
 
@@ -169,7 +169,7 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, "Switzerland");
+            var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, defaultCountry);
             var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
 
             if (item == null)
