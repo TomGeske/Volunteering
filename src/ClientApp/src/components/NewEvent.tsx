@@ -59,6 +59,10 @@ export class NewEvent extends React.Component<State, {}> {
     this.saveDataOnServer = this.saveDataOnServer.bind(this);
   }
 
+  public componentDidMount(): void {
+    document.title = "MS Volunteering: Create new event"
+  }
+
   private tryToSave(event: React.MouseEvent<NewEvent, MouseEvent>): void {
     const newState = {
       uiState: 'new'

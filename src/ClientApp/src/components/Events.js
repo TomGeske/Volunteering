@@ -58,7 +58,7 @@ var Events = /** @class */ (function (_super) {
                     "\u00A0",
                     _event.eventType)),
             React.createElement(reactstrap_1.Col, { sm: true },
-                React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb1 bg-green", to: { pathname: '/eventdetails/' + _event.id } }, "Details"),
+                React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb1 bg-green", "aria-label": _event.name, to: { pathname: '/eventdetails/' + _event.id } }, "Details"),
                 React.createElement("br", null),
                 React.createElement("b", null, "Date:"),
                 "\u00A0",
@@ -66,7 +66,7 @@ var Events = /** @class */ (function (_super) {
                 "\u00A0-\u00A0",
                 new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()),
             React.createElement(reactstrap_1.Col, null,
-                React.createElement("div", { className: "map-small" },
+                React.createElement("div", { className: "map-small", "aria-label": _event.eventLocation },
                     React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" }))))); }));
     };
     Events.bindPushPins = function (events) {
@@ -85,16 +85,20 @@ var Events = /** @class */ (function (_super) {
         }
         return events;
     };
+    Events.prototype.componentDidMount = function () {
+        document.title = "MS Volunteering: All events";
+    };
     Events.prototype.render = function () {
         var contents = this.state.loading
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
             : Events.renderEventsTable(Events.bindPushPins(this.state.events));
         return (React.createElement("div", null,
-            React.createElement("a", { className: "btn btn-primary btn-lg", href: "./newevent", role: "button" }, "Create event \u00BB"),
+            React.createElement(react_router_dom_1.Link, { className: "btn btn-primary btn-lg", to: { pathname: '/newevent' } }, "Create event \u00BB"),
             React.createElement("h2", { className: "text-center" }, "Upcoming events"),
             React.createElement("br", null),
-            contents));
+            contents,
+            React.createElement("br", null)));
     };
     return Events;
 }(React.Component));

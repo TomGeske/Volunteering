@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WWV.Models;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -23,27 +21,20 @@ namespace Microsoft.WWV.Controllers
         private const string defaultCountry = "Switzerland";
         private readonly IConfiguration _config;
 
-        private readonly string _host;
-        private readonly string _userName;
-        private readonly string _password;
         private readonly string _dbName;
-
         private readonly string _bingApiKey;
 
-        private  readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _client;
         private readonly IMongoDatabase _db;
 
-        public EventController(IConfiguration config)
+        public EventController(IConfiguration config, IMongoClient mongoClient, HttpClient restClient)
         {
             _config = config;
-
-            _host = _config["EventDB:ServerName"];
-            _userName = _config["EventDB:UserName"];
-            _password = _config["EventDB:Password"];
             _dbName = _config["EventDB:DbName"];
             _bingApiKey = _config["BingApiKey"];
 
-            _db = new MongoClient(GetDbConnectionString()).GetDatabase(_dbName);
+            _client = restClient;
+            _db = mongoClient.GetDatabase(_dbName);
         }
 
         [HttpGet]
@@ -200,27 +191,7 @@ namespace Microsoft.WWV.Controllers
 
             return Ok(modifications);
         }
-
-        private MongoClientSettings GetDbConnectionString()
-        {
-            var settings = new MongoClientSettings
-            {
-                Server = new MongoServerAddress(_host, 10255),
-                UseSsl = true,
-                SslSettings = new SslSettings
-                {
-                    EnabledSslProtocols = SslProtocols.Tls12
-                }
-            };
-
-            MongoIdentity identity = new MongoInternalIdentity(_dbName, _userName);
-            MongoIdentityEvidence evidence = new PasswordEvidence(_password);
-
-            settings.Credential = new MongoCredential("SCRAM-SHA-1", identity, evidence);
-
-            return settings;
-        }
-
+       
         private async Task<Event> ResolveEventLocationAsync(Event aEvent)
         {
             var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);

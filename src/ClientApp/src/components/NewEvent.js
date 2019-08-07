@@ -47,6 +47,9 @@ var NewEvent = /** @class */ (function (_super) {
         _this.saveDataOnServer = _this.saveDataOnServer.bind(_this);
         return _this;
     }
+    NewEvent.prototype.componentDidMount = function () {
+        document.title = "MS Volunteering: Create new event";
+    };
     NewEvent.prototype.tryToSave = function (event) {
         var _this = this;
         var newState = {

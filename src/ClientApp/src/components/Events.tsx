@@ -47,6 +47,7 @@ export class Events extends React.Component<State, {}> {
           <Col sm>
             <Link
               className="btn btn-primary mb1 bg-green"
+              aria-label={_event.name}
               to={{ pathname: '/eventdetails/' + _event.id }}>
               Details
             </Link>
@@ -58,7 +59,7 @@ export class Events extends React.Component<State, {}> {
             {new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()}
           </Col>
           <Col>
-            <div className="map-small">
+            <div className="map-small" aria-label={_event.eventLocation}>
               <ReactBingmaps
                 id={_event.id}
                 bingmapKey={config.BING_API_KEY}
@@ -91,6 +92,10 @@ export class Events extends React.Component<State, {}> {
     return events;
   }
 
+  public componentDidMount(): void {
+    document.title = "MS Volunteering: All events"
+  }
+
   public constructor(props) {
     super(props);
     this.state = {
@@ -115,10 +120,15 @@ export class Events extends React.Component<State, {}> {
 
     return (
       <div>
-        <a className="btn btn-primary btn-lg" href="./newevent" role="button">Create event »</a>
+        <Link
+          className="btn btn-primary btn-lg"
+          to={{ pathname: '/newevent'}}>
+          Create event »
+        </Link>
         <h2 className="text-center">Upcoming events</h2>
         <br />
         {contents}
+        <br />
       </div>
     );
   }
