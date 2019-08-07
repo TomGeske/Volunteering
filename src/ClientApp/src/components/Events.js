@@ -58,7 +58,7 @@ var Events = /** @class */ (function (_super) {
                     "\u00A0",
                     _event.eventType)),
             React.createElement(reactstrap_1.Col, { sm: true },
-                React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb1 bg-green", to: { pathname: '/eventdetails/' + _event.id } }, "Details"),
+                React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb1 bg-green", "aria-label": _event.name, to: { pathname: '/eventdetails/' + _event.id } }, "Details"),
                 React.createElement("br", null),
                 React.createElement("b", null, "Date:"),
                 "\u00A0",
@@ -94,7 +94,8 @@ var Events = /** @class */ (function (_super) {
             React.createElement("a", { className: "btn btn-primary btn-lg", href: "./newevent", role: "button" }, "Create event \u00BB"),
             React.createElement("h2", { className: "text-center" }, "Upcoming events"),
             React.createElement("br", null),
-            contents));
+            contents,
+            React.createElement("br", null)));
     };
     return Events;
 }(React.Component));

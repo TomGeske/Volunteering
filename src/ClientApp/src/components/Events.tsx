@@ -47,6 +47,7 @@ export class Events extends React.Component<State, {}> {
           <Col sm>
             <Link
               className="btn btn-primary mb1 bg-green"
+              aria-label={_event.name}
               to={{ pathname: '/eventdetails/' + _event.id }}>
               Details
             </Link>
@@ -119,6 +120,7 @@ export class Events extends React.Component<State, {}> {
         <h2 className="text-center">Upcoming events</h2>
         <br />
         {contents}
+        <br />
       </div>
     );
   }
