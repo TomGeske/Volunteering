@@ -95,7 +95,9 @@ var Events = /** @class */ (function (_super) {
             : Events.renderEventsTable(Events.bindPushPins(this.state.events));
         return (React.createElement("div", null,
             React.createElement(react_router_dom_1.Link, { className: "btn btn-primary btn-lg", to: { pathname: '/newevent' } }, "Create event \u00BB"),
-            React.createElement("h2", { className: "text-center" }, "Upcoming events"),
+            React.createElement("h2", { className: "text-center" },
+                this.state.loading ? 'Loading' : this.state.events.length,
+                " Upcoming events"),
             React.createElement("br", null),
             contents,
             React.createElement("br", null)));

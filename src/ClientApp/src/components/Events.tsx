@@ -125,7 +125,7 @@ export class Events extends React.Component<State, {}> {
           to={{ pathname: '/newevent'}}>
           Create event »
         </Link>
-        <h2 className="text-center">Upcoming events</h2>
+        <h2 className="text-center">{this.state.loading ? 'Loading' : this.state.events.length} Upcoming events</h2>
         <br />
         {contents}
         <br />
