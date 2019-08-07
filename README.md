@@ -1,6 +1,9 @@
 # Volunteering
 Create a platform to connect volunteers
 
+# Planning
+Happens in [Azure DevOps](https://dev.azure.com/ms-ch/Volunteering)
+
 # Tools
 1. Visual Studio Code (https://code.visualstudio.com/download)
 2. Node (https://nodejs.org/en/download/)
