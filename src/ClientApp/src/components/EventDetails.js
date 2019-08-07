@@ -20,6 +20,7 @@ var reactstrap_1 = require("reactstrap");
 var TelemetryService_1 = require("../TelemetryService");
 var Config_1 = require("../Config");
 var EventSignUp_1 = require("./EventSignUp");
+var reactstrap_2 = require("reactstrap");
 var adalConfig_1 = require("../adalConfig");
 var EventDetails = /** @class */ (function (_super) {
     __extends(EventDetails, _super);
@@ -46,26 +47,16 @@ var EventDetails = /** @class */ (function (_super) {
                 mediaLink: 'tbd',
                 registrations: [],
                 eventType: 'tbd',
-                boundary: {
-                    search: 'Switzerland',
-                    polygonStyle: {
-                        fillColor: 'rgba(161,224,255,0.4)',
-                        strokeColor: '#a495b2',
-                        strokeThickness: 2,
-                    },
-                    option: {
-                        entityType: 'PopulatedPlace',
-                    },
-                }
+                pushpins: [],
+                coordinates: {
+                    longitude: 46.798333,
+                    latitude: 8.231944,
+                },
             },
         };
         _this.eventid = props.match.params.eventid;
-        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
-        fetch("api/Event/" + _this.eventid, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            }
-        })
+        _this.refreshAttendeeList = _this.refreshAttendeeList.bind(_this);
+        adalConfig_1.adalApiFetch("api/Event/" + _this.eventid)
             .then(function (response) { return response.json(); })
             .then(function (data) {
             _this.setState({
@@ -75,7 +66,7 @@ var EventDetails = /** @class */ (function (_super) {
         });
         return _this;
     }
-    EventDetails.renderEventDetails = function (_event) {
+    EventDetails.prototype.renderEventDetails = function (_event) {
         return (React.createElement(React.Fragment, null,
             React.createElement("h1", { className: "text-center" }, _event.name),
             React.createElement(reactstrap_1.Row, null,
@@ -90,7 +81,7 @@ var EventDetails = /** @class */ (function (_super) {
                         "\u00A0-\u00A0",
                         new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString())),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
-                    React.createElement(EventSignUp_1.default, { event: _event }))),
+                    React.createElement(EventSignUp_1.default, { event: _event, onRegister: this.refreshAttendeeList }))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
@@ -110,7 +101,7 @@ var EventDetails = /** @class */ (function (_super) {
                         _event.endEventTime)),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
-                        React.createElement("b", null, EventDetails.renderMediaLink(_event.mediaLink))))),
+                        React.createElement("b", null, this.renderMediaLink(_event.mediaLink))))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, null, _event.description)),
             React.createElement(reactstrap_1.Row, null,
@@ -123,8 +114,10 @@ var EventDetails = /** @class */ (function (_super) {
                     _event.eventLocation,
                     ",\u00A0",
                     _event.country,
-                    React.createElement("div", { className: "map-large-frame" },
-                        React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, boundary: _event.boundary, zoom: 4, className: "map-large" })))),
+                    React.createElement("div", { className: "map-large-frame" }, _event.coordinates !== null ?
+                        React.createElement(react_bingmaps_1.ReactBingmaps, { id: "_map", bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, className: "map-large" })
+                        :
+                            React.createElement(reactstrap_2.Alert, { color: "warning" }, "Map is not available. Location coordinates not found.")))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, null,
                     React.createElement("br", null))),
@@ -137,13 +130,19 @@ var EventDetails = /** @class */ (function (_super) {
                             React.createElement("tr", null,
                                 React.createElement("th", null, "Name"),
                                 React.createElement("th", null, "Date of Registration"))),
-                        React.createElement("tbody", null, EventDetails.renderRegistrationBody(_event)))))));
+                        React.createElement("tbody", null, this.renderRegistrationBody(_event)))))));
     };
-    EventDetails.renderRegistrationBody = function (_event) {
-        if (_event.registrations == null) {
+    //TODO
+    EventDetails.prototype.refreshAttendeeList = function (reg) {
+        this.setState({
+            loading: false
+        });
+    };
+    EventDetails.prototype.renderRegistrationBody = function (_event) {
+        if (_event.registrations === null || _event.registrations.length == 0) {
             return (React.createElement("tr", { className: "justify-content-md-center" },
                 React.createElement("td", { colSpan: 2 },
-                    React.createElement("p", null, "No registrations yet"))));
+                    React.createElement("p", null, "No registrations yet. Be the first."))));
         }
         else {
             return (_event.registrations.map(function (_registration) {
@@ -159,27 +158,24 @@ var EventDetails = /** @class */ (function (_super) {
             }));
         }
     };
-    EventDetails.renderMediaLink = function (mediaLink) {
-        if (mediaLink === '') {
+    EventDetails.prototype.renderMediaLink = function (mediaLink) {
+        if (mediaLink !== null && mediaLink !== '') {
             return (React.createElement("a", { href: mediaLink, target: "_blank" }, "Media Link"));
         }
         else {
             return (React.createElement(React.Fragment, null));
         }
     };
-    EventDetails.bindBoundery = function (event) {
-        if (event.eventLocation && event.eventLocation.length > 0) {
-            event.boundary = {
-                search: event.eventLocation,
-                polygonStyle: {
-                    fillColor: 'rgba(161,224,255,0.4)',
-                    strokeColor: '#a495b2',
-                    strokeThickness: 2,
-                },
-                option: {
-                    entityType: 'PopulatedPlace',
-                },
-            };
+    EventDetails.prototype.bindPushPin = function (event) {
+        if (event.coordinates !== null
+            && event.coordinates.latitude !== null
+            && event.coordinates.longitude !== null) {
+            event.pushpins = [{
+                    location: [event.coordinates.latitude, event.coordinates.longitude],
+                    option: {
+                        color: 'red'
+                    }
+                }];
         }
         return event;
     };
@@ -187,7 +183,7 @@ var EventDetails = /** @class */ (function (_super) {
         var contents = this.state.loading
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
-            : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));
+            : this.renderEventDetails(this.bindPushPin(this.state.event));
         return (React.createElement("div", null, contents));
     };
     return EventDetails;

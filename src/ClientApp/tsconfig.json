@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "noImplicitAny": false,
-    "removeComments": false,
+    "removeComments": true,
     "sourceMap": true,
     "target": "es6",
     "jsx": "preserve",

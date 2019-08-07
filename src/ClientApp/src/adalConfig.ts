@@ -12,7 +12,7 @@ export const adalConfig: AdalConfig  = {
 
 export const authContext = new AuthenticationContext(adalConfig);
 
-export const adalApiFetch = (fetch, url, options): Promise<AuthenticationContext> => adalFetch(
+export const adalApiFetch = (url: string, options: any = {}): Promise<Response> => adalFetch(
   authContext,
   adalConfig.endpoints.api,
   fetch,

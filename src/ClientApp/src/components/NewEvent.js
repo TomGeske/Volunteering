@@ -52,6 +52,9 @@ var NewEvent = /** @class */ (function (_super) {
         var newState = {
             uiState: 'new'
         };
+        var processingState = {
+            uiState: 'processing'
+        };
         var textFieldsToValidate = [
             'title', 'startDate', 'startTime', 'endDate', 'endTime', 'address', 'city', 'organization', 'category', 'website', 'department'
         ];
@@ -106,6 +109,8 @@ var NewEvent = /** @class */ (function (_super) {
             this.setState(newState);
         }
         else {
+            // disable controls
+            this.setState(processingState);
             this.setState(newState, this.saveDataOnServer);
         }
     };
@@ -344,7 +349,7 @@ var NewEvent = /** @class */ (function (_super) {
                     this.renderDepartmentFormGroup(),
                     this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft'),
                     this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland'),
-                    React.createElement(reactstrap_1.Button, { onClick: this.tryToSave }, "Save")))));
+                    React.createElement(reactstrap_1.Button, { onClick: this.tryToSave, disabled: this.state.uiState === "processing" ? true : false }, this.state.uiState === "processing" ? 'Saving ...' : 'Save')))));
     };
     return NewEvent;
 }(React.Component));

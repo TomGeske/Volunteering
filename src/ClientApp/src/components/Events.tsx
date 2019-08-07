@@ -10,6 +10,7 @@ import config from '../Config';
 import {
   authContext,
   adalConfig,
+  adalApiFetch,
 } from '../adalConfig';
 
 interface State {
@@ -61,7 +62,9 @@ export class Events extends React.Component<State, {}> {
               <ReactBingmaps
                 id={_event.id}
                 bingmapKey={config.BING_API_KEY}
-                boundary={_event.boundary}
+                center={[_event.coordinates.latitude, _event.coordinates.longitude]}
+                pushPins={_event.pushpins}
+                zoom={9}
                 mapOptions={{ showLocateMeButton: false, showMapTypeSelector: false }}
                 className="map-small" />
             </div>
@@ -71,19 +74,19 @@ export class Events extends React.Component<State, {}> {
     );
   }
 
-  private static bindBoundery(events: Event[]): Event[] {
+  private static bindPushPins(events: Event[]): Event[] {
     for (let i = 0; i < events.length; i++) {
-      events[i].boundary = {
-        search: events[i].eventLocation,
-        polygonStyle: {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2,
-        },
-        option: {
-          entityType: 'PopulatedPlace',
-        },
-      };
+      const event: Event = events[i];
+      if (event.coordinates !== null
+        && event.coordinates.latitude !== null
+        && event.coordinates.longitude !== null) {
+        event.pushpins = [{
+          location: [event.coordinates.latitude, event.coordinates.longitude],
+          option: {
+            color: 'red'
+          }
+        }];
+      }
     }
     return events;
   }
@@ -95,15 +98,8 @@ export class Events extends React.Component<State, {}> {
       loading: true,
     };
 
-    const token = authContext.getCachedToken(adalConfig.endpoints.api);
-
-    fetch('api/Event/',
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    ).then(response => response.json())
+    adalApiFetch('api/Event/')
+      .then(response => response.json())
       .then(data => {
         this.setState({
           events: data,
@@ -115,7 +111,7 @@ export class Events extends React.Component<State, {}> {
   public render(): React.ReactNode {
     const contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : Events.renderEventsTable(Events.bindBoundery(this.state.events));
+      : Events.renderEventsTable(Events.bindPushPins(this.state.events));
 
     return (
       <div>

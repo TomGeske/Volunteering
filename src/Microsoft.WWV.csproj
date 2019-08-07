@@ -41,8 +41,6 @@
     <None Remove="ClientApp\src\components\MyEvents.tsx" />
     <None Remove="ClientApp\src\components\NavMenu.tsx" />
     <None Remove="ClientApp\src\components\NewEvent.tsx" />
-    
-    <None Remove="ClientApp\src\entities\Boundary.ts" />
     <None Remove="ClientApp\src\entities\Event.ts" />
     <None Remove="ClientApp\src\entities\Registration.ts" />
 
@@ -58,8 +56,6 @@
     <TypeScriptCompile Include="ClientApp\src\components\MyEvents.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\NavMenu.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\NewEvent.tsx" />
-
-    <TypeScriptCompile Include="ClientApp\src\entities\Boundary.ts" />
     <TypeScriptCompile Include="ClientApp\src\entities\Event.ts" />
     <TypeScriptCompile Include="ClientApp\src\entities\Registration.ts" />
 

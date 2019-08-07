@@ -5,7 +5,7 @@ import { ai } from '../TelemetryService';
 import { authContext, adalConfig, } from '../adalConfig';
 
 interface State {
-  uiState: 'new' | 'missing_required_field' | 'save_error' | 'date_ordering_error' | 'save_successful';
+  uiState: 'processing' | 'new' | 'missing_required_field' | 'save_error' | 'date_ordering_error' | 'save_successful';
   title: FormValue;
   startDate: FormValue;
   startTime: FormValue;
@@ -62,6 +62,10 @@ export class NewEvent extends React.Component<State, {}> {
   private tryToSave(event: React.MouseEvent<NewEvent, MouseEvent>): void {
     const newState = {
       uiState: 'new'
+    };
+
+    const processingState = {
+      uiState: 'processing'
     };
 
     const textFieldsToValidate: (keyof State)[] = [
@@ -122,6 +126,8 @@ export class NewEvent extends React.Component<State, {}> {
     if (newState.uiState !== 'new') {
       this.setState(newState);
     } else {
+      // disable controls
+      this.setState(processingState);
       this.setState(newState, this.saveDataOnServer);
     }
   }
@@ -507,7 +513,9 @@ export class NewEvent extends React.Component<State, {}> {
             {this.renderDepartmentFormGroup()}
             {this.renderCheckBoxFormGroup('acknowledge1', 'Acknowledgement 1:', 'The volunteering event has no commercial relationship to Microsoft')}
             {this.renderCheckBoxFormGroup('acknowledge2', 'Acknowledgement 2:', 'The volunteering events\' venue is located in Switzerland')}
-            <Button onClick={this.tryToSave}>Save</Button>
+            <Button onClick={this.tryToSave} disabled={this.state.uiState === "processing" ? true : false}>
+              {this.state.uiState === "processing" ? 'Saving ...' : 'Save'}
+            </Button>
           </fieldset>
         </Form>
       </div>

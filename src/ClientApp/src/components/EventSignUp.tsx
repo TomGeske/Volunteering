@@ -10,17 +10,21 @@ import {
 import { Event } from '../entities/Event'
 import {
   authContext,
-  adalConfig,
+  adalApiFetch
 } from '../adalConfig';
+import { Registration } from '../entities/Registration';
 
 interface State {
   show: boolean;
-  uiState: 'Open' | 'registration_successfull' | 'registration_failed';
+  uiState: 'Processing' | 'Open' | 'registration_successfull' | 'registration_failed';
 }
 
 interface Props {
   event: Event;
+  onRegister?: RegistrationAddedEventHandler;
 }
+
+type RegistrationAddedEventHandler = (input: Registration) => void
 
 export default class EventSignUp extends React.Component<Props, State> {
   public state: State = {
@@ -35,30 +39,35 @@ export default class EventSignUp extends React.Component<Props, State> {
     this.handleClose = this.handleClose.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
   }
-
+  
   private handleRegister(): void {
-    // call Registration and pass user & event
-    const token: string = authContext.getCachedToken(adalConfig.endpoints.api);
+    this.setState({ uiState: 'Processing' });
 
-    fetch(`api/Event/AddRegistration/${this.props.event.id}`,
-      {
-        headers: {
-          'Authorization': 'Bearer ' + token,
+    adalApiFetch(`api/Event/AddRegistration/${this.props.event.id}`)
+      .then(response => {
+        if (response.status === 200 || response.status === 201) {
+          this.setState({ uiState: 'registration_successfull' });
+
+          const newRegistration: Registration = {
+            userId: authContext.getCachedUser().userName,
+            createdTS: new Date(Date.now()),
+            name1: authContext.getCachedUser().userName,
+            name2: authContext.getCachedUser().profile.lastName,
+          };
+
+          this.props.event.registrations.push(newRegistration);
+
+          if (this.props.onRegister) {
+            this.props.onRegister(newRegistration);
+          }
+        } else {
+          this.setState({ uiState: 'registration_failed' });
         }
-      }
-    ).then(response => {
-      if (response.status === 200 || response.status === 201) {
-        this.setState({ uiState: 'registration_successfull' });
-      } else {
-        this.setState({ uiState: 'registration_failed' });
-      }
-    });
+      });
   }
 
   private handleClose(): void {
     if (this.state.uiState === 'registration_successfull') {
-      // ToDo: refresh page
-      //this.props.history.push('/eventdetails/' + this.props.event.id)
       this.setState({ show: false })
     }
     else {
@@ -80,7 +89,7 @@ export default class EventSignUp extends React.Component<Props, State> {
     } else if (this.state.uiState === 'registration_failed') {
       return (
         <Alert color="danger">
-          Registration failed.
+          Registration failed. Please try again later.
         </Alert>
       );
     } else {
@@ -138,8 +147,10 @@ export default class EventSignUp extends React.Component<Props, State> {
               <Button variant="secondary" onClick={this.handleClose}>
                 Close
               </Button>
-              <Button variant="primary" onClick={this.handleRegister}>
-                I agree
+              <Button variant="primary" onClick={this.handleRegister}
+                disabled={this.state.uiState === "Processing" || this.state.uiState === "registration_successfull" ? true : false}
+              >
+                {this.state.uiState === "Processing" ? 'Registering' : 'I agree'}
               </Button>
             </ModalFooter>
           </Modal>

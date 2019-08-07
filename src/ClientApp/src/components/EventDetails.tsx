@@ -10,10 +10,10 @@ import { ai } from '../TelemetryService';
 import config from '../Config';
 import EventSignUp from './EventSignUp';
 import { Event } from '../entities/Event'
-import {
-  authContext,
-  adalConfig,
-} from '../adalConfig';
+import { Button, Alert } from 'reactstrap'
+import { adalApiFetch } from '../adalConfig';
+import { isNullOrUndefined, isNull } from 'util';
+import { Registration } from '../entities/Registration';
 
 interface State {
   event: Event;
@@ -43,23 +43,17 @@ export class EventDetails extends React.Component<State, {}> {
       mediaLink: 'tbd',
       registrations: [],
       eventType: 'tbd',
-      boundary: {
-        search: 'Switzerland',
-        polygonStyle: {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2,
-        },
-        option: {
-          entityType: 'PopulatedPlace',
-        },
-      }
+      pushpins: [],
+      coordinates: {
+        longitude: 46.798333,
+        latitude: 8.231944,
+      },
     },
   };
 
   private eventid: string;
 
-  private static renderEventDetails(_event: Event): React.ReactNode {
+  private renderEventDetails(_event: Event): React.ReactNode {
     return (
       <>
         <h1 className="text-center">{_event.name}</h1>
@@ -79,7 +73,7 @@ export class EventDetails extends React.Component<State, {}> {
             </p>
           </Col>
           <Col xs={6} md={4}>
-            <EventSignUp event={_event} />
+            <EventSignUp event={_event} onRegister={this.refreshAttendeeList} />
           </Col>
         </Row>
         <Row>
@@ -108,7 +102,7 @@ export class EventDetails extends React.Component<State, {}> {
           <Col xs={6} md={4}>
             <p>
               <b>
-                {EventDetails.renderMediaLink(_event.mediaLink)}
+                {this.renderMediaLink(_event.mediaLink)}
               </b>
             </p>
           </Col>
@@ -131,13 +125,20 @@ export class EventDetails extends React.Component<State, {}> {
             ,&nbsp;
             {_event.country}
             <div className="map-large-frame">
-              <ReactBingmaps
-                id="_map"
-                bingmapKey={config.BING_API_KEY}
-                boundary={_event.boundary}
-                zoom={4}
-                className="map-large"
-              />
+              {_event.coordinates !== null ?
+                <ReactBingmaps
+                  id="_map"
+                  bingmapKey={config.BING_API_KEY}
+                  center={[_event.coordinates.latitude, _event.coordinates.longitude]}
+                  pushPins={_event.pushpins}
+                  zoom={9}
+                  className="map-large"
+                />
+                :
+                <Alert color="warning">
+                  Map is not available. Location coordinates not found.
+                </Alert>
+              }
             </div>
           </Col>
         </Row>
@@ -159,7 +160,7 @@ export class EventDetails extends React.Component<State, {}> {
                 </tr>
               </thead>
               <tbody>
-                {EventDetails.renderRegistrationBody(_event)}
+                {this.renderRegistrationBody(_event)}
               </tbody>
             </Table>
           </Col>
@@ -168,13 +169,20 @@ export class EventDetails extends React.Component<State, {}> {
     );
   }
 
-  private static renderRegistrationBody(_event: Event): React.ReactNode {
-    if (_event.registrations == null) {
+  //TODO
+  private refreshAttendeeList(reg: Registration): void {
+    this.setState({
+      loading: false
+    });
+  }
+
+  private renderRegistrationBody(_event: Event): React.ReactNode {
+    if (_event.registrations === null || _event.registrations.length == 0) {
       return (
         <tr className="justify-content-md-center">
           <td colSpan={2} >
             <p>
-              No registrations yet
+              No registrations yet. Be the first.
             </p>
           </td>
         </tr>
@@ -201,8 +209,8 @@ export class EventDetails extends React.Component<State, {}> {
     }
   }
 
-  private static renderMediaLink(mediaLink: string): JSX.Element {
-    if (mediaLink === '') {
+  private renderMediaLink(mediaLink: string): JSX.Element {
+    if (mediaLink !== null && mediaLink !== '') {
       return (
         <a href={mediaLink} target="_blank">Media Link</a>
       );
@@ -212,35 +220,27 @@ export class EventDetails extends React.Component<State, {}> {
     }
   }
 
-  private static bindBoundery(event: Event): Event {
-    if (event.eventLocation && event.eventLocation.length > 0) {
-      event.boundary = {
-        search: event.eventLocation,
-        polygonStyle: {
-          fillColor: 'rgba(161,224,255,0.4)',
-          strokeColor: '#a495b2',
-          strokeThickness: 2,
-        },
+  private bindPushPin(event: Event): Event {
+    if (event.coordinates !== null
+      && event.coordinates.latitude !== null
+      && event.coordinates.longitude !== null) {
+      event.pushpins = [{
+        location: [event.coordinates.latitude, event.coordinates.longitude],
         option: {
-          entityType: 'PopulatedPlace',
-        },
-      };
+          color: 'red'
+        }
+      }];
     }
     return event;
   }
 
   public constructor(props) {
     super(props);
+
     this.eventid = props.match.params.eventid;
+    this.refreshAttendeeList = this.refreshAttendeeList.bind(this);
 
-    const token: string = authContext.getCachedToken(adalConfig.endpoints.api);
-
-    fetch(`api/Event/${this.eventid}`,
-      {
-        headers: {
-          'Authorization': 'Bearer ' + token,
-        }
-      })
+    adalApiFetch(`api/Event/${this.eventid}`)
       .then(response => response.json())
       .then((data) => {
         this.setState({
@@ -253,7 +253,7 @@ export class EventDetails extends React.Component<State, {}> {
   public render(): React.ReactNode {
     const contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : EventDetails.renderEventDetails(EventDetails.bindBoundery(this.state.event));
+      : this.renderEventDetails(this.bindPushPin(this.state.event));
 
     return (
       <div>
