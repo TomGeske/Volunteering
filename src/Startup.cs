@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Net.Http;
+using System.Security.Authentication;
 
 namespace Microsoft.WWV
 {
@@ -57,6 +60,23 @@ namespace Microsoft.WWV
             {
                 c.SwaggerDoc("v1", new Info { Title = "Volunteering API", Version = "v1" });
             });
+
+            services.AddScoped<HttpClient>();
+            services.AddScoped<IMongoClient>(sp =>
+                new MongoClient(new MongoClientSettings() {
+                    Server = new MongoServerAddress(Configuration["EventDB:ServerName"], 10255),
+                    UseSsl = true,
+                    SslSettings = new SslSettings
+                    {
+                        EnabledSslProtocols = SslProtocols.Tls12
+                    },
+                    Credential = new MongoCredential(
+                        "SCRAM-SHA-1", 
+                        new MongoInternalIdentity(Configuration["EventDB:DbName"], Configuration["EventDB:UserName"]),
+                        new PasswordEvidence(Configuration["EventDB:Password"])
+                        )
+                })
+            ); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,17 +125,5 @@ namespace Microsoft.WWV
                 }
             });
         }
-
-        //private Action<IApplicationBuilder> ApiAuthentication(IConfiguration configuration)
-        //{
-        //return branch => branch.UseJwtBearerAuthentication(new JwtBearerOptions()
-        //{
-        //    Authority = configuration["Authentication:AzureAd:AADInstance"] + configuration["Authentication:AzureAd:TenantId"],
-        //    Audience = configuration["Authentication:AzureAd:Audience"],
-        //    AutomaticAuthenticate = true,
-        //    AutomaticChallenge = true,
-        //    RequireHttpsMetadata = false
-        //});
-        //}
     }
 }
