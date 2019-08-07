@@ -67,6 +67,9 @@ var EventDetails = /** @class */ (function (_super) {
         return _this;
     }
     EventDetails.prototype.renderEventDetails = function (_event) {
+        if (document) {
+            document.title = "MS Volunteering: " + _event.name;
+        }
         return (React.createElement(React.Fragment, null,
             React.createElement("h1", { className: "text-center" }, _event.name),
             React.createElement(reactstrap_1.Row, null,
@@ -178,6 +181,9 @@ var EventDetails = /** @class */ (function (_super) {
                 }];
         }
         return event;
+    };
+    EventDetails.prototype.componentDidMount = function () {
+        document.title = "MS Volunteering: Loading details...";
     };
     EventDetails.prototype.render = function () {
         var contents = this.state.loading

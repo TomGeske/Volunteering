@@ -110,6 +110,10 @@ export class MyEvents extends React.Component<State, {}> {
       });
   }
 
+  public componentDidMount(): void {
+    document.title = "MS Volunteering: My Profile"
+  }
+
   public render(): React.ReactNode {
     const registeredEvents = this.state.loadingRegistered
       ? <p><em>Loading...</em></p>

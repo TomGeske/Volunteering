@@ -92,6 +92,9 @@ var MyEvents = /** @class */ (function (_super) {
                         React.createElement("p", null, new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString())),
                     React.createElement("td", { align: "right" }, _this.renderEventButton(type, _event.id)))); })))));
     };
+    MyEvents.prototype.componentDidMount = function () {
+        document.title = "MS Volunteering: My Profile";
+    };
     MyEvents.prototype.render = function () {
         var registeredEvents = this.state.loadingRegistered
             ? React.createElement("p", null,

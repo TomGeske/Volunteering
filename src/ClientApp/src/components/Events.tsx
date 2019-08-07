@@ -92,6 +92,10 @@ export class Events extends React.Component<State, {}> {
     return events;
   }
 
+  public componentDidMount(): void {
+    document.title = "MS Volunteering: All events"
+  }
+
   public constructor(props) {
     super(props);
     this.state = {
@@ -116,7 +120,11 @@ export class Events extends React.Component<State, {}> {
 
     return (
       <div>
-        <a className="btn btn-primary btn-lg" href="./newevent" role="button">Create event »</a>
+        <Link
+          className="btn btn-primary btn-lg"
+          to={{ pathname: '/newevent'}}>
+          Create event »
+        </Link>
         <h2 className="text-center">Upcoming events</h2>
         <br />
         {contents}

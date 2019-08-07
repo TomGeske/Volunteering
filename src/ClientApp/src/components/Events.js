@@ -85,13 +85,16 @@ var Events = /** @class */ (function (_super) {
         }
         return events;
     };
+    Events.prototype.componentDidMount = function () {
+        document.title = "MS Volunteering: All events";
+    };
     Events.prototype.render = function () {
         var contents = this.state.loading
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
             : Events.renderEventsTable(Events.bindPushPins(this.state.events));
         return (React.createElement("div", null,
-            React.createElement("a", { className: "btn btn-primary btn-lg", href: "./newevent", role: "button" }, "Create event \u00BB"),
+            React.createElement(react_router_dom_1.Link, { className: "btn btn-primary btn-lg", to: { pathname: '/newevent' } }, "Create event \u00BB"),
             React.createElement("h2", { className: "text-center" }, "Upcoming events"),
             React.createElement("br", null),
             contents,

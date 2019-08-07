@@ -54,6 +54,10 @@ export class EventDetails extends React.Component<State, {}> {
   private eventid: string;
 
   private renderEventDetails(_event: Event): React.ReactNode {
+    if (document) {
+      document.title = "MS Volunteering: " + _event.name;
+    }
+    
     return (
       <>
         <h1 className="text-center">{_event.name}</h1>
@@ -248,6 +252,10 @@ export class EventDetails extends React.Component<State, {}> {
           loading: false,
         });
       });
+  }
+
+  public componentDidMount(): void {
+    document.title = "MS Volunteering: Loading details...";
   }
 
   public render(): React.ReactNode {
