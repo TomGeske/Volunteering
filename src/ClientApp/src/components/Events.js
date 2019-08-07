@@ -33,12 +33,8 @@ var Events = /** @class */ (function (_super) {
             events: [],
             loading: true,
         };
-        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
-        fetch('api/Event/', {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        }).then(function (response) { return response.json(); })
+        adalConfig_1.adalApiFetch('api/Event/')
+            .then(function (response) { return response.json(); })
             .then(function (data) {
             _this.setState({
                 events: data,
@@ -71,21 +67,21 @@ var Events = /** @class */ (function (_super) {
                 new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()),
             React.createElement(reactstrap_1.Col, null,
                 React.createElement("div", { className: "map-small" },
-                    React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, boundary: _event.boundary, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" }))))); }));
+                    React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" }))))); }));
     };
-    Events.bindBoundery = function (events) {
+    Events.bindPushPins = function (events) {
         for (var i = 0; i < events.length; i++) {
-            events[i].boundary = {
-                search: events[i].eventLocation,
-                polygonStyle: {
-                    fillColor: 'rgba(161,224,255,0.4)',
-                    strokeColor: '#a495b2',
-                    strokeThickness: 2,
-                },
-                option: {
-                    entityType: 'PopulatedPlace',
-                },
-            };
+            var event_1 = events[i];
+            if (event_1.coordinates !== null
+                && event_1.coordinates.latitude !== null
+                && event_1.coordinates.longitude !== null) {
+                event_1.pushpins = [{
+                        location: [event_1.coordinates.latitude, event_1.coordinates.longitude],
+                        option: {
+                            color: 'red'
+                        }
+                    }];
+            }
         }
         return events;
     };
@@ -93,7 +89,7 @@ var Events = /** @class */ (function (_super) {
         var contents = this.state.loading
             ? React.createElement("p", null,
                 React.createElement("em", null, "Loading..."))
-            : Events.renderEventsTable(Events.bindBoundery(this.state.events));
+            : Events.renderEventsTable(Events.bindPushPins(this.state.events));
         return (React.createElement("div", null,
             React.createElement("a", { className: "btn btn-primary btn-lg", href: "./newevent", role: "button" }, "Create event \u00BB"),
             React.createElement("h2", { className: "text-center" }, "Upcoming events"),

@@ -40,23 +40,16 @@ var MyEvents = /** @class */ (function (_super) {
             loadingRegistered: true,
             loadingOwned: true
         };
-        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
-        fetch("api/Event/GetUserRegisteredEvents/", {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        }).then(function (response) { return response.json(); })
+        adalConfig_1.adalApiFetch("api/Event/GetUserRegisteredEvents/")
+            .then(function (response) { return response.json(); })
             .then(function (data) {
             _this.setState({
                 registeredEvents: data,
                 loadingRegistered: false,
             });
         });
-        fetch("api/Event/GetUserOwnedEvents/", {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        }).then(function (response) { return response.json(); })
+        adalConfig_1.adalApiFetch("api/Event/GetUserOwnedEvents/")
+            .then(function (response) { return response.json(); })
             .then(function (data) {
             _this.setState({
                 ownedEvents: data,

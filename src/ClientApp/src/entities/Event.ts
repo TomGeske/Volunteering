@@ -1,5 +1,4 @@
-﻿import { Boundary } from './Boundary'
-import { Registration } from './Registration'
+﻿import { Registration } from './Registration'
 
 export interface Event {
   id: string;
@@ -20,5 +19,20 @@ export interface Event {
   eventType: string;
   mediaLink: string;
   registrations: Registration[];
-  boundary: Boundary;
+  coordinates: EventCoordinates;
+  pushpins: PushPin[];
+}
+
+export interface EventCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
+export interface PushPin {
+  location: number[];
+  option: PushPinOption;
+}
+
+export interface PushPinOption {
+  color: string;
 }

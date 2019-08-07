@@ -3,10 +3,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Table } from 'reactstrap';
 import { ai } from '../TelemetryService';
-import {
-  authContext,
-  adalConfig,
-} from '../adalConfig';
+import { adalApiFetch } from '../adalConfig';
 import { Event } from '../entities/Event';
 
 interface State {
@@ -94,15 +91,8 @@ export class MyEvents extends React.Component<State, {}> {
       loadingOwned: true
     };
 
-    const token = authContext.getCachedToken(adalConfig.endpoints.api);
-
-    fetch(`api/Event/GetUserRegisteredEvents/`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    ).then(response => response.json())
+    adalApiFetch(`api/Event/GetUserRegisteredEvents/`)
+      .then(response => response.json())
       .then(data => {
         this.setState({
           registeredEvents: data,
@@ -110,13 +100,8 @@ export class MyEvents extends React.Component<State, {}> {
         });
       });
 
-    fetch(`api/Event/GetUserOwnedEvents/`,
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    ).then(response => response.json())
+    adalApiFetch(`api/Event/GetUserOwnedEvents/`)    
+      .then(response => response.json())
       .then(data => {
         this.setState({
           ownedEvents: data,

@@ -11,6 +11,9 @@ exports.adalConfig = {
     cacheLocation: "localStorage",
 };
 exports.authContext = new react_adal_1.AuthenticationContext(exports.adalConfig);
-exports.adalApiFetch = function (fetch, url, options) { return react_adal_1.adalFetch(exports.authContext, exports.adalConfig.endpoints.api, fetch, url, options); };
+exports.adalApiFetch = function (url, options) {
+    if (options === void 0) { options = {}; }
+    return react_adal_1.adalFetch(exports.authContext, exports.adalConfig.endpoints.api, fetch, url, options);
+};
 exports.withAdalLoginApi = react_adal_1.withAdalLogin(exports.authContext, exports.adalConfig.endpoints.api);
 //# sourceMappingURL=adalConfig.js.map

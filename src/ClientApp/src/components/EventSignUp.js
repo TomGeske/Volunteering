@@ -31,15 +31,21 @@ var EventSignUp = /** @class */ (function (_super) {
     }
     EventSignUp.prototype.handleRegister = function () {
         var _this = this;
-        // call Registration and pass user & event
-        var token = adalConfig_1.authContext.getCachedToken(adalConfig_1.adalConfig.endpoints.api);
-        fetch("api/Event/AddRegistration/" + this.props.event.id, {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            }
-        }).then(function (response) {
+        this.setState({ uiState: 'Processing' });
+        adalConfig_1.adalApiFetch("api/Event/AddRegistration/" + this.props.event.id)
+            .then(function (response) {
             if (response.status === 200 || response.status === 201) {
                 _this.setState({ uiState: 'registration_successfull' });
+                var newRegistration = {
+                    userId: adalConfig_1.authContext.getCachedUser().userName,
+                    createdTS: new Date(Date.now()),
+                    name1: adalConfig_1.authContext.getCachedUser().userName,
+                    name2: adalConfig_1.authContext.getCachedUser().profile.lastName,
+                };
+                _this.props.event.registrations.push(newRegistration);
+                if (_this.props.onRegister) {
+                    _this.props.onRegister(newRegistration);
+                }
             }
             else {
                 _this.setState({ uiState: 'registration_failed' });
@@ -48,8 +54,6 @@ var EventSignUp = /** @class */ (function (_super) {
     };
     EventSignUp.prototype.handleClose = function () {
         if (this.state.uiState === 'registration_successfull') {
-            // ToDo: refresh page
-            //this.props.history.push('/eventdetails/' + this.props.event.id)
             this.setState({ show: false });
         }
         else {
@@ -64,7 +68,7 @@ var EventSignUp = /** @class */ (function (_super) {
             return (React.createElement(reactstrap_1.Alert, { color: "success" }, "Registration successfull"));
         }
         else if (this.state.uiState === 'registration_failed') {
-            return (React.createElement(reactstrap_1.Alert, { color: "danger" }, "Registration failed."));
+            return (React.createElement(reactstrap_1.Alert, { color: "danger" }, "Registration failed. Please try again later."));
         }
         else {
             return (React.createElement(React.Fragment, null));
@@ -105,7 +109,7 @@ var EventSignUp = /** @class */ (function (_super) {
                                 React.createElement("a", { href: "https://msvacation", target: "_blank" }, "https://msvacation")))),
                     React.createElement(reactstrap_1.ModalFooter, null,
                         React.createElement(reactstrap_1.Button, { variant: "secondary", onClick: this.handleClose }, "Close"),
-                        React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleRegister }, "I agree")))));
+                        React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleRegister, disabled: this.state.uiState === "Processing" || this.state.uiState === "registration_successfull" ? true : false }, this.state.uiState === "Processing" ? 'Registering' : 'I agree')))));
         }
     };
     return EventSignUp;
