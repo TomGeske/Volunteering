@@ -59,7 +59,7 @@ export class Events extends React.Component<State, {}> {
             {new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()}
           </Col>
           <Col>
-            <div className="map-small">
+            <div className="map-small" aria-label={_event.eventLocation}>
               <ReactBingmaps
                 id={_event.id}
                 bingmapKey={config.BING_API_KEY}

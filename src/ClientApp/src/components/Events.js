@@ -66,7 +66,7 @@ var Events = /** @class */ (function (_super) {
                 "\u00A0-\u00A0",
                 new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()),
             React.createElement(reactstrap_1.Col, null,
-                React.createElement("div", { className: "map-small" },
+                React.createElement("div", { className: "map-small", "aria-label": _event.eventLocation },
                     React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" }))))); }));
     };
     Events.bindPushPins = function (events) {
