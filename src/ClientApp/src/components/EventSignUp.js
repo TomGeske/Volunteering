@@ -105,7 +105,7 @@ var EventSignUp = /** @class */ (function (_super) {
         }
         var userId = adalConfig_1.authContext.getCachedUser().userName;
         for (var i = 0; i < this.props.event.registrations.length; i++) {
-            if (this.props.event.registrations[i].userId == userId) {
+            if (this.props.event.registrations[i].userId === userId) {
                 return i;
             }
         }

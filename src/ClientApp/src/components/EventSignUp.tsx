@@ -137,7 +137,7 @@ export default class EventSignUp extends React.Component<Props, State> {
     const userId: string = authContext.getCachedUser().userName;
 
     for (let i = 0; i < this.props.event.registrations.length; i++) {
-      if (this.props.event.registrations[i].userId == userId) {
+      if (this.props.event.registrations[i].userId === userId) {
         return i;
       }
     }
