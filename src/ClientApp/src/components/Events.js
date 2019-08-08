@@ -44,30 +44,32 @@ var Events = /** @class */ (function (_super) {
         return _this;
     }
     Events.renderEventsTable = function (_events) {
-        return (_events.map(function (_event) { return (React.createElement(reactstrap_1.Row, { key: _event.id, className: "justify-content-md-center" },
-            React.createElement(reactstrap_1.Col, { sm: true },
-                React.createElement("h3", null, _event.name),
-                React.createElement("p", null,
-                    React.createElement("b", null, "Event organizer:"),
-                    "\u00A0",
-                    _event.ownerName1,
-                    "\u00A0",
-                    _event.ownerName2),
-                React.createElement("p", null,
-                    React.createElement("b", null, "Event type:"),
-                    "\u00A0",
-                    _event.eventType)),
-            React.createElement(reactstrap_1.Col, { sm: true },
-                React.createElement(react_router_dom_1.Link, { className: "btn btn-primary mb1 bg-green", "aria-label": _event.name, to: { pathname: '/eventdetails/' + _event.id } }, "Details"),
-                React.createElement("br", null),
-                React.createElement("b", null, "Date:"),
-                "\u00A0",
-                new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString(),
-                "\u00A0-\u00A0",
-                new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString()),
-            React.createElement(reactstrap_1.Col, null,
-                React.createElement("div", { className: "map-small", "aria-label": _event.eventLocation },
-                    React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" }))))); }));
+        return (_events.map(function (_event) { return (React.createElement(reactstrap_1.Container, { key: _event.id },
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, { md: 12 },
+                    React.createElement("h3", null,
+                        React.createElement(react_router_dom_1.Link, { "aria-label": _event.name, to: { pathname: '/eventdetails/' + _event.id } }, _event.name)))),
+            React.createElement(reactstrap_1.Row, null,
+                React.createElement(reactstrap_1.Col, { md: 6 },
+                    React.createElement("p", null,
+                        React.createElement(reactstrap_1.Label, { className: "font-weight-bold" }, "Event organizer:"),
+                        "\u00A0",
+                        _event.ownerName1,
+                        "\u00A0",
+                        _event.ownerName2),
+                    React.createElement("p", null,
+                        React.createElement(reactstrap_1.Label, { className: "font-weight-bold" }, "Event type:"),
+                        "\u00A0",
+                        _event.eventType),
+                    React.createElement("p", null,
+                        React.createElement(reactstrap_1.Label, { className: "font-weight-bold" }, "Date:"),
+                        "\u00A0",
+                        new Date(Date.parse(_event.eventdate.toString())).toLocaleDateString(),
+                        "\u00A0-\u00A0",
+                        new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString())),
+                React.createElement(reactstrap_1.Col, { md: 6 },
+                    React.createElement("div", { className: "map-small", "aria-label": _event.eventLocation },
+                        React.createElement(react_bingmaps_1.ReactBingmaps, { id: _event.id, bingmapKey: Config_1.default.BING_API_KEY, center: [_event.coordinates.latitude, _event.coordinates.longitude], pushPins: _event.pushpins, zoom: 9, mapOptions: { showLocateMeButton: false, showMapTypeSelector: false }, className: "map-small" })))))); }));
     };
     Events.bindPushPins = function (events) {
         for (var i = 0; i < events.length; i++) {
@@ -90,13 +92,11 @@ var Events = /** @class */ (function (_super) {
     };
     Events.prototype.render = function () {
         var contents = this.state.loading
-            ? React.createElement("p", null,
-                React.createElement("em", null, "Loading..."))
+            ? React.createElement(React.Fragment, null)
             : Events.renderEventsTable(Events.bindPushPins(this.state.events));
         return (React.createElement("div", null,
-            React.createElement(react_router_dom_1.Link, { className: "btn btn-primary btn-lg", to: { pathname: '/newevent' } }, "Create event \u00BB"),
             React.createElement("h2", { className: "text-center" },
-                this.state.loading ? 'Loading' : this.state.events.length,
+                this.state.loading ? 'Loading ...' : this.state.events.length,
                 " Upcoming events"),
             React.createElement("br", null),
             contents,
