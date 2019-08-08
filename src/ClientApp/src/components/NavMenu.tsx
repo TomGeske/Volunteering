@@ -52,12 +52,14 @@ export class NavMenu extends React.Component<State, {}> {
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
             <ul className="navbar-nav flex-grow">
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/events">Events</NavLink>
+                <NavLink tag={Link} className="text-dark" to="/newevent">Create event »</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/myevents">
-                  Signed in&nbsp;
-                  {authContext.getCachedUser().userName}
+                <NavLink tag={Link} className="text-dark" to="/">Events</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} alt={authContext.getCachedUser().userName} className="text-dark" to="/myevents">
+                  My Events
                 </NavLink>
               </NavItem>
               <NavItem>
