@@ -12,7 +12,6 @@ import EventSignUp from './EventSignUp';
 import { Event } from '../entities/Event'
 import { Button, Alert } from 'reactstrap'
 import { adalApiFetch } from '../adalConfig';
-import { isNullOrUndefined, isNull } from 'util';
 import { Registration } from '../entities/Registration';
 
 interface State {
@@ -77,7 +76,7 @@ export class EventDetails extends React.Component<State, {}> {
             </p>
           </Col>
           <Col xs={6} md={4}>
-            <EventSignUp event={_event} onRegister={this.refreshAttendeeList} />
+            <EventSignUp event={_event} onRegister={this.refreshAttendeeList} onWithdraw={this.refreshAttendeeList} />
           </Col>
         </Row>
         <Row>

@@ -6,12 +6,7 @@ import { ReactBingmaps } from 'react-bingmaps';
 import { ai } from '../TelemetryService';
 import { Event } from '../entities/Event'
 import config from '../Config';
-
-import {
-  authContext,
-  adalConfig,
-  adalApiFetch,
-} from '../adalConfig';
+import {adalApiFetch} from '../adalConfig';
 
 interface State {
   events: Event[];

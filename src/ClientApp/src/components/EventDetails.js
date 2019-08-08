@@ -84,7 +84,7 @@ var EventDetails = /** @class */ (function (_super) {
                         "\u00A0-\u00A0",
                         new Date(Date.parse(_event.eventEndDate.toString())).toLocaleDateString())),
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
-                    React.createElement(EventSignUp_1.default, { event: _event, onRegister: this.refreshAttendeeList }))),
+                    React.createElement(EventSignUp_1.default, { event: _event, onRegister: this.refreshAttendeeList, onWithdraw: this.refreshAttendeeList }))),
             React.createElement(reactstrap_1.Row, null,
                 React.createElement(reactstrap_1.Col, { xs: 6, md: 4 },
                     React.createElement("p", null,
