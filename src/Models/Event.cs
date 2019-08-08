@@ -1,6 +1,7 @@
 using Microsoft.WWV.Models;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,5 +34,8 @@ namespace Microsoft.WWV
         public IList<Registration> Registrations { get; set; }
 
         public Coordinates Coordinates { get; set;}
+
+        [BsonIgnore]
+        internal FilterDefinition<Event> Filter { get; set; }
     }
 }

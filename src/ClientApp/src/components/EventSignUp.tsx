@@ -16,15 +16,16 @@ import { Registration } from '../entities/Registration';
 
 interface State {
   show: boolean;
-  uiState: 'Processing' | 'Open' | 'registration_successfull' | 'registration_failed';
+  uiState: 'Processing' | 'Open' | 'registration_successfull' | 'registration_failed' | 'registration_withdrawal_successfull' | 'registration_withdrawal_failed';
 }
 
 interface Props {
   event: Event;
-  onRegister?: RegistrationAddedEventHandler;
+  onRegister?: RegistrationEventHandler;
+  onWithdraw?: RegistrationEventHandler;
 }
 
-type RegistrationAddedEventHandler = (input: Registration) => void
+type RegistrationEventHandler = (input: Registration) => void
 
 export default class EventSignUp extends React.Component<Props, State> {
   public state: State = {
@@ -38,8 +39,37 @@ export default class EventSignUp extends React.Component<Props, State> {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
   }
-  
+
+  private handleWithdraw(): void {
+    this.setState({ uiState: 'Processing' });
+
+    adalApiFetch(`api/Event/WithdrawalEvent/${this.props.event.id}`)
+      .then(response => {
+        if (response.status === 200 || response.status === 201) {
+          const regIndex: number = this.getRegistrationIndex();
+          const reg = this.props.event.registrations[regIndex];
+
+          if (regIndex >= 0) {
+            this.props.event.registrations.splice(regIndex);
+          }
+
+          if (this.props.onWithdraw) {
+            this.props.onWithdraw(reg);
+          }
+
+          this.setState(
+            {
+              uiState: 'registration_withdrawal_successfull',
+              show: false
+            });
+        } else {
+          this.setState({ uiState: 'registration_withdrawal_failed' });
+        }
+      });
+  }
+
   private handleRegister(): void {
     this.setState({ uiState: 'Processing' });
 
@@ -99,20 +129,29 @@ export default class EventSignUp extends React.Component<Props, State> {
     }
   }
 
-  private IsRegistered(): boolean {
+  private getRegistrationIndex(): number {
     if (this.props.event.registrations == null) {
-      return false;
+      return -1;
     }
 
     const userId: string = authContext.getCachedUser().userName;
 
     for (let i = 0; i < this.props.event.registrations.length; i++) {
       if (this.props.event.registrations[i].userId === userId) {
-        return true;
+        return i;
       }
     }
 
-    return false;
+    return -2;
+  }
+
+  private IsRegistered(): boolean {
+    if (this.getRegistrationIndex() < 0) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   public render(): React.ReactNode {
@@ -121,6 +160,10 @@ export default class EventSignUp extends React.Component<Props, State> {
       return (
         <p>
           <b>You are registered</b>
+          <br />
+          <Button variant="primary" onClick={this.handleWithdraw}>
+            Withdraw
+          </Button>
         </p>
       );
     }

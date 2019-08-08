@@ -27,8 +27,33 @@ var EventSignUp = /** @class */ (function (_super) {
         _this.handleShow = _this.handleShow.bind(_this);
         _this.handleClose = _this.handleClose.bind(_this);
         _this.handleRegister = _this.handleRegister.bind(_this);
+        _this.handleWithdraw = _this.handleWithdraw.bind(_this);
         return _this;
     }
+    EventSignUp.prototype.handleWithdraw = function () {
+        var _this = this;
+        this.setState({ uiState: 'Processing' });
+        adalConfig_1.adalApiFetch("api/Event/WithdrawalEvent/" + this.props.event.id)
+            .then(function (response) {
+            if (response.status === 200 || response.status === 201) {
+                var regIndex = _this.getRegistrationIndex();
+                var reg = _this.props.event.registrations[regIndex];
+                if (regIndex >= 0) {
+                    _this.props.event.registrations.splice(regIndex);
+                }
+                if (_this.props.onWithdraw) {
+                    _this.props.onWithdraw(reg);
+                }
+                _this.setState({
+                    uiState: 'registration_withdrawal_successfull',
+                    show: false
+                });
+            }
+            else {
+                _this.setState({ uiState: 'registration_withdrawal_failed' });
+            }
+        });
+    };
     EventSignUp.prototype.handleRegister = function () {
         var _this = this;
         this.setState({ uiState: 'Processing' });
@@ -74,22 +99,32 @@ var EventSignUp = /** @class */ (function (_super) {
             return (React.createElement(React.Fragment, null));
         }
     };
-    EventSignUp.prototype.IsRegistered = function () {
+    EventSignUp.prototype.getRegistrationIndex = function () {
         if (this.props.event.registrations == null) {
-            return false;
+            return -1;
         }
         var userId = adalConfig_1.authContext.getCachedUser().userName;
         for (var i = 0; i < this.props.event.registrations.length; i++) {
             if (this.props.event.registrations[i].userId === userId) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -2;
+    };
+    EventSignUp.prototype.IsRegistered = function () {
+        if (this.getRegistrationIndex() < 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
     };
     EventSignUp.prototype.render = function () {
         if (this.IsRegistered()) {
             return (React.createElement("p", null,
-                React.createElement("b", null, "You are registered")));
+                React.createElement("b", null, "You are registered"),
+                React.createElement("br", null),
+                React.createElement(reactstrap_1.Button, { variant: "primary", onClick: this.handleWithdraw }, "Withdraw")));
         }
         else {
             return (React.createElement(React.Fragment, null,

@@ -37,6 +37,14 @@ namespace Microsoft.WWV.Controllers
             _db = mongoClient.GetDatabase(_dbName);
         }
 
+        private Event GetEventById(Guid id)
+        {
+            var filter = Builders<Event>.Filter.Eq(c => c.Country, defaultCountry) & Builders<Event>.Filter.Eq(e => e.Id, id);
+            var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
+            item.Filter = filter;
+            return item;
+        }
+
         [HttpGet]
         public IEnumerable<Event> GetEvents()
         {
@@ -76,7 +84,7 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            var item = _db.GetCollection<Event>("events").Find(c => c.Country == defaultCountry && c.Id == id).FirstOrDefault();
+            var item = GetEventById(id);
 
             if (item == null)
             {
@@ -137,17 +145,14 @@ namespace Microsoft.WWV.Controllers
             _data.OwnerName1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             _data.OwnerName2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value;
 
-            var eventFilter = Builders<Event>.Filter.Eq(e => e.Id, _data.Id) &
-            Builders<Event>.Filter.Eq(c => c.Country, defaultCountry);
-
-            var updateEvent = _db.GetCollection<Event>("events").Find(eventFilter).FirstOrDefault();
+            var updateEvent = GetEventById(_data.Id);
 
             if (updateEvent == null)
             {
                 return NotFound();
             }
 
-            var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(eventFilter, _data);
+            var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(updateEvent.Filter, _data);
 
             return Ok(a.ModifiedCount);
         }
@@ -160,8 +165,7 @@ namespace Microsoft.WWV.Controllers
                 return NotFound();
             }
 
-            var filter = Builders<Event>.Filter.Eq(c => c.Id, eventId) & Builders<Event>.Filter.Eq(c => c.Country, defaultCountry);
-            var item = _db.GetCollection<Event>("events").Find(filter).FirstOrDefault();
+            var item = GetEventById(eventId);
 
             if (item == null)
             {
@@ -172,7 +176,6 @@ namespace Microsoft.WWV.Controllers
             {
                 item.Registrations = new List<Registration>();
             }
-
 
             var modifications = 0L;
 
@@ -185,13 +188,44 @@ namespace Microsoft.WWV.Controllers
                     Name2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value,
                     CreatedTS = DateTime.UtcNow
                 });
-                var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(filter, item);
+                var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(item.Filter, item);
                 modifications = a.ModifiedCount;
             }
 
             return Ok(modifications);
         }
-       
+
+        [HttpGet("[action]/{eventId}")]
+        public async Task<IActionResult> WithdrawalEvent(Guid eventId)
+        {
+            if (eventId == Guid.Empty)
+            {
+                return NotFound();
+            }
+
+            var item = GetEventById(eventId);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            if (item.Registrations == null)
+            {
+                return NotFound();
+            }
+
+            var registration = item.Registrations.FirstOrDefault(r => r.UserId == User.Identity.Name);
+            if (registration == null)
+            {
+                return NotFound();
+            }
+
+            item.Registrations.Remove(registration);
+            var res = await _db.GetCollection<Event>("events").ReplaceOneAsync(item.Filter, item);
+            return Ok(res.ModifiedCount);
+        }
+
         private async Task<Event> ResolveEventLocationAsync(Event aEvent)
         {
             var url = String.Format(CultureInfo.InvariantCulture, "http://dev.virtualearth.net/REST/v1/Locations/{0}?includeNeighborhood=false&key={1}", aEvent.EventLocation, _bingApiKey);
