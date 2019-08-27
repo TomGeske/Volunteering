@@ -65,7 +65,7 @@ namespace Microsoft.WWV
             services.AddScoped<IMongoClient>(sp =>
                 new MongoClient(new MongoClientSettings() {
                     Server = new MongoServerAddress(Configuration["EventDB:ServerName"], 10255),
-                    UseSsl = true,
+                    UseTls = true,
                     SslSettings = new SslSettings
                     {
                         EnabledSslProtocols = SslProtocols.Tls12
