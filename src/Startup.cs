@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WWV.Service;
 using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Net.Http;
@@ -62,10 +63,11 @@ namespace Microsoft.WWV
             });
 
             services.AddScoped<HttpClient>();
+            services.AddScoped<MailService>();
             services.AddScoped<IMongoClient>(sp =>
                 new MongoClient(new MongoClientSettings() {
                     Server = new MongoServerAddress(Configuration["EventDB:ServerName"], 10255),
-                    UseSsl = true,
+                    UseTls = true,
                     SslSettings = new SslSettings
                     {
                         EnabledSslProtocols = SslProtocols.Tls12
