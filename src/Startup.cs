@@ -27,6 +27,8 @@ namespace Microsoft.WWV
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,7 +67,7 @@ namespace Microsoft.WWV
             services.AddScoped<IMongoClient>(sp =>
                 new MongoClient(new MongoClientSettings() {
                     Server = new MongoServerAddress(Configuration["EventDB:ServerName"], 10255),
-                    UseSsl = true,
+                    UseTls= true,
                     SslSettings = new SslSettings
                     {
                         EnabledSslProtocols = SslProtocols.Tls12
