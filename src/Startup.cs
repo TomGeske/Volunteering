@@ -9,18 +9,20 @@ using Microsoft.WWV.Service;
 using MongoDB.Driver;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Net.Http;
+using Microsoft.Extensions.Hosting;
 using System.Security.Authentication;
+using Microsoft.OpenApi.Models;
 
 namespace Microsoft.WWV
 {
     public class Startup
     {
-        IHostingEnvironment CurrentHostingEnvironment { get; set; }
+        IHostEnvironment CurrentHostEnvironment { get; set; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostEnvironment env)
         {
             Configuration = configuration;
-            CurrentHostingEnvironment = env;
+            CurrentHostEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -28,6 +30,8 @@ namespace Microsoft.WWV
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -38,7 +42,7 @@ namespace Microsoft.WWV
                 jwtoption.Audience = Configuration["AzureAd:Audience"];
                 jwtoption.SaveToken = true;
 
-                if (this.CurrentHostingEnvironment.IsDevelopment())
+                if (this.CurrentHostEnvironment.IsDevelopment())
                 {
                     jwtoption.RequireHttpsMetadata = false;
                 }
@@ -48,7 +52,8 @@ namespace Microsoft.WWV
                 }
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc().AddMvcOptions(c => c.EnableEndpointRouting = false);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -59,7 +64,7 @@ namespace Microsoft.WWV
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Volunteering API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Volunteering API", Version = "v1" });
             });
 
             services.AddScoped<HttpClient>();
@@ -82,7 +87,7 @@ namespace Microsoft.WWV
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
