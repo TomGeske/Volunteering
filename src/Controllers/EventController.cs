@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WWV.Models;
+using Microsoft.WWV.Service;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using System;
@@ -26,8 +27,9 @@ namespace Microsoft.WWV.Controllers
 
         private readonly HttpClient _client;
         private readonly IMongoDatabase _db;
+        private readonly MailService _mailService;
 
-        public EventController(IConfiguration config, IMongoClient mongoClient, HttpClient restClient)
+        public EventController(IConfiguration config, IMongoClient mongoClient, HttpClient restClient, MailService mailService)
         {
             _config = config;
             _dbName = _config["EventDB:DbName"];
@@ -35,6 +37,7 @@ namespace Microsoft.WWV.Controllers
 
             _client = restClient;
             _db = mongoClient.GetDatabase(_dbName);
+            _mailService = mailService;
         }
 
         private Event GetEventById(Guid id)
@@ -181,15 +184,18 @@ namespace Microsoft.WWV.Controllers
 
             if (item.Registrations.FirstOrDefault(r => r.UserId == User.Identity.Name) == null)
             {
-                item.Registrations.Add(new Registration()
+                var registration = new Registration()
                 {
                     UserId = User.Identity.Name,
                     Name1 = User.Claims.First(c => c.Type == ClaimTypes.GivenName).Value,
                     Name2 = User.Claims.First(c => c.Type == ClaimTypes.Surname).Value,
                     CreatedTS = DateTime.UtcNow
-                });
+                };
+
+                item.Registrations.Add(registration);
                 var a = await _db.GetCollection<Event>("events").ReplaceOneAsync(item.Filter, item);
                 modifications = a.ModifiedCount;
+                _mailService.SendEmail(item, registration);
             }
 
             return Ok(modifications);
