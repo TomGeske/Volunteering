@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="2.5.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
@@ -59,6 +60,12 @@
     <TypeScriptCompile Include="ClientApp\src\entities\Registration.ts" />
 
     <TypeScriptCompile Include="ClientApp\src\App.tsx" />
+
+    <None Remove="Service\EmailTemplates\EventSignupConfirmation.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Service\EmailTemplates\EventSignupConfirmation.html" />
   </ItemGroup>
 
   <ItemGroup>
